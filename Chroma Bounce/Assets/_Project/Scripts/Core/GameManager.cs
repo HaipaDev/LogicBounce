@@ -148,3 +148,8 @@ public enum vAlign{up,down}
 
 public enum InputType{mouse,touch,keyboard,drag}
 public enum PlaneDir{vert,horiz}
+
+[System.Serializable]public class SpriteNColor{
+    public Sprite spr;
+    public Color color;
+}

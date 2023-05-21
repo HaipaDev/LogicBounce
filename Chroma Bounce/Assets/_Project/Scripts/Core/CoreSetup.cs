@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 
 public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
-    [ColorPalette("Abandon8")]
+    [ColorPalette("Abandon10-Hyper")]
     public Color[] colorPalette;
     [Header("Main managers")]
     [AssetsOnly][SerializeField] GameObject saveSerialPrefab;
