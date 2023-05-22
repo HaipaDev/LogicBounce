@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class Bullet : MonoBehaviour{
+    [Header("References")]
     [SerializeField]SpriteNColor[] spritesAndColors;
+    [Header("Variables")]
     public int currentColorId;
 
     Rigidbody2D rb;
@@ -28,19 +30,26 @@ public class Bullet : MonoBehaviour{
         currentColorId=id;
         spr.sprite=spritesAndColors[id].spr;
         if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritesAndColors[id].color;
+        if(id!=0){AudioManager.instance.Play("BulletChangeNegative");}
+        else{AudioManager.instance.Play("BulletChangePositive");}
+        //AudioManager.instance.Play("ChangeBulletColor");
     }
     void OnCollisionEnter2D(Collision2D other){
-        if(other.gameObject.CompareTag("Laser1")&&currentColorId==1){
-            Ricochet(other);
-            SwitchColor();return;
-        }else if(other.gameObject.CompareTag("Laser2")&&currentColorId==0){
-            Ricochet(other);
-            SwitchColor();return;
+        if(other.gameObject.CompareTag("Laser")){
+            if(other.gameObject.GetComponent<Laser>().currentColorId!=currentColorId){
+                Ricochet(other);
+                SwitchColor();
+                AudioManager.instance.Play("BounceLaser");
+                return;
+            }
         }else if(other.gameObject.CompareTag("World")){
-            Ricochet(other);return;
-        }else if(other.gameObject.CompareTag("Enemy")){
-            other.gameObject.GetComponent<Enemy>().Die();Destroy(gameObject);return;
-        }
+            Ricochet(other);
+            AudioManager.instance.Play("Bounce");
+            return;
+        }/*else if(other.gameObject.CompareTag("Enemy")){
+            if(currentColorId==0){other.gameObject.GetComponent<Enemy>().Charge();Destroy(gameObject);return;}
+            else{other.gameObject.GetComponent<Enemy>().Discharge();Destroy(gameObject);return;}
+        }*/
         void Ricochet(Collision2D other){
             Vector2 _wallNormal=other.contacts[0].normal;
             Vector2 reflectDir=Vector2.Reflect(rb.velocity,_wallNormal).normalized;
@@ -48,6 +57,12 @@ public class Bullet : MonoBehaviour{
             rb.velocity=reflectDir.normalized*Player.instance.bulletSpeed;
             float rot=Mathf.Atan2(reflectDir.y,reflectDir.x)*Mathf.Rad2Deg;
             transform.eulerAngles=new Vector3(0,0,rot-Player.instance.b_correctionAngle);
+        }
+    }
+    void OnTriggerEnter2D(Collider2D other) {
+        if(other.gameObject.CompareTag("Enemy")){
+            if(currentColorId==0){other.gameObject.GetComponent<LogicGate>().Charge();return;}
+            else{other.gameObject.GetComponent<LogicGate>().Discharge();return;}
         }
     }
 }

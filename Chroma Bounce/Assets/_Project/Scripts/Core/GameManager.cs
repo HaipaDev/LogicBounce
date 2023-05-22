@@ -153,3 +153,4 @@ public enum PlaneDir{vert,horiz}
     public Sprite spr;
     public Color color;
 }
+public enum LogicGateType{and,nand,xor,xnor,or,nor,not}

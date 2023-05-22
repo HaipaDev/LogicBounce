@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 8920579117157986075}
   m_Layer: 6
   m_Name: laser
-  m_TagString: Laser1
+  m_TagString: Laser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -362,3 +362,4 @@ MonoBehaviour:
     color: {r: 1, g: 0.8196079, b: 0.40000004, a: 1}
   - spr: {fileID: 21300000, guid: 8028c68fe0197cf4791cc5cb9b8fb231, type: 3}
     color: {r: 0.023529414, g: 0.5647059, b: 0.56078434, a: 1}
+  currentColorId: 0

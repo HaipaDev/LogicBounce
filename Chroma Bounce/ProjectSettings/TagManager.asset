@@ -4,11 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Laser1
-  - Laser2
+  - Laser
   - Bullet
   - Enemy
   - World
+  - g
+  - Laser1
+  - Laser2
   layers:
   - Default
   - TransparentFX

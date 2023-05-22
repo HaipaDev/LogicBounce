@@ -44,10 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d10f24a559237468192656457c4a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerupSpawnerPrefab: {fileID: 0}
-  waveSpawnerPrefab: {fileID: 0}
-  disrupterSpawnerPrefab: {fileID: 0}
   objects: []
   vfx: []
   sprites: []
-  materials: []
+  materials:
+  - name: AIOShaderMat
+    mat: {fileID: 2100000, guid: 54dd26c80f9c40f4e828cb74cc08e7b3, type: 2}
+  - name: AIOShaderMat_UI
+    mat: {fileID: 2100000, guid: 602a7accce50c2d4cadc4d44a0660541, type: 2}
+  - name: HolographDissolve
+    mat: {fileID: 2100000, guid: 16ef4dd4a17bfb4429e2aa5cbc545f28, type: 2}

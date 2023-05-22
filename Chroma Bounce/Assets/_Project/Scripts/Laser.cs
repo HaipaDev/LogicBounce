@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class Laser : MonoBehaviour{
+    [Header("References")]
     [SerializeField]SpriteNColor[] spritesAndColors;
-    [SerializeField]int currentColorId;
+    [Header("Variables")]
+    [SerializeField]public int currentColorId;
 
     SpriteRenderer spr;
     void Start(){
