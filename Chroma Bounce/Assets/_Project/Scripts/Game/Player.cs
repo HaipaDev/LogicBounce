@@ -73,7 +73,7 @@ public class Player : MonoBehaviour{    public static Player instance;
         }
 
         ///Change bullet charge
-        if(Input.GetMouseButtonDown(1)){//Input.GetKeyDown(KeyCode.E)){
+        if(Input.GetMouseButtonDown(1)){
             if(startingColorId==0){ChangeColor(1);return;}
             else{ChangeColor(0);return;}
         }
@@ -82,11 +82,8 @@ public class Player : MonoBehaviour{    public static Player instance;
         startingColorId=id;
         gunSpr.sprite=gunSprColor[id].spr;
         gunTransform.GetComponentInChildren<Light2D>().color=gunSprColor[id].color;
-        //AudioManager.instance.Play("ChangeGunColor");
         if(id==0){AudioManager.instance.Play("GunChangePositive");AudioManager.instance.StopPlaying("GunChangeNegative");}
         else{AudioManager.instance.Play("GunChangeNegative");AudioManager.instance.StopPlaying("GunChangePositive");}
-        //if(id==0){AudioManager.instance.Play("BulletChangePositive");}
-        //else{AudioManager.instance.Play("BulletChangeNegative");}
         return;
     }
 }

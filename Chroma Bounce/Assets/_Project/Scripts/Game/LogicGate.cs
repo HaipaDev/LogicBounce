@@ -9,13 +9,15 @@ public class LogicGate : MonoBehaviour{
     [SerializeField] LogicGateType logicGateType;
     [SerializeField] bool charged;
     [SerializeField] bool active;
+    [SerializeField] float _delaySet=0.15f;
 
     [Header("References")]
     [AssetsOnly][SerializeField] GameObject gatePoweringLinePrefab;
     [ChildGameObjectsOnly][SerializeField] SpriteRenderer logicGateSymbol;
     [ChildGameObjectsOnly][SerializeField] GameObject lightChild;
     [ChildGameObjectsOnly][SerializeField] GameObject chargedSymbol;
-    [SceneObjectsOnly][SerializeField] LogicGate gatePowering;
+    [HideIf("@this.gatePowered!=null")][SceneObjectsOnly][SerializeField] LogicGate gatePowering;
+    [DisableInEditorMode][HideIf("@this.gatePowering!=null")][SceneObjectsOnly][SerializeField] LogicGate gatePowered;
     [HideIf("@this.gatePowering==null")][DisableInEditorMode][SerializeField] GateLine gatePoweringLine;
     [Header("Sprites, Colors, Materials")]
     [SerializeField] Sprite[] logicGateSymbols;
@@ -23,17 +25,26 @@ public class LogicGate : MonoBehaviour{
     [SerializeField] Material material_activated;
     [SerializeField] SpriteNColor spritencolor_deactivated;
     [SerializeField] Material material_deactivated;
+    [DisableInEditorMode][SerializeField] Vector2 _startPos;
+    [DisableInEditorMode][SerializeField] float _delay;
 
     SpriteRenderer spr;
     void Start(){
         spr=GetComponent<SpriteRenderer>();
+        _startPos=transform.position;
         ConnectWithGatePowering();
         if(!charged){chargedSymbol.SetActive(false);}else{chargedSymbol.SetActive(true);}
+        if(gatePowering!=null){gatePowering.gatePowered=this;}//Crossreference
     }
     void Update(){
         logicGateSymbol.sprite=logicGateSymbols[(int)logicGateType];
         LogicForGates();
         UpdateGatePoweringColor();
+        if(Vector2.Distance((Vector2)transform.position,_startPos)>0.4f&&_startPos!=Vector2.zero){
+            if(gatePowering!=null){ConnectWithGatePowering();}
+            else if(gatePowered!=null){gatePowered.ConnectWithGatePowering();_startPos=transform.position;}
+        }
+        if(_delay>0)_delay-=Time.deltaTime;
     }
     void LogicForGates(){
         bool signal(){if(gatePowering==null){return true;}else{return gatePowering.active;}}
@@ -84,23 +95,20 @@ public class LogicGate : MonoBehaviour{
             AudioManager.instance.StopPlaying("GateActivate");
         }
     }
-    public void Charge(){if(!charged){charged=true;AudioManager.instance.Play("GateCharge");chargedSymbol.SetActive(true);AudioManager.instance.StopPlaying("GateDischarge");}}
-    public void Discharge(){if(charged){charged=false;AudioManager.instance.Play("GateDischarge");chargedSymbol.SetActive(false);AudioManager.instance.StopPlaying("GateCharge");}}
+    public void Charge(){if(!charged){if(_delay<=0){charged=true;_delay=_delaySet;AudioManager.instance.Play("GateCharge");chargedSymbol.SetActive(true);AudioManager.instance.StopPlaying("GateDischarge");}}}
+    public void Discharge(){if(charged){if(_delay<=0){charged=false;_delay=_delaySet;AudioManager.instance.Play("GateDischarge");chargedSymbol.SetActive(false);AudioManager.instance.StopPlaying("GateCharge");}}}
 
     void ConnectWithGatePowering(){
         if(gatePowering!=null){
-            if(gatePoweringLine==null){gatePoweringLine=Instantiate(gatePoweringLinePrefab,WorldCanvas.instance.transform).GetComponent<GateLine>();ConnectWithGatePowering();}
-            else{
+            if(gatePoweringLine!=null){
+                _startPos=transform.position;
                 Vector2 _pos1=gatePowering.transform.position;_pos1=new Vector2(_pos1.x+0.5f,_pos1.y+0.5f);
                 Vector2 _pos2=transform.position;_pos2=new Vector2(_pos2.x+0.5f,_pos2.y+0.5f);
                 gatePoweringLine.SetBothPointsNull();
                 gatePoweringLine.SetPoints(_pos1,_pos2);
-                //Debug.Log(_pos2.y+" < "+_pos1.y);
                 if(_pos2.y<_pos1.y){gatePoweringLine.SetScanningDir(true);}else{/*Do nothing since its already upwards*/}
-
-                if(gatePowering.active){if(!gatePoweringLine.CompareColors(spritencolor_activated.color)){gatePoweringLine.SetColor(spritencolor_activated.color);}}
-                else{if(!gatePoweringLine.CompareColors(spritencolor_deactivated.color)){gatePoweringLine.SetColor(spritencolor_deactivated.color);}}
-            }
+                UpdateGatePoweringColor();
+            }else{gatePoweringLine=Instantiate(gatePoweringLinePrefab,WorldCanvas.instance.transform).GetComponent<GateLine>();ConnectWithGatePowering();}
         }
     }
     void UpdateGatePoweringColor(){

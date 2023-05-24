@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 7259962140089618672}
   m_Layer: 8
   m_Name: LogicGate
-  m_TagString: Enemy
+  m_TagString: LogicGate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -512,6 +512,7 @@ MonoBehaviour:
   lightChild: {fileID: 3610673324877901367}
   chargedSymbol: {fileID: 5458009404337504052}
   gatePowering: {fileID: 0}
+  gatePowered: {fileID: 0}
   gatePoweringLine: {fileID: 0}
   logicGateSymbols:
   - {fileID: -82410708, guid: 393af437742a4b848830e09f6e23d8ce, type: 3}
@@ -529,3 +530,4 @@ MonoBehaviour:
     spr: {fileID: 21300000, guid: b508cb9c493875c49861ff70f040a3f3, type: 3}
     color: {r: 0.023529414, g: 0.5647059, b: 0.56078434, a: 1}
   material_deactivated: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  _startPos: {x: 0, y: 0}

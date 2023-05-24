@@ -335,7 +335,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6893198405137017869}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -345,8 +345,8 @@ Rigidbody2D:
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &8920579117157986075
 MonoBehaviour:
@@ -367,3 +367,7 @@ MonoBehaviour:
     color: {r: 0.023529414, g: 0.5647059, b: 0.56078434, a: 1}
   currentColorId: 0
   scaleupSpeed: 7
+  laserMirrored: {fileID: 0}
+  laserParentReference: {fileID: 0}
+  mirrorReference: {fileID: 0}
+  clonedLaser: 0

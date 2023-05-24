@@ -32,7 +32,6 @@ public class Bullet : MonoBehaviour{
         if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritesAndColors[id].color;
         if(id!=0){AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");}
         else{AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");}
-        //AudioManager.instance.Play("ChangeBulletColor");
     }
     void OnCollisionEnter2D(Collision2D other){
         if(other.gameObject.CompareTag("Laser")){
@@ -46,10 +45,7 @@ public class Bullet : MonoBehaviour{
             Ricochet(other);
             AudioManager.instance.Play("Bounce");
             return;
-        }/*else if(other.gameObject.CompareTag("Enemy")){
-            if(currentColorId==0){other.gameObject.GetComponent<Enemy>().Charge();Destroy(gameObject);return;}
-            else{other.gameObject.GetComponent<Enemy>().Discharge();Destroy(gameObject);return;}
-        }*/
+        }
         void Ricochet(Collision2D other){
             Vector2 _wallNormal=other.contacts[0].normal;
             Vector2 reflectDir=Vector2.Reflect(rb.velocity,_wallNormal).normalized;
@@ -60,7 +56,7 @@ public class Bullet : MonoBehaviour{
         }
     }
     void OnTriggerEnter2D(Collider2D other) {
-        if(other.gameObject.CompareTag("Enemy")){
+        if(other.gameObject.CompareTag("LogicGate")){
             if(currentColorId==0){other.gameObject.GetComponent<LogicGate>().Charge();return;}
             else{other.gameObject.GetComponent<LogicGate>().Discharge();return;}
         }
