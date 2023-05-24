@@ -8,9 +8,6 @@ TagManager:
   - Bullet
   - Enemy
   - World
-  - g
-  - Laser1
-  - Laser2
   layers:
   - Default
   - TransparentFX
@@ -18,9 +15,9 @@ TagManager:
   - Bullet
   - Water
   - UI
-  - Colliders
-  - 
-  - 
+  - StaticColliders
+  - Lasers
+  - LogicGates
   - 
   - 
   - 

@@ -64,8 +64,8 @@ public class Player : MonoBehaviour{    public static Player instance;
             b_rb.velocity=new Vector2(_dir.x, _dir.y).normalized*bulletSpeed;
             float b_rotZ = Mathf.Atan2(_rotation.y,_rotation.x)*Mathf.Rad2Deg;
             b_trans.rotation=Quaternion.Euler(0,0,b_rotZ+b_correctionAngle);
-            if(startingColorId!=0){AudioManager.instance.Play("ShootNegative");}
-            else{AudioManager.instance.Play("ShootPositive");}
+            if(startingColorId!=0){AudioManager.instance.Play("ShootNegative");AudioManager.instance.StopPlaying("ShootPositive");}
+            else{AudioManager.instance.Play("ShootPositive");AudioManager.instance.StopPlaying("ShootNegative");}
         }
         if(!canFire){
             if(timer>0)timer-=Time.deltaTime;
@@ -83,8 +83,8 @@ public class Player : MonoBehaviour{    public static Player instance;
         gunSpr.sprite=gunSprColor[id].spr;
         gunTransform.GetComponentInChildren<Light2D>().color=gunSprColor[id].color;
         //AudioManager.instance.Play("ChangeGunColor");
-        if(id==0){AudioManager.instance.Play("GunChangePositive");}
-        else{AudioManager.instance.Play("GunChangeNegative");}
+        if(id==0){AudioManager.instance.Play("GunChangePositive");AudioManager.instance.StopPlaying("GunChangeNegative");}
+        else{AudioManager.instance.Play("GunChangeNegative");AudioManager.instance.StopPlaying("GunChangePositive");}
         //if(id==0){AudioManager.instance.Play("BulletChangePositive");}
         //else{AudioManager.instance.Play("BulletChangeNegative");}
         return;

@@ -30,8 +30,8 @@ public class Bullet : MonoBehaviour{
         currentColorId=id;
         spr.sprite=spritesAndColors[id].spr;
         if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritesAndColors[id].color;
-        if(id!=0){AudioManager.instance.Play("BulletChangeNegative");}
-        else{AudioManager.instance.Play("BulletChangePositive");}
+        if(id!=0){AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");}
+        else{AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");}
         //AudioManager.instance.Play("ChangeBulletColor");
     }
     void OnCollisionEnter2D(Collision2D other){
