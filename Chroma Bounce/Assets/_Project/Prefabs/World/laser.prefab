@@ -360,12 +360,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd9d9cd40b1fb64c99b5e003a5e8e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spritesAndColors:
-  - spr: {fileID: 21300000, guid: 508873347a45141419c717bb8c1b024c, type: 3}
+  spritencolor_positive:
+    spr: {fileID: 21300000, guid: 508873347a45141419c717bb8c1b024c, type: 3}
     color: {r: 1, g: 0.8196079, b: 0.40000004, a: 1}
-  - spr: {fileID: 21300000, guid: 8028c68fe0197cf4791cc5cb9b8fb231, type: 3}
+  spritencolor_negative:
+    spr: {fileID: 21300000, guid: 8028c68fe0197cf4791cc5cb9b8fb231, type: 3}
     color: {r: 0.023529414, g: 0.5647059, b: 0.56078434, a: 1}
-  currentColorId: 0
+  positive: 1
   scaleupSpeed: 7
   laserMirrored: {fileID: 0}
   laserParentReference: {fileID: 0}

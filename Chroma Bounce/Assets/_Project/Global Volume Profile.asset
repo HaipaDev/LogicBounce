@@ -43,7 +43,7 @@ MonoBehaviour:
   active: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.91
+    m_Value: 1.12
   intensity:
     m_OverrideState: 1
     m_Value: 2.81
@@ -69,6 +69,25 @@ MonoBehaviour:
   dirtIntensity:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &-586141122593557604
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb60a22f311433c4c962b888d1393f88, type: 3}
+  m_Name: PaniniProjection
+  m_EditorClassIdentifier: 
+  active: 1
+  distance:
+    m_OverrideState: 1
+    m_Value: 0.286
+  cropToFit:
+    m_OverrideState: 1
+    m_Value: 0.629
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +106,7 @@ MonoBehaviour:
   - {fileID: -5413552836667028116}
   - {fileID: 396778821659642045}
   - {fileID: 2427110094453236069}
+  - {fileID: -586141122593557604}
 --- !u!114 &396778821659642045
 MonoBehaviour:
   m_ObjectHideFlags: 3

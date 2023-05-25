@@ -49,6 +49,7 @@ public class AssetsManager : MonoBehaviour{	public static AssetsManager instance
         GameObject objref;
 		//if(SaveSerial.instance.settingsData.particles){
 			objref=Instantiate(gobj,pos,Quaternion.identity);
+			objref.transform.position=pos;
 			if(duration!=0)Destroy(objref,duration);
 			return objref;
 		//}else return null;

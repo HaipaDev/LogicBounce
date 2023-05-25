@@ -49,7 +49,7 @@ MonoBehaviour:
   sounds:
   - name: ShootPositive
     clip: {fileID: 8300000, guid: 77bd1485a9a80ed4ea87c200d94469c4, type: 3}
-    volume: 0.75
+    volume: 0.7
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -58,7 +58,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: ShootNegative
     clip: {fileID: 8300000, guid: e261d05ab965d224d9bc4e15f053c6fc, type: 3}
-    volume: 0.75
+    volume: 0.7
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -67,7 +67,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GateCharge
     clip: {fileID: 8300000, guid: 33715eb23387ef746a0bca09771d553b, type: 3}
-    volume: 0.75
+    volume: 0.8
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -76,7 +76,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GateDischarge
     clip: {fileID: 8300000, guid: 5a4051d8989d9904ea934fca2a8c8706, type: 3}
-    volume: 0.75
+    volume: 0.8
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -103,7 +103,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Bounce
     clip: {fileID: 8300000, guid: 310c094ca6b184a43be64d661a1ebdd7, type: 3}
-    volume: 0.75
+    volume: 0.6
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -130,7 +130,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: BulletChangeNegative
     clip: {fileID: 8300000, guid: 4878f59f24c1a7d409d865c37537a7b5, type: 3}
-    volume: 0.75
+    volume: 0.4
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -139,7 +139,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GunChangePositive
     clip: {fileID: 8300000, guid: a670e206a39c3114bb6be856f0c8b80c, type: 3}
-    volume: 0.75
+    volume: 0.4
     volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
@@ -148,6 +148,51 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: GunChangeNegative
     clip: {fileID: 8300000, guid: 3776f9ee11a2a6b43a459f35bc6effb4, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: RestartLevel
+    clip: {fileID: 8300000, guid: e1cd24d016317f94e939027a7a0b4f56, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: ReflectLaserMirror
+    clip: {fileID: 8300000, guid: abde5dac4381f1349be527002ee86a8e, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: ReflectLaserMirrorContrary
+    clip: {fileID: 8300000, guid: cdb09bfa2b1d665478bcfbdca7723679, type: 3}
+    volume: 0.5
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Laser
+    clip: {fileID: 8300000, guid: 34fb1ac2269d3444096bd580406a5229, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: LasersCollision
+    clip: {fileID: 8300000, guid: 0f1610c057a7c0546bd1cb87e3507cc8, type: 3}
     volume: 0.75
     volumeVariance: 0.1
     pitch: 1

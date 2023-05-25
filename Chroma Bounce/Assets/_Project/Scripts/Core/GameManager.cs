@@ -5,12 +5,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using UnityEngine.UI;
-using UnityEngine.Rendering.PostProcessing;
-//using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using Sirenix.OdinInspector;
 public class GameManager : MonoBehaviour{   public static GameManager instance;
     public static bool GlobalTimeIsPaused;
-    public static bool GlobalTimeIsPausedNotSlowed;
+    public static bool GlobalTimeIsPausedOrStepped;
     [Header("Global")]
     public bool smthOn=true;
     [Header("Current Player Values")]
@@ -20,20 +19,16 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     public float defaultGameSpeed=1f;
     public bool speedChanged;
     [Header("Other")]
-    public string gameVersion="0.1";
-    public float buildVersion=0.1f;
+    public string gameVersion="1.0";
+    public float buildVersion=1f;
     public bool cheatmode;
     public bool dmgPopups=true;
     public bool analyticsOn=true;
     [SerializeField]float restartTimer=-4;
-    
-    //Player player;
-    PostProcessVolume postProcessVolume;
+    Volume postProcessVolume;
     bool setValues;
     public float GameManagerTime=0;
-    //[SerializeField] InputMaster inputMaster;
     [Range(0,2)]public static int maskMode=1;
-    //public string gameVersion;
 
     void Awake(){
         SetUpSingleton();
@@ -48,25 +43,25 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     void Start(){}
     void Update(){
         if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<0){gameSpeed=0;}
-        if(GSceneManager.CheckScene("Game")){
-        if(Time.timeScale<=0.0001f||PauseMenu.GameIsPaused){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
-        if(PauseMenu.GameIsPaused){GlobalTimeIsPausedNotSlowed=true;}else{GlobalTimeIsPausedNotSlowed=false;}
+            if(GSceneManager.CheckScene("Game")){
+            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
+            if(PauseMenu.GameIsPaused/*||StepsManager.instance.IsOpen*/){GlobalTimeIsPausedOrStepped=true;}else{GlobalTimeIsPausedOrStepped=false;}
         }else{GlobalTimeIsPaused=false;}
 
         if(SceneManager.GetActiveScene().name=="Game"&&FindObjectOfType<Player>()!=null&&gameSpeed>0.0001f){GameManagerTime+=Time.unscaledDeltaTime;}
         //Set speed to normal
-        if(!GlobalTimeIsPausedNotSlowed&&
-        (FindObjectOfType<Player>()!=null)&&speedChanged!=true){gameSpeed=defaultGameSpeed;}
+        if(!GlobalTimeIsPausedOrStepped&&
+            (FindObjectOfType<Player>()!=null)&&speedChanged!=true){gameSpeed=defaultGameSpeed;}
         if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
-        if(FindObjectOfType<Player>()==null){gameSpeed=defaultGameSpeed;}
+        //if(FindObjectOfType<Player>()==null){gameSpeed=defaultGameSpeed;}
         
         //Restart with R or Space/Resume with Space
         if(SceneManager.GetActiveScene().name=="Game"){
-        if(GlobalTimeIsPausedNotSlowed){if(restartTimer==-4)restartTimer=0.5f;}
-        if(restartTimer>0)restartTimer-=Time.unscaledDeltaTime;
+            if(GlobalTimeIsPausedOrStepped){if(restartTimer==-4)restartTimer=0.5f;}
+            if(restartTimer>0)restartTimer-=Time.unscaledDeltaTime;
         }
 
-        if(GlobalTimeIsPausedNotSlowed){
+        if(GlobalTimeIsPausedOrStepped){
             foreach(AudioSource sound in FindObjectsOfType<AudioSource>()){
                 if(sound!=null){
                     GameObject snd=sound.gameObject;
@@ -80,21 +75,21 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
         }
 
         //Postprocessing
-        postProcessVolume=FindObjectOfType<PostProcessVolume>();
-        if(SaveSerial.instance!=null){
-        if(SaveSerial.instance.settingsData.pprocessing==true && postProcessVolume!=null){postProcessVolume.GetComponent<PostProcessVolume>().enabled=true;}
-        if(SaveSerial.instance.settingsData.pprocessing==false && FindObjectOfType<PostProcessVolume>()!=null){postProcessVolume=FindObjectOfType<PostProcessVolume>();postProcessVolume.GetComponent<PostProcessVolume>().enabled=false;}
+        if(SaveSerial.instance!=null){FindPostProcess();
+        if(SaveSerial.instance.settingsData.pprocessing==true&&postProcessVolume!=null){postProcessVolume.GetComponent<Volume>().enabled=true;}
+        if(SaveSerial.instance.settingsData.pprocessing==false&&FindObjectOfType<Volume>()!=null){FindPostProcess();postProcessVolume.GetComponent<Volume>().enabled=false;}
+        void FindPostProcess(){if(postProcessVolume==null){postProcessVolume=Camera.main.gameObject.GetComponentInChildren<Volume>();}if(postProcessVolume==null){postProcessVolume=FindObjectOfType<Volume>();}}
         }
-
 
         CheckCodes(0,0);
     }
+    public Volume PostProcessVolume(){return postProcessVolume;}
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
     public void Save(){ SaveSerial.instance.Save(); SaveSerial.instance.SaveSettings(); }
     public void Load(){ SaveSerial.instance.Load(); SaveSerial.instance.LoadSettings(); }
     public void DeleteAll(){ SaveSerial.instance.Delete(); /*ResetSettings();*/ GSceneManager.instance.LoadStartMenu();}
-    /*public void ResetSettings(){
-        SaveSerial.instance.ResetSettings();
+    public void ResetSettings(){
+        SaveSerial.instance.DeleteSettings();
         GSceneManager.instance.ReloadScene();
         SaveSerial.instance.SaveSettings();
         var s=FindObjectOfType<SettingsMenu>();
@@ -104,7 +99,7 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     if(GameManager.instance!=null){
         if(SceneManager.GetActiveScene().name=="Options"){if(GSceneManager.instance!=null)GSceneManager.instance.LoadStartMenu();}
         else if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused){if(FindObjectOfType<SettingsMenu>()!=null)FindObjectOfType<SettingsMenu>().Close();if(FindObjectOfType<PauseMenu>()!=null&&goToPause)FindObjectOfType<PauseMenu>().Pause();}
-    }}*/
+    }}
     public void ResetMusicPitch(){if(FindObjectOfType<Jukebox>()!=null)if(FindObjectOfType<Jukebox>().GetComponent<AudioSource>()!=null)FindObjectOfType<Jukebox>().GetComponent<AudioSource>().pitch=1;}
 
     public void CheckCodes(int fkey, int nkey){

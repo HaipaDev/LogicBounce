@@ -147,12 +147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc7af02e8c9b82b4db08e6a514be49a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spritesAndColors:
-  - spr: {fileID: 21300000, guid: e772da9b45db15d48a7e9bd474383839, type: 3}
-    color: {r: 0.85098046, g: 0.7372549, b: 0.40000004, a: 1}
-  - spr: {fileID: 21300000, guid: d692336390bb56744b1389539e49b3a4, type: 3}
+  spritencolor_positive:
+    spr: {fileID: 21300000, guid: e772da9b45db15d48a7e9bd474383839, type: 3}
+    color: {r: 1, g: 0.8196079, b: 0.40000004, a: 1}
+  spritencolor_negative:
+    spr: {fileID: 21300000, guid: d692336390bb56744b1389539e49b3a4, type: 3}
     color: {r: 0.023529414, g: 0.5647059, b: 0.56078434, a: 1}
-  currentColorId: 0
+  positive: 0
 --- !u!1 &7946619690783169937
 GameObject:
   m_ObjectHideFlags: 0

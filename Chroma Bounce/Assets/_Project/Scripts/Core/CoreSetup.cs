@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 
 public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
-    [ColorPalette("Abandon10-Hyper")]
+    [ColorPalette("Abandon-Hyper")]
     public Color[] colorPalette;
     [Header("Main managers")]
     [AssetsOnly][SerializeField] GameObject saveSerialPrefab;
@@ -19,8 +19,11 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
     [AssetsOnly][SerializeField] GameObject assetsManagerPrefab;
     [AssetsOnly][SerializeField] GameObject audioManagerPrefab;
     [AssetsOnly][SerializeField] GameObject jukeboxPrefab;
+    [Header("GameSpecific")]
+    [AssetsOnly][SerializeField] GameObject levelMapManagerPrefab;
     
     //[Header("Networking, Advancements etc")]
+    //[AssetsOnly][SerializeField] GameObject dbaccessPrefab;
     //[AssetsOnly][SerializeField] GameObject discordRPCPrefab;
     void Awake(){
         instance=this;
@@ -47,9 +50,10 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
         if(FindObjectOfType<PostProcessVolume>()!=null&& FindObjectOfType<SaveSerial>().settingsData.pprocessing!=true){FindObjectOfType<PostProcessVolume>().enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
         //if(FindObjectOfType<EventSystem>()!=null){if(FindObjectOfType<EventSystem>().GetComponent<UIInputSystem>()==null)FindObjectOfType<EventSystem>().gameObject.AddComponent<UIInputSystem>();}
         if(FindObjectOfType<Jukebox>()==null&&SceneManager.GetActiveScene().name=="Menu"){Instantiate(jukeboxPrefab);}
-        //yield return new WaitForSeconds(0.5f);
-        //Destroy(gameObject);
+        
+        if(FindObjectOfType<LevelMapManager>()==null&&LevelMapManager.InContextScene()){Instantiate(levelMapManagerPrefab);}
     }
 
-    public GameObject GetJukeboxPrefab(){return jukeboxPrefab;}
+    public GameObject _getJukeboxPrefab(){return jukeboxPrefab;}
+    public GameObject _levelMapManagerPrefab(){return levelMapManagerPrefab;}
 }

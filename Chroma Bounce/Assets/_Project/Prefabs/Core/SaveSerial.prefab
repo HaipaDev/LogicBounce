@@ -47,20 +47,18 @@ MonoBehaviour:
   filename: playerData
   filenameSettings: settings
   playerData:
-    highscore: []
+    levelPassedValues: []
   buildFirstLoaded: 0
   buildLastLoaded: 0
   settingsData:
     masterVolume: 0.95
     masterOOFVolume: 0.25
     soundVolume: 0.95
-    ambienceVolume: -0.55
     musicVolume: 0.66
-    windDownMusic: 1
-    bossVolumeTurnUp: 1
     windowMode: 1
     resolution: {x: 1920, y: 1080}
     vSync: 0
     lockCursor: 0
-    pauseWhenOOF: 0
+    pauseWhenOOF: 1
     pprocessing: 1
+    screenshake: 1

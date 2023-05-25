@@ -8,6 +8,7 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
     public static bool GameIsPaused = false;
     [ChildGameObjectsOnly]public GameObject pauseMenuUI;
     [ChildGameObjectsOnly]public GameObject optionsUI;
+    [ChildGameObjectsOnly]public GameObject blurChild;
     float unpausedTimer;
     float unpausedTimeReq=0.3f;
     //Shop shop;
@@ -15,7 +16,6 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
         instance=this;
         Resume();
         unpausedTimeReq=0;
-        //shop=FindObjectOfType<Shop>();
     }
     void Update(){
         var _isEditor=false;
@@ -41,33 +41,25 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
     }
     public void Resume(){
         pauseMenuUI.SetActive(false);
-        if(optionsUI.transform.GetChild(0).gameObject.activeSelf){SettingsMenu.instance.Back();}
-        //if(optionsUI.transform.GetChild(1).gameObject.activeSelf){optionsUI.GetComponent<SettingsMenu>().OpenSettings();}
+        blurChild.SetActive(false);
+        if(optionsUI.transform.childCount>0)if(optionsUI.transform.GetChild(0).gameObject.activeSelf){if(SettingsMenu.instance!=null)SettingsMenu.instance.Back();}
         GameManager.instance.gameSpeed=1;
         GameIsPaused=false;
-        //Debug.Log("Resuming pause");
     }
     public void PauseEmpty(){
         GameIsPaused=true;
         GameManager.instance.gameSpeed=0;
         unpausedTimer=-1;
-        //Debug.Log("Pausing");
     }
     public void Pause(){
         pauseMenuUI.SetActive(true);
+        blurChild.SetActive(true);
         PauseEmpty();
-        //ParticleSystem.Stop();
-        //var ptSystems = FindObjectOfType<ParticleSystem>();
-        //foreach(ptSystem in ptSystems){ParticleSystem.Pause();}
     }
     
     public void OpenOptions(){
         optionsUI.GetComponent<SettingsMenu>().OpenSettings();
         pauseMenuUI.SetActive(false);
-    }
-
-    public void Restart(){
-        GSceneManager.instance.RestartGame();
     }
     public void Quit(){
         GSceneManager.instance.LoadStartMenuGame();
@@ -79,7 +71,7 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
             _isEditor=true;
         #endif
         return
-        (!GameOverCanvas.instance.gameOver&&(unpausedTimer>=unpausedTimeReq||unpausedTimer==-1))&&
+        ((unpausedTimer>=unpausedTimeReq||unpausedTimer==-1))&&
         ((Application.isFocused)||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData.pauseWhenOOF));
     }
 }

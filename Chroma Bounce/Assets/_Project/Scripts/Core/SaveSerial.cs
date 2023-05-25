@@ -10,13 +10,16 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	void Awake(){if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);gameObject.name=gameObject.name.Split('(')[0];}}
 	[SerializeField] string filename = "playerData";
 	[SerializeField] string filenameSettings = "settings";
+	void Start(){
+		RecreatePlayerData();
+	}
 
 #region//Player Data
 	public PlayerData playerData=new PlayerData();
 	public float buildFirstLoaded;
 	public float buildLastLoaded;
 	[System.Serializable]public class PlayerData{
-		public Highscore[] highscore=new Highscore[0];
+		public LevelPassValues[] levelPassedValues;
 	}
 
 	public string _playerDataPath(){return Application.persistentDataPath+"/"+filename+".hyper";}
@@ -44,7 +47,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		}else Debug.LogWarning("Game Data file not found in: "+_playerDataPath());
 	}
 	public void Delete(){
-		playerData=new PlayerData();//{highscore=new Highscore[CoreSetup.GetGamerulesetsPrefabsLength()]/*,achievsCompleted=new AchievData[StatsAchievsManager._AchievsListCount()]*/};
+		playerData=new PlayerData();
 		RecreatePlayerData();
 		Debug.Log("Game Data reset");
 		GC.Collect();
@@ -53,8 +56,18 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 			Debug.Log("Game Data deleted!");
 		}
 	}
-	void RecreatePlayerData(){
-		for(int i=0;i<playerData.highscore.Length;i++){playerData.highscore[i]=new Highscore();}
+	public void RecreatePlayerData(){
+		if(LevelMapManager.instance!=null){
+			if(playerData.levelPassedValues.Length==0||playerData.levelPassedValues==null){
+				playerData.levelPassedValues=new LevelPassValues[LevelMapManager.instance.levelMaps.Length];
+				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
+			}
+		}else{
+			if(playerData.levelPassedValues.Length==0||playerData.levelPassedValues==null){
+				playerData.levelPassedValues=new LevelPassValues[CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>().levelMaps.Length];
+				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
+			}
+		}
 		//playerData.achievsCompleted=new AchievData[StatsAchievsManager._AchievsListCount()];
 	}
 #endregion
@@ -64,18 +77,16 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		public float masterVolume=0.95f;
 		public float masterOOFVolume=0.25f;
 		public float soundVolume=0.95f;
-		public float ambienceVolume=-0.55f;
 		public float musicVolume=0.66f;
-		public bool windDownMusic=true;
-		public bool bossVolumeTurnUp=true;
 		
 		
 		public int windowMode=1;
 		public Vector2Int resolution=new Vector2Int(1920,1080);
 		public bool vSync=false;
 		public bool lockCursor=false;
-		public bool pauseWhenOOF=false;
+		public bool pauseWhenOOF=true;
 		public bool pprocessing=true;
+		public bool screenshake=true;
 	}
 	
 	public string _settingsDataPath(){return Application.persistentDataPath+"/"+filenameSettings+".json";}
@@ -103,12 +114,6 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 }
 
 [System.Serializable]
-public class Highscore{
-	public int score;
-	public int playtime;
-	public string version;
-	public float build;
-	public DateTime date;
+public class LevelPassValues{
+	public bool passed;
 }
-[System.Serializable]
-public class LockboxCount{public string name;public int count;}

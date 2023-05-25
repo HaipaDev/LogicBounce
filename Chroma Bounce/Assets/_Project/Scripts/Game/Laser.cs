@@ -6,19 +6,22 @@ using Sirenix.OdinInspector;
 
 public class Laser : MonoBehaviour{
     [Header("References")]
-    [SerializeField]SpriteNColor[] spritesAndColors;
+    [SerializeField] SpriteNColor spritencolor_positive;
+    //[SerializeField] Material material_positive;
+    [SerializeField] SpriteNColor spritencolor_negative;
+    //[SerializeField] Material material_negative;
     [Header("Variables")]
-    [SerializeField]public int currentColorId;
+    [SerializeField]public bool positive=true;
     [SerializeField]float scaleupSpeed=3.5f;
     [SerializeField]Laser laserMirrored;
     [DisableInEditorMode][SerializeField]Laser laserParentReference;
     [DisableInEditorMode][SerializeField]GameObject mirrorReference;
-    [DisableInEditorMode][SerializeField]bool clonedLaser;
+    [DisableInEditorMode][SerializeField]public bool clonedLaser;
 
     SpriteRenderer spr;
     void Start(){
         spr=GetComponent<SpriteRenderer>();
-        ChangeColor(currentColorId);
+        SetPolarity(positive);
         _posWhenTouched=transform.position;touchingBottom=false;touchingUp=false;
     }
     void Update(){if(laserParentReference!=null&&!laserParentReference.gameObject.activeSelf){Destroy(gameObject);}}
@@ -69,10 +72,14 @@ public class Laser : MonoBehaviour{
         RaycastHit2D hitDownLaser = Physics2D.Raycast(raycastDownOrigin, laserDownDirection, raycastLengthDown, laserLayer);
         RaycastHit2D hitUp = Physics2D.Raycast(raycastUpOrigin, laserUpDirection, raycastLengthUp, wallLayer);
         
-        if((hitDown.collider!=null)||(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject!=gameObject)){
-            touchingBottom=true;
-            if(_posWhenTouched==Vector2.zero){_posWhenTouched=transform.position;}
-            if(hitDown.collider!=null&&hitDown.collider.gameObject.CompareTag("Mirror")&&laserMirrored==null){ReflectLaserFromMirror(hitDown);}
+        if((hitDown.collider!=null)||(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject!=gameObject/*&&hitDownLaser.collider.gameObject.GetComponent<Laser>().positive==!positive*/)){
+            if(!touchingBottom){
+                touchingBottom=true;
+                if(_posWhenTouched==Vector2.zero){_posWhenTouched=transform.position;}
+                if(hitDown.collider!=null&&hitDown.collider.gameObject.CompareTag("Mirror")&&laserMirrored==null){ReflectLaserFromMirror(hitDown);}
+                else if(hitDown.collider!=null&&!hitDown.collider.gameObject.CompareTag("Mirror")){AudioManager.instance.Play("Laser");}
+                if(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject!=gameObject){AudioManager.instance.Play("LasersCollision");}
+            }
         }else if(hitDown.collider==null&&hitDownLaser.collider==false||(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject==gameObject)){
             touchingBottom=false;if(laserMirrored!=null){Destroy(laserMirrored.gameObject);laserMirrored=null;}mirrorReference=null;
         }
@@ -186,8 +193,10 @@ public class Laser : MonoBehaviour{
                 laserMirrored.mirrorReference=hit.collider.gameObject;
                 laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
                 laserMirrored.clonedLaser=true;
-                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.currentColorId=AssetsManager.BoolToInt(!AssetsManager.IntToBool(currentColorId));}
+                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.positive=!positive;AudioManager.instance.Play("ReflectLaserMirrorContrary");}
+                else{AudioManager.instance.Play("ReflectLaserMirror");}
             }
+            
         }
     }
     /*void ReflectLaserFromMirror(RaycastHit2D hit){
@@ -217,19 +226,15 @@ public class Laser : MonoBehaviour{
         Gizmos.DrawRay(raycastUpOrigin,laserUpDirection*raycastLengthUp);
         //#endif
     }
-    public void SwitchColor(){
-        switch(currentColorId){
-            case 0:
-                ChangeColor(1);
-            break;
-            case 1:
-                ChangeColor(0);
-            break;
+    public void SwitchPolarity(){SetPolarity(!positive);return;}
+    public void SetPolarity(bool _positive=true){
+        positive=_positive;
+        if(positive){
+            spr.sprite=spritencolor_positive.spr;
+            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
+        }else{
+            spr.sprite=spritencolor_negative.spr;
+            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
         }
-    }
-    public void ChangeColor(int id){
-        currentColorId=id;
-        spr.sprite=spritesAndColors[id].spr;
-        if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritesAndColors[id].color;
     }
 }

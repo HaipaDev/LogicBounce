@@ -7,8 +7,8 @@ using UnityEngine.Rendering.Universal;
 public class LogicGate : MonoBehaviour{
     [Header("Variables")]
     [SerializeField] LogicGateType logicGateType;
-    [SerializeField] bool charged;
-    [SerializeField] bool active;
+    [SerializeField] public bool charged;
+    [SerializeField] public bool active;
     [SerializeField] float _delaySet=0.15f;
 
     [Header("References")]
@@ -27,6 +27,7 @@ public class LogicGate : MonoBehaviour{
     [SerializeField] Material material_deactivated;
     [DisableInEditorMode][SerializeField] Vector2 _startPos;
     [DisableInEditorMode][SerializeField] float _delay;
+    [DisableInEditorMode][SerializeField] bool _initialized;
 
     SpriteRenderer spr;
     void Start(){
@@ -81,18 +82,24 @@ public class LogicGate : MonoBehaviour{
             lightChild.GetComponent<Light2D>().enabled=true;
             spr.material=material_activated;
             active=true;
-            AudioManager.instance.Play("GateActivate");
-            AudioManager.instance.StopPlaying("GateDeactivate");
+            if(_initialized){
+                AudioManager.instance.Play("GateActivate");
+                AudioManager.instance.StopPlaying("GateDeactivate");
+            }if(!_initialized){_initialized=true;}
         }
+        
     }
     public void Deactivate(){
+        if(!_initialized){_initialized=true;return;}
         if(active&&spr.sprite!=spritencolor_deactivated.spr){
             spr.sprite=spritencolor_deactivated.spr;
             lightChild.GetComponent<Light2D>().enabled=false;
             spr.material=material_deactivated;
             active=false;
-            AudioManager.instance.Play("GateDeactivate");
-            AudioManager.instance.StopPlaying("GateActivate");
+            if(_initialized){
+                AudioManager.instance.Play("GateDeactivate");
+                AudioManager.instance.StopPlaying("GateActivate");
+            }if(!_initialized){_initialized=true;}
         }
     }
     public void Charge(){if(!charged){if(_delay<=0){charged=true;_delay=_delaySet;AudioManager.instance.Play("GateCharge");chargedSymbol.SetActive(true);AudioManager.instance.StopPlaying("GateDischarge");}}}

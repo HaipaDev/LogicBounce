@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorPalette:
-  - {r: 0.15686275, g: 0.15294118, b: 0.15686275, a: 0}
+  - {r: 0.15686275, g: 0.15294118, b: 0.15686275, a: 1}
   saveSerialPrefab: {fileID: 8669642154265912527, guid: 36c040f5d6427b2489a640101dceaa2e, type: 3}
   easySavePrefab: {fileID: 2122359687479496271, guid: ed427eaae6ef67947a2d024b1e36d904, type: 3}
   gsceneManagerPrefab: {fileID: 2670168737584117729, guid: 70525b72c523e324992d6f0acad65ab2, type: 3}
@@ -53,3 +53,4 @@ MonoBehaviour:
   assetsManagerPrefab: {fileID: 6877064455026536268, guid: 1d59b6eef7bf8454cb6d3bc6643a5db3, type: 3}
   audioManagerPrefab: {fileID: 2010752312624517974, guid: 0c9cb9ae722d0a244a77d03aa7b1265e, type: 3}
   jukeboxPrefab: {fileID: 5024049173945341391, guid: f8787cdfa04832c469f8ded438fd0a60, type: 3}
+  levelMapManagerPrefab: {fileID: 1275438954444844136, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}

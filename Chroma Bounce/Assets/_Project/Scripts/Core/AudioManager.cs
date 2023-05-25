@@ -46,7 +46,7 @@ public class AudioManager : MonoBehaviour{	public static AudioManager instance;
 			if(ss.musicVolume>0){audioMixer.SetFloat("MusicVolume", AssetsManager.InvertNormalizedMin(ss.musicVolume,-50));}
 			else{audioMixer.SetFloat("MusicVolume", -80);}
 		}
-		if(GameManager.GlobalTimeIsPausedNotSlowed){
+		if(GameManager.GlobalTimeIsPaused){
 			foreach(Sound s in sounds){if(s.source.isPlaying&&s.clip.length>0.2f&&!pausedSounds.Contains(s)){s.source.Pause();pausedSounds.Add(s);}}
 		}else{
 			if(pausedSounds.Count>0){

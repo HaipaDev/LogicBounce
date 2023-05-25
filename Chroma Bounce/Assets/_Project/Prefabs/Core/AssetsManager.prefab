@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objects: []
-  vfx: []
+  vfx:
+  - name: RestartLevel
+    gobj: {fileID: 8308638122062445159, guid: 78c5c10cc731f4b4abb9e0bbc878befb, type: 3}
   sprites: []
   materials:
   - name: AIOShaderMat

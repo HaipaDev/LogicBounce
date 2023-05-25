@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-//using UnityEngine.UIElements;
 using UnityEngine.Audio;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using TMPro;
 using Sirenix.OdinInspector;
@@ -19,7 +18,6 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     [SceneObjectsOnly][SerializeField]Slider masterSlider;
     [SceneObjectsOnly][SerializeField]Slider masterOOFSlider;
     [SceneObjectsOnly][SerializeField]Slider soundSlider;
-    [SceneObjectsOnly][SerializeField]Slider ambienceSlider;
     [SceneObjectsOnly][SerializeField]Slider musicSlider;
     
     [Title("Graphics")]
@@ -28,40 +26,34 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     //[SceneObjectsOnly][SerializeField]Toggle fullscreenToggle;
     [SceneObjectsOnly][SerializeField]Toggle vSyncToggle;
     [SceneObjectsOnly][SerializeField]Toggle lockCursorToggle;
+    [SceneObjectsOnly][SerializeField]Toggle pauseWhenOOFToggle;
     [SceneObjectsOnly][SerializeField]TMP_Dropdown qualityDropdopwn;
     [SceneObjectsOnly][SerializeField]Toggle pprocessingToggle;
 
-    [AssetsOnly][SerializeField]GameObject pprocessingPrefab;
-    [SceneObjectsOnly]public PostProcessVolume postProcessVolume;
+    [AssetsOnly][SerializeField]VolumeProfile pprocessingPrefab;
     SaveSerial.SettingsData settingsData;
     void Start(){   instance=this;if(SaveSerial.instance!=null){settingsData=SaveSerial.instance.settingsData;}
 
         masterSlider.value=settingsData.masterVolume;
         masterOOFSlider.value=settingsData.masterOOFVolume;
         soundSlider.value=settingsData.soundVolume;
-        ambienceSlider.value=settingsData.ambienceVolume;
         musicSlider.value=settingsData.musicVolume;
 
         SetAvailableResolutions();
         windowModeDropdown.value=settingsData.windowMode;
         //fullscreenToggle.isOn=settingsData.fullscreen;
         vSyncToggle.isOn=settingsData.vSync;
+        pauseWhenOOFToggle.isOn=settingsData.pauseWhenOOF;
         lockCursorToggle.isOn=settingsData.lockCursor;
         pprocessingToggle.isOn=settingsData.pprocessing;
 
         if(SceneManager.GetActiveScene().name=="Options")OpenSettings();
         SetPanelActive(0);
-        foreach(Scrollbar sc in GetComponentsInChildren<Scrollbar>()){
-            sc.value=1;
-        }
+        foreach(Scrollbar sc in GetComponentsInChildren<Scrollbar>()){sc.value=1;}
     }
-    void Update(){postProcessVolume=FindObjectOfType<PostProcessVolume>();
-        if(settingsData.pprocessing==true&&postProcessVolume==null){postProcessVolume=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<PostProcessVolume>();}
-        if(settingsData.pprocessing==true&&FindObjectOfType<PostProcessVolume>()!=null){postProcessVolume.enabled=true;}
-        if(settingsData.pprocessing==false&&FindObjectOfType<PostProcessVolume>()!=null){postProcessVolume=FindObjectOfType<PostProcessVolume>();postProcessVolume.enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
+    void Update(){
         if(settingsData.masterVolume<=-50){settingsData.masterVolume=-80;}
         if(settingsData.soundVolume<=-50){settingsData.soundVolume=-80;}
-        if(settingsData.ambienceVolume<=-50){settingsData.ambienceVolume=-80;}
         if(settingsData.musicVolume<=-50){settingsData.musicVolume=-80;}
 
         if(GSceneManager.EscPressed()){Back();}
@@ -88,7 +80,6 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     public void SetMasterVolume(float val){settingsData.masterVolume=(float)System.Math.Round(val,2);}
     public void SetMasterOOFVolume(float val){settingsData.masterOOFVolume=(float)System.Math.Round(val,2);}
     public void SetSoundVolume(float val){settingsData.soundVolume=(float)System.Math.Round(val,2);}
-    public void SetAmbienceVolume(float val){settingsData.ambienceVolume=(float)System.Math.Round(val,2);}
     public void SetMusicVolume(float val){settingsData.musicVolume=(float)System.Math.Round(val,2);}
 #endregion
 
@@ -122,19 +113,23 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         Cursor.lockState=(CursorLockMode)(AssetsManager.BoolToInt(isOn)*2);
         settingsData.lockCursor=isOn;
     }
+    public void SetPauseWhenOOF(bool isOn){
+        settingsData.pauseWhenOOF=isOn;
+    }
     public void SetResolution(int resIndex){
         Vector2Int _res=_availableResolutionsList[resIndex];
         Screen.SetResolution(_res.x,_res.y,GetFullScreenMode(settingsData.windowMode));
         settingsData.resolution=_res;
     }
     public void SetPostProcessing(bool isOn){
-        postProcessVolume=FindObjectOfType<PostProcessVolume>();
         settingsData.pprocessing=isOn;
-        if(isOn==true&&postProcessVolume==null){postProcessVolume=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<PostProcessVolume>();}//FindObjectOfType<Level>().RestartScene();}
-        if(isOn==true&&postProcessVolume!=null){postProcessVolume.enabled=true;}
-        if(isOn==false&&FindObjectOfType<PostProcessVolume>()!=null){FindObjectOfType<PostProcessVolume>().enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
+        //if(isOn==true&&GameManager.instance.PostProcessVolume()==null){GameManager.instance.PostProcessVolume()=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<Volume>();}//FindObjectOfType<Level>().RestartScene();}
+        if(isOn==true&&GameManager.instance.PostProcessVolume()!=null){GameManager.instance.PostProcessVolume().enabled=true;}
+        if(isOn==false&&FindObjectOfType<Volume>()!=null){FindObjectOfType<Volume>().enabled=false;}//Destroy(FindObjectOfType<Volume>());}
     }
+    public void SetScreenshake(bool isOn){settingsData.screenshake=isOn;}
 #endregion
+    public void ResetSettings(){GameManager.instance.ResetSettings();}
     
 
     public void PlayDing(){if(Application.isPlaying)GetComponent<AudioSource>().Play();}
