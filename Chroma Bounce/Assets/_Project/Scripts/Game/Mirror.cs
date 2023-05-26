@@ -4,4 +4,5 @@ using UnityEngine;
 
 public class Mirror : MonoBehaviour{
     public bool opposite=false;
+    public bool ninetydegree=false;
 }

@@ -14,6 +14,7 @@ public class Player : MonoBehaviour{    public static Player instance;
     [SerializeField] Sprite[] playerSprites;
     
     [Header("Variables")]
+    [SerializeField][Range(0,360)] float currentAngle;
     [SerializeField][Range(0,360)] int rotZmin=180;
     [SerializeField][Range(0,360)] int rotZmax=360;
     [SerializeField] public bool positive=true;
@@ -31,12 +32,13 @@ public class Player : MonoBehaviour{    public static Player instance;
     void Start(){
         canFire=true;timer=timeBetweenFiring;
         gunSpr=gunTransform.GetComponent<SpriteRenderer>();
+        SetPolarity(positive,true,true);
     }
     Vector2 rotZdirectionMin,rotZdirectionMax;
     void Update(){
-        if(!GameManager.GlobalTimeIsPausedOrStepped){
+        if(!GameManager.GlobalTimeIsPaused){
             ///Rotating and limiting
-            mousePos=Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            /*mousePos=Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 rot=mousePos-rotatePoint.position;
             float rotZ=Mathf.Repeat(Mathf.Atan2(rot.y,rot.x)*Mathf.Rad2Deg,360f);
             //Vector3 rotMouse=Quaternion.Euler(0,0,(rotZ/360f)*360f);
@@ -48,34 +50,20 @@ public class Player : MonoBehaviour{    public static Player instance;
             Vector3 euler=rotatePoint.eulerAngles;
             //For moving above limit between halfpoint
             if((euler.z<(rotZmin-90)&&rotZmin>=90)||(euler.z<(rotZmax+90)&&rotZmin==0)){euler.z=rotZmax;}
-            /*if(rotZmin>0f&&euler.z<(rotZmin-90f)){euler.z=rotZmin;}
-            else if(rotZmin==0f&&euler.z<(rotZmax+90f)){euler.z=rotZmax;}*/
+            if(rotZmin>0f&&euler.z<(rotZmin-90f)){euler.z=rotZmin;}
+            else if(rotZmin==0f&&euler.z<(rotZmax+90f)){euler.z=rotZmax;}
             
-            Debug.Log(euler.z+" | "+rotZ);
+            //Debug.Log(euler.z+" | "+rotZ);
             euler.z=Mathf.Clamp(euler.z,rotZmin,rotZmax);
-            Debug.Log(euler.z);
+            //Debug.Log(euler.z);
             rotatePoint.eulerAngles=euler;
             ///Rotate gun sprite
-            if(euler.z<((rotZmin+rotZmax)/2)){gunSpr.flipY=true;}else{gunSpr.flipY=false;}
+            if(euler.z<((rotZmin+rotZmax)/2)){gunSpr.flipY=true;}else{gunSpr.flipY=false;}(
 
 
             ///Shooting
             if(Input.GetMouseButton(0)&&canFire){
-                canFire=false;timer=timeBetweenFiring;
-                
-                GameObject bullet=Instantiate(bulletPrefab,gunTransform.position,Quaternion.identity);
-                Transform gunPoint=gunTransform.GetChild(0);
-                Transform b_trans=bullet.transform;
-                Bullet b_comp=bullet.GetComponent<Bullet>();b_comp.positive=positive;
-                Rigidbody2D b_rb=bullet.GetComponent<Rigidbody2D>();
-
-                Vector3 _dir=gunPoint.position-b_trans.position;
-                Vector3 _rotation=b_trans.position-gunPoint.position;
-                b_rb.velocity=new Vector2(_dir.x, _dir.y).normalized*bulletSpeed;
-                float b_rotZ = Mathf.Atan2(_rotation.y,_rotation.x)*Mathf.Rad2Deg;
-                b_trans.rotation=Quaternion.Euler(0,0,b_rotZ+b_correctionAngle);
-                if(positive){AudioManager.instance.Play("ShootPositive");AudioManager.instance.StopPlaying("ShootNegative");}
-                else{AudioManager.instance.Play("ShootNegative");AudioManager.instance.StopPlaying("ShootPositive");}
+                ShootBullet();
             }
             if(!canFire){
                 if(timer>0)timer-=Time.deltaTime;
@@ -85,8 +73,28 @@ public class Player : MonoBehaviour{    public static Player instance;
             ///Change bullet charge
             if(Input.GetMouseButtonDown(1)){
                 SwitchPolarity();
-            }
+            }*/
         }
+    }
+    public void SetGunRotation(float rotZ){
+        rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,rotZ);
+    }
+    public void ShootBullet(){
+        canFire=false;timer=timeBetweenFiring;
+
+        GameObject bullet=Instantiate(bulletPrefab,gunTransform.position,Quaternion.identity);
+        Transform gunPoint=gunTransform.GetChild(0);
+        Transform b_trans=bullet.transform;
+        Bullet b_comp=bullet.GetComponent<Bullet>();b_comp.SetPolarity(positive);
+        Rigidbody2D b_rb=bullet.GetComponent<Rigidbody2D>();
+
+        Vector3 _dir=gunPoint.position-b_trans.position;
+        Vector3 _rotation=b_trans.position-gunPoint.position;
+        b_rb.velocity=new Vector2(_dir.x, _dir.y).normalized*bulletSpeed;
+        float b_rotZ = Mathf.Atan2(_rotation.y,_rotation.x)*Mathf.Rad2Deg;
+        b_trans.rotation=Quaternion.Euler(0,0,b_rotZ+b_correctionAngle);
+        if(positive){AudioManager.instance.Play("ShootPositive");AudioManager.instance.StopPlaying("ShootNegative");}
+        else{AudioManager.instance.Play("ShootNegative");AudioManager.instance.StopPlaying("ShootPositive");}
     }
     void OnDrawGizmos(){
         Gizmos.color=Color.blue;
@@ -95,16 +103,19 @@ public class Player : MonoBehaviour{    public static Player instance;
         Gizmos.DrawRay(transform.position,rotZdirectionMax*2.5f);
     }
     public void SwitchPolarity(){SetPolarity(!positive);return;}
-    public void SetPolarity(bool _positive=true){
-        positive=_positive;
-        if(positive){
-            gunSpr.sprite=gunSpritencolor_positive.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=gunSpritencolor_positive.color;
-            AudioManager.instance.Play("GunChangePositive");AudioManager.instance.StopPlaying("GunChangeNegative");
-        }else{
-            gunSpr.sprite=gunSpritencolor_negative.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=gunSpritencolor_negative.color;
-            AudioManager.instance.Play("GunChangeNegative");AudioManager.instance.StopPlaying("GunChangePositive");
+    public void SetPolarity(bool _positive=true,bool force=true,bool quiet=false){
+        if(gunSpr==null){gunSpr=gunTransform.GetComponent<SpriteRenderer>();}
+        if(positive!=_positive||force){
+            positive=_positive;
+            if(positive){
+                gunSpr.sprite=gunSpritencolor_positive.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=gunSpritencolor_positive.color;
+                if(!quiet){AudioManager.instance.Play("GunChangePositive");AudioManager.instance.StopPlaying("GunChangeNegative");}
+            }else{
+                gunSpr.sprite=gunSpritencolor_negative.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=gunSpritencolor_negative.color;
+                if(!quiet){AudioManager.instance.Play("GunChangeNegative");AudioManager.instance.StopPlaying("GunChangePositive");}
+            }
         }
     }
     public void SetDirection(dir dir){

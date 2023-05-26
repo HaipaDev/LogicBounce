@@ -6,32 +6,38 @@ using Sirenix.OdinInspector;
 public class LevelMapManager : MonoBehaviour{   public static LevelMapManager instance;
     [AssetsOnly]public LevelMap[] levelMaps;
     [SceneObjectsOnly]public GameObject levelParent;
-    [AssetsOnly][SerializeField]Player playerPrefab;
+    [Header("Current variables")]
     [SerializeField]float _delaySet=0.5f;
     [DisableInEditorMode][SerializeField]float _delay;
     [SerializeField]int levelCurrent=-1;
+    [DisableInEditorMode][SerializeField]public List<Laser> laserListSorted;
+    [DisableInEditorMode][SerializeField]public List<Mirror> mirrorListSorted;
+    [DisableInEditorMode][SerializeField]public List<LogicGate> logicGateListSorted;
+
     void Awake(){if(LevelMapManager.instance!=null||OutOfContextScene()){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
+    void Start(){Restart();}//So that lists get populated
     public static bool OutOfContextScene(){return (!GSceneManager.CheckScene("Game")&&!GSceneManager.CheckScene("LevelSelect"));}
     public static bool InContextScene(){return (GSceneManager.CheckScene("Game")||GSceneManager.CheckScene("LevelSelect"));}
     void Update(){
-        if(GSceneManager.CheckScene("Game")){
-            if(Input.GetKeyDown(KeyCode.R)){if(_delay<=0)StartCoroutine(RestartI());}
+        if(GSceneManager.CheckScene("Game")&&GameManager.GlobalTimeIsPaused&&!PauseMenu.GameIsPaused){
+            if(Input.GetKeyDown(KeyCode.R)){if(_delay<=0)CallRestart();}
             if(_delay>0){_delay-=Time.unscaledDeltaTime;}
         }
+        if(!GSceneManager.CheckScene("Game")){ResetLists();}
     }
+    public void CallRestart(){StartCoroutine(RestartI());}
     IEnumerator RestartI(){
         _delay=_delaySet;
         var _vfx=AssetsManager.instance.VFX("RestartLevel",Vector2.zero,0.75f);_vfx.transform.position=new Vector3(0,0,-20);
         AudioManager.instance.Play("RestartLevel");
-        Shake.instance.CamShake(0.5f,0.2f);
-        if(GameManager.GlobalTimeIsPaused)yield return new WaitForSeconds(0.25f);
+        CamShake.instance.DoCamShake(0.5f,0.2f);
+        if(!GameManager.GlobalTimeIsPaused)yield return new WaitForSeconds(0.25f);
         else yield return new WaitForSecondsRealtime(0.25f);
         Restart();
     }
+    public void CallRestartQuiet(){Restart();}
     void Restart(){
-        Debug.Log("Restart");
         if(levelParent!=null&&levelMaps[levelCurrent].parent!=null){
-            Debug.Log("Restarting");
             ///Cleanup
             foreach(Bullet b in FindObjectsOfType<Bullet>()){Destroy(b.gameObject);}
 
@@ -47,7 +53,8 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                     var _parentC=_parentChild.GetComponent<Laser>();
                     var _prefabC=_prefabChild.GetComponent<Laser>();
                     if(_parentC.clonedLaser)Destroy(_parentChild);
-                    _parentC.positive=_prefabC.positive;
+                    _parentC.SetPolarity(_prefabC.positive);
+                    if(!laserListSorted.Contains(_parentC))laserListSorted.Add(_parentC);
                 }else if((_parentChild.GetComponent<Laser>()==null&&_prefabChild.GetComponent<Laser>()!=null)
                 ||(_parentChild.GetComponent<Laser>()!=null&&_prefabChild.GetComponent<Laser>()==null)){
                     Debug.LogWarning("Components 'Laser' do not match on child: "+i+" | on level: "+levelCurrent);}
@@ -57,6 +64,14 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                     var _prefabC=_prefabChild.GetComponent<LogicGate>();
                     _parentC.charged=_prefabC.charged;
                     _parentC.active=_prefabC.active;
+                    if(!logicGateListSorted.Contains(_parentC))logicGateListSorted.Add(_parentC);
+                }///Mirrors
+                if(_parentChild.GetComponent<Mirror>()!=null&&_prefabChild.GetComponent<Mirror>()!=null){
+                    var _parentC=_parentChild.GetComponent<Mirror>();
+                    var _prefabC=_prefabChild.GetComponent<Mirror>();
+                    _parentC.opposite=_prefabC.opposite;
+                    _parentC.ninetydegree=_prefabC.ninetydegree;
+                    if(!mirrorListSorted.Contains(_parentC))mirrorListSorted.Add(_parentC);
                 }
                 ///Spawnpoint
                 if(_parentChild.GetComponent<Spawnpoint>()!=null&&_prefabChild.GetComponent<Spawnpoint>()!=null){
@@ -80,8 +95,8 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         var spawnpoint=FindObjectOfType<Spawnpoint>();
         Destroy(Player.instance.gameObject);
         yield return new WaitForSecondsRealtime(0.05f);
-        Instantiate(playerPrefab.gameObject);Player.instance.transform.position=(Vector2)spawnpoint.transform.position+spawnpoint.playerOffset;
-        Player.instance.positive=levelMaps[levelCurrent].startingChargePositive;
+        Instantiate(CoreSetup.instance._getPlayerPrefab().gameObject,(Vector2)spawnpoint.transform.position+spawnpoint.playerOffset,Quaternion.identity);
+        Player.instance.SetPolarity(levelMaps[levelCurrent].startingChargePositive,true);
         Player.instance.bulletBounceLimit=levelMaps[levelCurrent].bulletBounceLimit;
         Player.instance.bulletSpeed=levelMaps[levelCurrent].bulletSpeed;
     }
@@ -89,14 +104,24 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         //levelParent=Instantiate(new GameObject(),Vector2.zero,Quaternion.identity);levelParent.gameObject.name="Level";
         levelParent=Instantiate(levelMaps[levelCurrent].parent,Vector2.zero,Quaternion.identity);levelParent.gameObject.name="Level";
     }
+    void ResetLists(){
+        laserListSorted.Clear();
+        logicGateListSorted.Clear();
+        mirrorListSorted.Clear();
+    }
 
     public void SetLevel(int i){
+        levelCurrent=i;
+        if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
+        Restart();
+        ResetLists();
+    }
+    public void LoadLevel(int i){
         levelCurrent=i;
         GSceneManager.instance.LoadGameScene();
         if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
         Restart();
     }
-    public Player _getPlayerPrefab(){return playerPrefab;}
 }
 [System.Serializable]
 public class LevelMap{

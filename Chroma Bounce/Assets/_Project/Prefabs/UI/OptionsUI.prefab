@@ -9591,7 +9591,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -13303,7 +13303,7 @@ MonoBehaviour:
   resolutionDropdown: {fileID: 2123990779986440865}
   vSyncToggle: {fileID: 2692410418943372866}
   lockCursorToggle: {fileID: 7017128913090448900}
-  pauseWhenOOFToggle: {fileID: 0}
+  pauseWhenOOFToggle: {fileID: 7498160301454791407}
   qualityDropdopwn: {fileID: 7667755952107914106}
   pprocessingToggle: {fileID: 728862815994213835}
   pprocessingPrefab: {fileID: 11400000, guid: 100e755cb802b66478485c48a8ec4323, type: 2}
@@ -14523,7 +14523,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

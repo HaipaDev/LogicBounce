@@ -21,38 +21,40 @@ public class Laser : MonoBehaviour{
     SpriteRenderer spr;
     void Start(){
         spr=GetComponent<SpriteRenderer>();
-        SetPolarity(positive);
+        SetPolarity(positive,true);
         _posWhenTouched=transform.position;touchingBottom=false;touchingUp=false;
     }
-    void Update(){if(laserParentReference!=null&&!laserParentReference.gameObject.activeSelf){Destroy(gameObject);}}
+    void Update(){}
     void FixedUpdate(){
-        AutoScale();
-        CheckForCollisions();
+        if(!GameManager.GlobalTimeIsPausedNotStepped){
+            AutoScale();
+            CheckForCollisions();
+        }
     }
-    bool touchingBottom=false;bool touchingUp=false;
-    float raycastLengthDown=0.2f;float raycastLengthUp=0.03f;
-    Vector2 raycastDownOrigin;Vector2 laserDownDirection;
-    Vector2 raycastUpOrigin;Vector2 laserUpDirection;
+    bool touchingBottom=false,touchingUp=false;
+    float raycastLengthDown=0.2f,raycastLengthUp=0.03f;
+    Vector2 raycastDownOrigin,laserDownDirection;
+    Vector2 raycastUpOrigin,laserUpDirection;
     Vector2 _posWhenTouched;
     void AutoScale(){
         if(!touchingUp){//Move upwards till hits a wall
-            float _step=scaleupSpeed*Time.deltaTime;
+            float _step=scaleupSpeed*Time.fixedDeltaTime;
             Vector2 moveUpwards=laserUpDirection.normalized*_step;
             transform.Translate(moveUpwards);
         }
         if(touchingUp&&!touchingBottom){//Scale up downwards
-            float step=scaleupSpeed*Time.deltaTime;
+            float step=scaleupSpeed*Time.fixedDeltaTime;
             transform.localScale=new Vector2(transform.localScale.x,transform.localScale.y+step);
         }
         if((Vector2)transform.position!=_posWhenTouched&&_posWhenTouched!=Vector2.zero||transform.localScale.y>12f){//Reset when position changed or too big (outside walls) [12 is the maximum diagonal]
             transform.localScale=new Vector2(transform.localScale.x,0.1f);_posWhenTouched=Vector2.zero;
         }
         if(touchingUp&&touchingBottom&&transform.localScale.y<0.15f){//Push out of the wall
-            float _step=scaleupSpeed*Time.deltaTime;
+            float _step=scaleupSpeed*Time.fixedDeltaTime;
             Vector2 moveUpwards=laserUpDirection.normalized*_step;
             transform.Translate(-moveUpwards);
         }
-        if(clonedLaser&&laserParentReference==null){Destroy(gameObject);}
+        if(clonedLaser&&laserParentReference==null||(laserParentReference!=null&&!laserParentReference.gameObject.activeSelf)){Destroy(gameObject);}
         //if(laserParentReference!=null)if(laserParentReference.mirrorReference!=null){Debug.Log(Vector2.Distance(transform.position,laserParentReference.mirrorReference.transform.position));if(Vector2.Distance(transform.position,laserParentReference.mirrorReference.transform.position)>=0.55f)Destroy(gameObject);}//If falls through destroy
     }
     void CheckForCollisions(){
@@ -226,15 +228,18 @@ public class Laser : MonoBehaviour{
         Gizmos.DrawRay(raycastUpOrigin,laserUpDirection*raycastLengthUp);
         //#endif
     }
-    public void SwitchPolarity(){SetPolarity(!positive);return;}
-    public void SetPolarity(bool _positive=true){
-        positive=_positive;
-        if(positive){
-            spr.sprite=spritencolor_positive.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
-        }else{
-            spr.sprite=spritencolor_negative.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
+    public void SwitchPolarity(){SetPolarity(!positive);Debug.Log(!positive);return;}
+    public void SetPolarity(bool _positive=true,bool force=true){
+        if(spr==null){spr=GetComponent<SpriteRenderer>();}
+        if(positive!=_positive||force){
+            positive=_positive;
+            if(positive){
+                spr.sprite=spritencolor_positive.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
+            }else{
+                spr.sprite=spritencolor_negative.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
+            }
         }
     }
 }

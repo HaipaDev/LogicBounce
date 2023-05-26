@@ -54,3 +54,5 @@ MonoBehaviour:
   audioManagerPrefab: {fileID: 2010752312624517974, guid: 0c9cb9ae722d0a244a77d03aa7b1265e, type: 3}
   jukeboxPrefab: {fileID: 5024049173945341391, guid: f8787cdfa04832c469f8ded438fd0a60, type: 3}
   levelMapManagerPrefab: {fileID: 1275438954444844136, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+  stepsManagerPrefab: {fileID: 1105022259761234044, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+  playerPrefab: {fileID: 244919577038031875, guid: 94d7795345bbf1649939c0ce57f876c1, type: 3}

@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 using Sirenix.OdinInspector;
 public class GameManager : MonoBehaviour{   public static GameManager instance;
     public static bool GlobalTimeIsPaused;
-    public static bool GlobalTimeIsPausedOrStepped;
+    public static bool GlobalTimeIsPausedNotStepped;
     [Header("Global")]
     public bool smthOn=true;
     [Header("Current Player Values")]
@@ -42,37 +42,36 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     void SetUpSingleton(){int numberOfObj=FindObjectsOfType<GameManager>().Length;if(numberOfObj>1){Destroy(gameObject);}else{DontDestroyOnLoad(gameObject);}}
     void Start(){}
     void Update(){
-        if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<0){gameSpeed=0;}
-            if(GSceneManager.CheckScene("Game")){
-            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
-            if(PauseMenu.GameIsPaused/*||StepsManager.instance.IsOpen*/){GlobalTimeIsPausedOrStepped=true;}else{GlobalTimeIsPausedOrStepped=false;}
+        if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<=0){gameSpeed=0;}
+        if(GSceneManager.CheckScene("Game")){
+            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused||StepsManager.StepsUIOpen){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
+            if((GlobalTimeIsPaused)&&!StepsManager.StepsUIOpen){GlobalTimeIsPausedNotStepped=true;}else{GlobalTimeIsPausedNotStepped=false;}
+            //Debug.Log(GlobalTimeIsPaused+" | "+GlobalTimeIsPausedNotStepped);
         }else{GlobalTimeIsPaused=false;}
 
         if(SceneManager.GetActiveScene().name=="Game"&&FindObjectOfType<Player>()!=null&&gameSpeed>0.0001f){GameManagerTime+=Time.unscaledDeltaTime;}
         //Set speed to normal
-        if(!GlobalTimeIsPausedOrStepped&&
-            (FindObjectOfType<Player>()!=null)&&speedChanged!=true){gameSpeed=defaultGameSpeed;}
+        //if(!GlobalTimeIsPausedNotStepped&&(FindObjectOfType<Player>()!=null)&&speedChanged!=true){gameSpeed=defaultGameSpeed;}
         if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
         //if(FindObjectOfType<Player>()==null){gameSpeed=defaultGameSpeed;}
         
         //Restart with R or Space/Resume with Space
         if(SceneManager.GetActiveScene().name=="Game"){
-            if(GlobalTimeIsPausedOrStepped){if(restartTimer==-4)restartTimer=0.5f;}
+            if(GlobalTimeIsPausedNotStepped){if(restartTimer==-4)restartTimer=0.5f;}
             if(restartTimer>0)restartTimer-=Time.unscaledDeltaTime;
         }
 
-        if(GlobalTimeIsPausedOrStepped){
+        /*if(GlobalTimeIsPausedNotStepped){
             foreach(AudioSource sound in FindObjectsOfType<AudioSource>()){
                 if(sound!=null){
-                    GameObject snd=sound.gameObject;
-                    //if(sound!=Jukebox){
-                    if(snd.GetComponent<Jukebox>()==null){
+                    //if(sound.gameObject!=Jukebox){
+                    if(sound.gameObject.GetComponent<Jukebox>()==null){
                         //sound.pitch=1;
                         sound.Stop();
                     }
                 }
             }
-        }
+        }*/
 
         //Postprocessing
         if(SaveSerial.instance!=null){FindPostProcess();

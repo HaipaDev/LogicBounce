@@ -21,6 +21,8 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
     [AssetsOnly][SerializeField] GameObject jukeboxPrefab;
     [Header("GameSpecific")]
     [AssetsOnly][SerializeField] GameObject levelMapManagerPrefab;
+    [AssetsOnly][SerializeField] GameObject stepsManagerPrefab;
+    [AssetsOnly][SerializeField] Player playerPrefab;
     
     //[Header("Networking, Advancements etc")]
     //[AssetsOnly][SerializeField] GameObject dbaccessPrefab;
@@ -52,8 +54,10 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
         if(FindObjectOfType<Jukebox>()==null&&SceneManager.GetActiveScene().name=="Menu"){Instantiate(jukeboxPrefab);}
         
         if(FindObjectOfType<LevelMapManager>()==null&&LevelMapManager.InContextScene()){Instantiate(levelMapManagerPrefab);}
+        if(FindObjectOfType<StepsManager>()==null&&SceneManager.GetActiveScene().name=="Game"){Instantiate(stepsManagerPrefab);}
     }
 
     public GameObject _getJukeboxPrefab(){return jukeboxPrefab;}
     public GameObject _levelMapManagerPrefab(){return levelMapManagerPrefab;}
+    public Player _getPlayerPrefab(){return playerPrefab;}
 }

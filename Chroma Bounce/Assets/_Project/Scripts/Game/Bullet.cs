@@ -23,6 +23,7 @@ public class Bullet : MonoBehaviour{
         SetPolarity(positive);
     }
     void Update(){
+        //if(!GameManager.GlobalTimeIsPaused)
         if(Vector2.Distance(transform.position,Vector2.zero)>15f){Destroy(gameObject);}///Cleanup
         if(Player.instance.bulletBounceLimit>0&&bounceCountTotal!=0){///Limit bounces
             float _alpha=1f-(float)bounceCountTotal/Player.instance.bulletBounceLimit;
@@ -37,16 +38,19 @@ public class Bullet : MonoBehaviour{
         Destroy(gameObject);
     }
     public void SwitchPolarity(){SetPolarity(!positive);return;}
-    public void SetPolarity(bool _positive=true){
-        positive=_positive;
-        if(positive){
-            spr.sprite=spritencolor_positive.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
-            AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");
-        }else{
-            spr.sprite=spritencolor_negative.spr;
-            if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
-            AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");
+    public void SetPolarity(bool _positive=true,bool force=true){
+        if(spr==null){spr=GetComponent<SpriteRenderer>();}
+        if(positive!=_positive||force){
+            positive=_positive;
+            if(positive){
+                spr.sprite=spritencolor_positive.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
+                AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");
+            }else{
+                spr.sprite=spritencolor_negative.spr;
+                if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
+                AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");
+            }
         }
     }
     void OnCollisionEnter2D(Collision2D other){

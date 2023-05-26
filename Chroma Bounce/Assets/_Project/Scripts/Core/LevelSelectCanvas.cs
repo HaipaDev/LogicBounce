@@ -16,7 +16,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                 bt=Instantiate(bt,listContent);bt.name="Level "+(i+1);
             }
             bt.GetComponent<Button>().onClick.RemoveAllListeners();
-            bt.GetComponent<Button>().onClick.AddListener(delegate { LevelMapManager.instance.SetLevel(i);});
+            bt.GetComponent<Button>().onClick.AddListener(delegate { LevelMapManager.instance.LoadLevel(i);});
             bt.GetComponentInChildren<TextMeshProUGUI>().text=(i+1).ToString();
             if(SaveSerial.instance!=null){
                 if(SaveSerial.instance.playerData!=null){
