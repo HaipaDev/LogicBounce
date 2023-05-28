@@ -30,7 +30,7 @@ public class GateLine : MonoBehaviour{
         //uiLine.CrossFadeColor(new Color(c.r,c.g,c.b,(170f/255f)),0.05f,true,false);
         uiLine.SetAllDirty();
         uiLine.GraphicUpdateComplete();
-        uiLine.OnRebuildRequested();
+        //uiLine.OnRebuildRequested();
     }
     void SetNewMaterial(){if(AssetsManager.instance.GetMat("HolographDissolve")!=null&&!_setNewMaterial){uiLine.material=Instantiate(AssetsManager.instance.GetMat("HolographDissolve"));_setNewMaterial=true;}}
     public bool CompareColors(Color c){Color _c=uiLine.material.GetColor("Color_7C878D04");return (_c.r==c.r && _c.g==c.g && _c.b==c.b);}

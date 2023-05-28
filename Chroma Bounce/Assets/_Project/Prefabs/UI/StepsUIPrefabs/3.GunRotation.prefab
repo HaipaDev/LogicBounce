@@ -848,7 +848,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1114116275251568908}
         m_TargetAssemblyTypeName: LimitInputFieldNum, Assembly-CSharp
-        m_MethodName: UpdateInputField
+        m_MethodName: UpdateInputFieldAuto
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

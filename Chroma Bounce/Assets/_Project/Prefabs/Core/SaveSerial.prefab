@@ -50,6 +50,8 @@ MonoBehaviour:
     levelPassedValues:
     - passed: 0
     - passed: 0
+    - passed: 0
+    - passed: 0
   buildFirstLoaded: 0
   buildLastLoaded: 0
   settingsData:

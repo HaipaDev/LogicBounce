@@ -118,6 +118,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 [System.Serializable]
 public class LevelPassValues{
 	public bool passed;
-	//public LevelRankAchieved rankAchieved=LevelRankAchieved.C;
+	public LevelRankAchieved rankAchieved=LevelRankAchieved.C;
+	public LevelRankCritiria rankCriteriaMet;
 }
 public enum LevelRankAchieved{S,A,B,C}

@@ -75,10 +75,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6893198405137017869, guid: d8e5c748179b58043953adcab160a5bf, type: 3}
-      propertyPath: m_TagString
-      value: Laser2
-      objectReference: {fileID: 0}
     - target: {fileID: 7616357878679531356, guid: d8e5c748179b58043953adcab160a5bf, type: 3}
       propertyPath: m_Sprite
       value: 

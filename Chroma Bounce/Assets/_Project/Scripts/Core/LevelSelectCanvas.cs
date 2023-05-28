@@ -28,7 +28,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                             if(sp.levelPassedValues[i].passed){
                                 go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareBlue");
                                 go.transform.GetChild(1).gameObject.SetActive(true);
-                                go.transform.GetChild(1).GetComponent<Image>().sprite=ranksSprites[0];
+                                go.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite=ranksSprites[(int)sp.levelPassedValues[i].rankAchieved];
                             }else if(!unlocked){
                                 Locked();
                             }else if(!sp.levelPassedValues[i].passed&&unlocked){
@@ -39,7 +39,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                     void Locked(){
                         go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");
                         go.transform.GetChild(1).gameObject.SetActive(true);
-                        go.transform.GetChild(1).GetComponent<Image>().sprite=lockedSprite;
+                        go.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite=lockedSprite;
                     }
                     void Default(){
                         go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquare");

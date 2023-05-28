@@ -45,9 +45,95 @@ Transform:
   - {fileID: 7763531316810553058}
   - {fileID: 909052296747797409}
   - {fileID: 4339263576508706070}
+  - {fileID: 6497356707220780887}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1872368093
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8371854436963678329}
+    m_Modifications:
+    - target: {fileID: 6497356708002621064, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_Name
+      value: LogicGate (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: charged1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: gatePowering
+      value: 
+      objectReference: {fileID: 349824340243032510}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: logicGateType
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+--- !u!4 &6497356707220780887 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+  m_PrefabInstance: {fileID: 1872368093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7259962138386071853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+  m_PrefabInstance: {fileID: 1872368093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 718bc033ef0cff44d8aaa77432f45026, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &60856049127105921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -104,6 +190,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: charged1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
       propertyPath: gatePowering
       value: 
       objectReference: {fileID: 349824340243032510}
@@ -118,6 +208,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6497356708002621066, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
   m_PrefabInstance: {fileID: 60856049127105921}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7212696604576593265 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+  m_PrefabInstance: {fileID: 60856049127105921}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 718bc033ef0cff44d8aaa77432f45026, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &180463824626562084
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -890,8 +991,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: motherGate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: gatePowering1
+      value: 
+      objectReference: {fileID: 7212696604576593265}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: gatePowering2
+      value: 
+      objectReference: {fileID: 7259962138386071853}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
       propertyPath: logicGateType
-      value: 5
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259962140089618672, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}
+      propertyPath: logicGateSignalsType
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f6ee0a37ec0b5a4a8c3b770e45a0c3d, type: 3}

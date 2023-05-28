@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour{
     void Start(){
         rb=GetComponent<Rigidbody2D>();
         spr=GetComponent<SpriteRenderer>();
-        SetPolarity(positive);
+        SetPolarity(positive,true,true);
     }
     void Update(){
         //if(!GameManager.GlobalTimeIsPaused)
@@ -38,18 +38,18 @@ public class Bullet : MonoBehaviour{
         Destroy(gameObject);
     }
     public void SwitchPolarity(){SetPolarity(!positive);return;}
-    public void SetPolarity(bool _positive=true,bool force=true){
+    public void SetPolarity(bool _positive=true,bool force=true,bool quiet=false){
         if(spr==null){spr=GetComponent<SpriteRenderer>();}
         if(positive!=_positive||force){
             positive=_positive;
             if(positive){
                 spr.sprite=spritencolor_positive.spr;
                 if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
-                AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");
+                if(!quiet){AudioManager.instance.Play("BulletChangePositive");AudioManager.instance.StopPlaying("BulletChangeNegative");}
             }else{
                 spr.sprite=spritencolor_negative.spr;
                 if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
-                AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");
+                if(!quiet){AudioManager.instance.Play("BulletChangeNegative");AudioManager.instance.StopPlaying("BulletChangePositive");}
             }
         }
     }

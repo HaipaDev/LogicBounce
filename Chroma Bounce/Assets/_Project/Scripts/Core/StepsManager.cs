@@ -89,37 +89,39 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         string _gunRotationTxt=Mathf.RoundToInt(l.defaultGunRotation).ToString()+"°";
         foreach(Transform t in _gun){
             if(t!=transform){
-                if(t.GetComponent<Image>()!=null)t.GetComponent<Image>().sprite=Player.instance.GetGunSpr(l.startingChargePositive);
+                if(Player.instance!=null)if(t.GetComponent<Image>()!=null)t.GetComponent<Image>().sprite=Player.instance.GetGunSpr(l.startingChargePositive);
                 if(t.GetComponent<TMPro.TextMeshProUGUI>()!=null)t.GetComponent<TMPro.TextMeshProUGUI>().text=_gunRotationTxt;
             }
         }
 
         if(_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=l.bulletBounceLimit.ToString();}
 
-        string _energyTxt=(currentStepsEnergyUsed.ToString()+" / "+l.stepEnergy.ToString());
+        string maxEnergy=l.stepEnergy.ToString();if(l.stepEnergy<0){maxEnergy="∞";}
+        string _energyTxt=(currentStepsEnergyUsed.ToString()+" / "+maxEnergy);if(l.stepEnergy<0){_energyTxt="∞";}
         if(_energy.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_energy.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=_energyTxt;}
-        if(currentEnergyLeft()<=0){_energy.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
+        if(currentEnergyLeft()<=0&&l.stepEnergy>0){_energy.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
         else{_energy.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquare");}
     }
-    bool startedSteps,allStepsDone;float reopenStepsUIDelay;
+    bool startedSteps,stepsRunning,allStepsDone;float reopenStepsUIDelay;
+    public bool _areStepsBeingRun(){return (stepsRunning&&!allStepsDone);}
+    public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0);}
     public void StartSteps(){
         if(currentSteps.Count>0&&!VictoryCanvas.Won){
-            selectedStep=null;
-            if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped){StartCoroutine(StartStepsI());}
+            SelectStep(null,true);UIInputSystem.instance.currentSelected=null;
+            if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){StartCoroutine(StartStepsI());}
         }
     }
     IEnumerator StartStepsI(){
-        if(!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){
+        if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){
             Debug.Log("StartStepsI()");
             startedSteps=true;
             allStepsDone=false;
-            UIInputSystem.instance.currentSelected=null;
             CloseStepsUI();
             yield return new WaitForSeconds(1.5f);//Wait for end of animation
-            if(stepsCoroutine==null){stepsCoroutine=StartCoroutine(ExecuteStepsI());}
+            if(stepsCoroutine==null){stepsRunning=true;stepsCoroutine=StartCoroutine(ExecuteStepsI());}
         }else{yield return null;}
     }
-    public void StopSteps(){if(stepsCoroutine!=null){StopCoroutine(stepsCoroutine);stepsCoroutine=null;}currentStepId=0;startedSteps=false;}
+    public void StopSteps(){if(stepsCoroutine!=null){StopCoroutine(stepsCoroutine);stepsCoroutine=null;}currentStepId=0;startedSteps=false;stepsRunning=false;}
     void ReexecuteSteps(){Debug.Log("ReexecuteSteps()");if(stepsCoroutine!=null){stepsCoroutine=null;stepsCoroutine=StartCoroutine(ExecuteStepsI());Debug.Log("ReexecutingSteps..");}}
     Coroutine stepsCoroutine;//,singleStepCoroutine;
     IEnumerator ExecuteStepsI(){
@@ -127,10 +129,12 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             Debug.Log("Executing Step: "+currentStepId);
             if(currentSteps.Count==0){Debug.LogWarning("No steps!");}
             if(currentStepId<currentSteps.Count&&startedSteps){
+                var _s=currentSteps[currentStepId];
+                if(_s.stepType==StepPropertiesType.delay){yield return new WaitForSeconds(_s.delay);}
                 ExecuteSingleStep(currentStepId);
                 currentStepId++;
                 if(currentStepId<currentSteps.Count){yield return new WaitForSeconds(0.01f);if(startedSteps)ReexecuteSteps();}
-                else{currentStepId=0;allStepsDone=true;reopenStepsUIDelay=2f;Debug.Log("All steps done!");}
+                else{currentStepId=0;allStepsDone=true;stepsRunning=false;reopenStepsUIDelay=2f;Debug.Log("All steps done!");}
             }
         }
     }
@@ -145,7 +149,6 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 Player.instance.ShootBullet();
             break;
             case StepPropertiesType.gunPolarity:
-                //Player.instance.SetPolarity(_s.gunPolarity);
                 Player.instance.SwitchPolarity();
             break;
             case StepPropertiesType.gunRotation:
@@ -156,6 +159,9 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             break;
             case StepPropertiesType.laserPos:
                 LevelMapManager.instance.laserListSorted[_s.objectId].transform.position=_s.laserPos;
+            break;
+            case StepPropertiesType.switchAllLasers:
+                foreach(Laser l in LevelMapManager.instance.laserListSortedWithCloned)l.SwitchPolarity();
             break;
         }
     }
@@ -205,7 +211,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     public void AddStepButton(int id){AddStep(id,false);}
     public void AddStep(int id,bool quiet=false){
-        if(currentEnergyLeft()>=_stepCostForTypeCurrentLvl((StepPropertiesType)id)){
+        if(canAfford(id)){
             //currentSteps.Add(new StepProperties(){stepType=(StepPropertiesType)id});
             if((id!=(int)StepPropertiesType.mirrorPos&&id!=(int)StepPropertiesType.laserPos)||
             ((id==(int)StepPropertiesType.mirrorPos&&FindObjectsOfType<Mirror>().Length>0)||(id==(int)StepPropertiesType.laserPos&&FindObjectsOfType<Laser>().Length>0))){
@@ -213,6 +219,13 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 SetSelectableStep(gos);
                 RepopulateStepsFromUI();
                 SetAllowedSteps(0.15f);
+                if(id==(int)StepPropertiesType.gunRotation&&LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
+                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
+                    gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
+                }else if(id==(int)StepPropertiesType.gunRotation&&!LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
+                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
+                    gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
+                }
                 if(!quiet)AudioManager.instance.Play("StepAdd");
             }
         }else{if(!quiet)AudioManager.instance.Play("Deny");}
@@ -237,10 +250,6 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             go.GetComponent<StepUIPrefab>().SetProperties(s);
         }
         RefreshStartingElements();
-        /*for(var i=0;i<LevelMapManager.instance.GetCurrentLevelMap().allowedStepTypes.Count;i++){
-            StepPropertiesType st=LevelMapManager.instance.GetCurrentLevelMap().allowedStepTypes[i];
-            addStepsUIListContent.GetChild(i).gameObject.SetActive(true);
-        }*/
     }
     public void ClearUIStepList(){
         if(stepsUIListContent.childCount>0)for(var i=stepsUIListContent.childCount-1;i>=0;i--){Destroy(stepsUIListContent.GetChild(i).gameObject);}
@@ -265,6 +274,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         if(bt!=null){
             var sui=bt.GetComponent<StepUIPrefab>();
             if(selectedStep!=bt||selectedStep==null||forceUpdate){
+                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                 selectedStep=bt;
                 sui.SetSelectedSpr();
                 ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
@@ -286,18 +296,26 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         yield return new WaitForSecondsRealtime(delay);
         for(var i=0;i<addStepsUIListContent.childCount;i++){
             //LevelMapManager.instance.GetCurrentLevelMap().allowedStepTypes.Length>0;
-            if(addStepsUIListContent.childCount>i){
+            if(addStepsUIListContent.childCount>i&&LevelMapManager.instance.GetCurrentLevelMap().allowedStepTypes.ContainsKey((StepPropertiesType)i)){
                 addStepsUIListContent.GetChild(i).gameObject.SetActive(LevelMapManager.instance.GetCurrentLevelMap().allowedStepTypes[(StepPropertiesType)i]);
                 int _stepCost=_stepCostForTypeCurrentLvl((StepPropertiesType)i);
                 var _energy=addStepsUIListContent.transform.GetChild(i).Find("Energy").gameObject;
                 if(_stepCost!=0){_energy.SetActive(true);_energy.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=_stepCost.ToString();}
                 else{_energy.SetActive(false);}
-                if(currentEnergyLeft()<_stepCostForTypeCurrentLvl((StepPropertiesType)i)){addStepsUIListContent.GetChild(i).GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
+                if(!canAfford(i)){addStepsUIListContent.GetChild(i).GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
                 else{addStepsUIListContent.GetChild(i).GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareBlue");}
-            }else{Debug.LogWarning("Children of addStepsUIListContent not setup properly!");}
+            }else{Debug.LogWarning("Children of addStepsUIListContent not setup properly!");if(addStepsUIListContent.childCount>i)addStepsUIListContent.GetChild(i).gameObject.SetActive(false);}
         }
     }
     public int currentEnergyLeft(){return LevelMapManager.instance.GetCurrentLevelMap().stepEnergy-currentStepsEnergyUsed;}
+    public bool canAfford(int i){return (currentEnergyLeft()>=_stepCostForTypeCurrentLvl((StepPropertiesType)i)||LevelMapManager.instance.GetCurrentLevelMap().stepEnergy<0);}
+    public int _stepCostForTypeCurrentLvl(StepPropertiesType stepType){
+        int _stepCost=0;
+        if(LevelMapManager.instance.GetCurrentLevelMap().stepTypesCosts.ContainsKey(stepType)){
+            _stepCost=LevelMapManager.instance.GetCurrentLevelMap().stepTypesCosts[stepType];
+        }
+        return _stepCost;
+    }
     public void SumUpEnergy(){
         currentStepsEnergyUsed=0;
         foreach(StepProperties s in currentSteps){
@@ -306,15 +324,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             RefreshStartingElements();
         }
     }
-    public int _stepCostForTypeCurrentLvl(StepPropertiesType stepType){
-        int _stepCost=0;
-        if(LevelMapManager.instance.GetCurrentLevelMap().stepTypesCosts.ContainsKey(stepType)){
-            _stepCost=LevelMapManager.instance.GetCurrentLevelMap().stepTypesCosts[stepType];
-        }
-        return _stepCost;
-    }
-
-    void SetCameraSettings(CameraSettings cs){targetCamSettings=cs;}
+    public void SetCameraSettings(CameraSettings cs){targetCamSettings=cs;}
 }
 [System.Serializable]
 public class CameraSettings{
@@ -332,5 +342,5 @@ public class StepProperties{
     [ShowIf("@this.stepType==StepPropertiesType.mirrorPos")]public Vector2 mirrorPos;
     [ShowIf("@this.stepType==StepPropertiesType.laserPos")]public Vector2 laserPos;
 }
-public enum StepPropertiesType{delay,gunShoot,gunPolarity,gunRotation,mirrorPos,laserPos}
+public enum StepPropertiesType{delay,gunShoot,gunPolarity,gunRotation,mirrorPos,laserPos,switchAllLasers}
 //public class StepCosts{Dictionary<StepPropertiesType,int>();}

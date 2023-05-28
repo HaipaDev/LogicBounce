@@ -10,9 +10,11 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     [SerializeField]float restartDelaySet=0.5f;
     [DisableInEditorMode][SerializeField]float restartDelay;
     [SerializeField]public int levelCurrent=-1;
-    [DisableInEditorMode][SerializeField]public List<Laser> laserListSorted;
-    [DisableInEditorMode][SerializeField]public List<Mirror> mirrorListSorted;
+    [DisableInEditorMode][SerializeField]public float levelTimer;
     [DisableInEditorMode][SerializeField]public List<LogicGate> logicGateListSorted;
+    [DisableInEditorMode][SerializeField]public List<Laser> laserListSorted;
+    [DisableInEditorMode][SerializeField]public List<Laser> laserListSortedWithCloned;
+    [DisableInEditorMode][SerializeField]public List<Mirror> mirrorListSorted;
 
     void Awake(){if(LevelMapManager.instance!=null/*||OutOfContextScene()*/){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
     void Start(){if(GSceneManager.CheckScene("Game"))Restart();}//So that lists get populated
@@ -24,6 +26,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             if(restartDelay>0){restartDelay-=Time.unscaledDeltaTime;}
         }
         if(!GSceneManager.CheckScene("Game")){ResetLists();if(levelParent!=null){Destroy(levelParent);}}
+        if(GSceneManager.CheckScene("Game")){if(!StepsManager.StepsUIOpen&&!VictoryCanvas.Won){if(StepsManager.instance._areStepsBeingRunOrBulletsBouncing()){levelTimer+=Time.unscaledDeltaTime;}}}else{levelTimer=0;}
     }
     public void CallRestart(float delay=0f,bool quiet=false){StartCoroutine(RestartI(delay,quiet));}
     IEnumerator RestartI(float delay=0f,bool quiet=false){
@@ -40,6 +43,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     }
     public void CallRestartQuiet(){Restart();}
     void Restart(){
+        levelTimer=0;
         if(levelParent!=null&&levelMaps[levelCurrent].parent!=null){
             ///Cleanup
             foreach(Bullet b in FindObjectsOfType<Bullet>()){Destroy(b.gameObject);}
@@ -51,31 +55,50 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                 _parentChild.gameObject.SetActive(_prefabChild.gameObject.activeSelf);
                 _parentChild.transform.position=_prefabChild.transform.position;
 
+                WorldCanvas.instance.Cleanup();
+
+                ///Logic Gates
+                if(_parentChild.GetComponent<LogicGate>()!=null&&_prefabChild.GetComponent<LogicGate>()!=null){
+                    var _parentC=_parentChild.GetComponent<LogicGate>();
+                    var _prefabC=_prefabChild.GetComponent<LogicGate>();
+                    _parentC.logicGateType=_prefabC.logicGateType;
+                    _parentC.logicGateSignalsType=_prefabC.logicGateSignalsType;
+                    _parentC.charged1=_prefabC.charged1;
+                    _parentC.charged2=_prefabC.charged2;
+                    _parentC.active=_prefabC.active;
+                    _parentC.ForceUpdateActive(_prefabC.active);
+                    _parentC.motherGate=_prefabC.motherGate;
+                    /*_parentC.gatePowering1=_prefabC.gatePowering1;
+                    _parentC.gatePowering2=_prefabC.gatePowering2;*/
+                    _parentC.ConnectWithGatePoweringDelay();
+                    if(!logicGateListSorted.Contains(_parentC))logicGateListSorted.Add(_parentC);
+                }else if((_parentChild.GetComponent<LogicGate>()==null&&_prefabChild.GetComponent<LogicGate>()!=null)
+                ||(_parentChild.GetComponent<LogicGate>()!=null&&_prefabChild.GetComponent<LogicGate>()==null)){
+                    Debug.LogWarning("Components 'LogicGate' do not match on child: "+i+" | on level: "+levelCurrent);ReinstantiateLevel();}
+
                 ///Laser
                 if(_parentChild.GetComponent<Laser>()!=null&&_prefabChild.GetComponent<Laser>()!=null){
                     var _parentC=_parentChild.GetComponent<Laser>();
                     var _prefabC=_prefabChild.GetComponent<Laser>();
                     if(_parentC.clonedLaser)Destroy(_parentChild);
-                    _parentC.SetPolarity(_prefabC.positive);
+                    _parentC.SetPolarity(_prefabC.positive,true,true);
                     if(!laserListSorted.Contains(_parentC))laserListSorted.Add(_parentC);
+                    if(!laserListSortedWithCloned.Contains(_parentC))laserListSortedWithCloned.Add(_parentC);
                 }else if((_parentChild.GetComponent<Laser>()==null&&_prefabChild.GetComponent<Laser>()!=null)
                 ||(_parentChild.GetComponent<Laser>()!=null&&_prefabChild.GetComponent<Laser>()==null)){
-                    Debug.LogWarning("Components 'Laser' do not match on child: "+i+" | on level: "+levelCurrent);}
-                ///Logic Gates
-                if(_parentChild.GetComponent<LogicGate>()!=null&&_prefabChild.GetComponent<LogicGate>()!=null){
-                    var _parentC=_parentChild.GetComponent<LogicGate>();
-                    var _prefabC=_prefabChild.GetComponent<LogicGate>();
-                    _parentC.charged=_prefabC.charged;
-                    _parentC.active=_prefabC.active;
-                    if(!logicGateListSorted.Contains(_parentC))logicGateListSorted.Add(_parentC);
-                }///Mirrors
+                    Debug.LogWarning("Components 'Laser' do not match on child: "+i+" | on level: "+levelCurrent);ReinstantiateLevel();}
+
+                ///Mirrors
                 if(_parentChild.GetComponent<Mirror>()!=null&&_prefabChild.GetComponent<Mirror>()!=null){
                     var _parentC=_parentChild.GetComponent<Mirror>();
                     var _prefabC=_prefabChild.GetComponent<Mirror>();
                     _parentC.opposite=_prefabC.opposite;
                     _parentC.ninetydegree=_prefabC.ninetydegree;
                     if(!mirrorListSorted.Contains(_parentC))mirrorListSorted.Add(_parentC);
-                }
+                }else if((_parentChild.GetComponent<Mirror>()==null&&_prefabChild.GetComponent<Mirror>()!=null)
+                ||(_parentChild.GetComponent<Mirror>()!=null&&_prefabChild.GetComponent<Mirror>()==null)){
+                    Debug.LogWarning("Components 'Mirror' do not match on child: "+i+" | on level: "+levelCurrent);ReinstantiateLevel();}
+
                 ///Spawnpoint
                 if(_parentChild.GetComponent<Spawnpoint>()!=null&&_prefabChild.GetComponent<Spawnpoint>()!=null){
                     var _parentC=_parentChild.GetComponent<Spawnpoint>();
@@ -98,13 +121,19 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     }
     IEnumerator RestartPlayerI(){
         var spawnpoint=FindObjectOfType<Spawnpoint>();
-        Destroy(Player.instance.gameObject);
+        if(Player.instance!=null){Destroy(Player.instance.gameObject);}
         yield return new WaitForSecondsRealtime(0.05f);
         Instantiate(CoreSetup.instance._getPlayerPrefab().gameObject,(Vector2)spawnpoint.transform.position+spawnpoint.playerOffset,Quaternion.identity);
         Player.instance.SetGunRotation(levelMaps[levelCurrent].defaultGunRotation);
         Player.instance.SetPolarity(levelMaps[levelCurrent].startingChargePositive,true);
         Player.instance.bulletBounceLimit=levelMaps[levelCurrent].bulletBounceLimit;
         Player.instance.bulletSpeed=levelMaps[levelCurrent].bulletSpeed;
+    }
+    void ReinstantiateLevel(){
+        ResetLists();
+        if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}
+        if(levelParent!=null){Destroy(levelParent);}
+        InstantiateLevelParent();
     }
     void InstantiateLevelParent(){
         //levelParent=Instantiate(levelMaps[levelCurrent].parent,Vector2.zero,Quaternion.identity);levelParent.transform.position=Vector2.zero;
@@ -113,6 +142,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     }
     void ResetLists(){
         laserListSorted.Clear();
+        laserListSortedWithCloned.Clear();
         logicGateListSorted.Clear();
         mirrorListSorted.Clear();
     }
@@ -132,7 +162,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
         StepsManager.instance.ClearAllSteps();
         if(levelMaps[levelCurrent].defaultSteps!=null){if(levelMaps[levelCurrent].defaultSteps.Count>0){
-            StepsManager.instance.currentSteps=levelMaps[levelCurrent].defaultSteps;StepsManager.instance.SumUpEnergy();
+            StepsManager.instance.currentSteps=levelMaps[levelCurrent].defaultSteps;StepsManager.instance.RepopulateUIFromSteps();StepsManager.instance.SumUpEnergy();
         }}
         CallRestart(0,true);
         ResetLists();
@@ -143,23 +173,3 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     }
     public LevelMap GetCurrentLevelMap(){return levelMaps[levelCurrent];}
 }
-/*[System.Serializable]
-public class LevelMap{
-    public GameObject parent;
-    public int stepEnergy=6;
-    public bool startingChargePositive=true;
-    public float defaultGunRotation=0;
-    public int bulletBounceLimit=10;
-    public float bulletSpeed=6f;
-    public dir playerDir=dir.down;
-    public List<StepProperties> defaultSteps;
-    public List<StepPropertiesType> allowedStepTypes=new List<StepPropertiesType>(){
-        StepPropertiesType.delay
-        ,StepPropertiesType.gunShoot
-        ,StepPropertiesType.gunPolarity
-        ,StepPropertiesType.gunRotation
-        //,StepPropertiesType.mirrorPos
-    };
-    [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "Cost")]
-    public Dictionary<StepPropertiesType,int> stepTypesCosts=new Dictionary<StepPropertiesType,int>();
-}*/

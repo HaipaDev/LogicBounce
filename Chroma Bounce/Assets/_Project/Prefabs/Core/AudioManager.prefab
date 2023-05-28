@@ -120,7 +120,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
   - name: BulletChangePositive
-    clip: {fileID: 8300000, guid: a04468a4b2c959944b3dc3cc9e1f72ab, type: 3}
+    clip: {fileID: 8300000, guid: 77bd1485a9a80ed4ea87c200d94469c4, type: 3}
     volume: 0.75
     volumeVariance: 0.1
     pitch: 1
@@ -129,7 +129,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
   - name: BulletChangeNegative
-    clip: {fileID: 8300000, guid: 4878f59f24c1a7d409d865c37537a7b5, type: 3}
+    clip: {fileID: 8300000, guid: e261d05ab965d224d9bc4e15f053c6fc, type: 3}
     volume: 0.4
     volumeVariance: 0.1
     pitch: 1
@@ -240,6 +240,24 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 8865a2263de04664ea0235274575d5fb, type: 3}
     volume: 1
     volumeVariance: 0.05
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: LaserChangePositive
+    clip: {fileID: 8300000, guid: 1d5983f33d00d0140a84d94744ab9e39, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: LaserChangeNegative
+    clip: {fileID: 8300000, guid: a5b13b41ae3557747a11feec35bb5da2, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
     pitch: 1
     pitchVariance: 0.1
     loop: 0

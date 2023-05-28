@@ -22,7 +22,7 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
         #if UNITY_EDITOR
             _isEditor=true;
         #endif
-        if(((GSceneManager.EscPressed()||Input.GetKeyDown(KeyCode.Backspace)||Input.GetKeyDown(KeyCode.JoystickButton7))
+        if(((GSceneManager.EscPressed())//||Input.GetKeyDown(KeyCode.Backspace)||Input.GetKeyDown(KeyCode.JoystickButton7))
         ||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData.pauseWhenOOF))
         &&(UIInputSystem.instance.currentSelected==null||(UIInputSystem.instance.currentSelected!=null&&UIInputSystem.instance.currentSelected.GetComponent<TMPro.TextMeshProUGUI>()!=null))){
             if(GameIsPaused){

@@ -22,8 +22,9 @@ public class Laser : MonoBehaviour{
     SpriteRenderer spr;
     void Start(){
         spr=GetComponent<SpriteRenderer>();
-        SetPolarity(positive,true);
+        SetPolarity(positive,true,true);
         _posWhenTouched=transform.position;touchingBottom=false;touchingUp=false;
+        if(clonedLaser)LevelMapManager.instance.laserListSortedWithCloned.Add(this);
     }
     void Update(){}
     void FixedUpdate(){
@@ -243,17 +244,22 @@ public class Laser : MonoBehaviour{
         //#endif
     }
     public void SwitchPolarity(){SetPolarity(!positive);Debug.Log(!positive);return;}
-    public void SetPolarity(bool _positive=true,bool force=true){
+    public void SetPolarity(bool _positive=true,bool force=true,bool quiet=false){
         if(spr==null){spr=GetComponent<SpriteRenderer>();}
         if(positive!=_positive||force){
             positive=_positive;
             if(positive){
                 spr.sprite=spritencolor_positive.spr;
                 if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_positive.color;
+                if(!quiet){AudioManager.instance.Play("LaserChangePositive");AudioManager.instance.StopPlaying("LaserChangeNegative");}
             }else{
                 spr.sprite=spritencolor_negative.spr;
                 if(GetComponentInChildren<Light2D>()!=null)GetComponentInChildren<Light2D>().color=spritencolor_negative.color;
+                if(!quiet){AudioManager.instance.Play("LaserChangeNegative");AudioManager.instance.StopPlaying("LaserChangePositive");}
             }
         }
+    }
+    void OnDestroy(){
+        if(clonedLaser)LevelMapManager.instance.laserListSortedWithCloned.RemoveAll(x=>x==this);
     }
 }

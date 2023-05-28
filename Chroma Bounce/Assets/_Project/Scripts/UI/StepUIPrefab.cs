@@ -58,7 +58,7 @@ public class StepUIPrefab : MonoBehaviour{
     IEnumerator SetGunRotationI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
         Debug.Log("Setting Gun rotation");
-        var i=int.Parse(val);
+        var i=float.Parse(val);
         stepProperties.gunRotation=i;
         SelectButton();
     }

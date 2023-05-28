@@ -21,6 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: levelRankCritiria
+      Entry: 6
+      Data: 
     - Name: allowedStepTypes
       Entry: 7
       Data: 0|System.Collections.Generic.Dictionary`2[[StepPropertiesType, Assembly-CSharp],[System.Boolean,
@@ -40,7 +43,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 5
+      Data: 7
     - Name: 
       Entry: 7
       Data: 
@@ -49,7 +52,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 5
-      Data: false
+      Data: true
     - Name: 
       Entry: 8
       Data: 
@@ -97,6 +100,30 @@ MonoBehaviour:
       Data: 4
     - Name: $v
       Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 6
+    - Name: $v
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 5
+    - Name: $v
+      Entry: 5
       Data: false
     - Name: 
       Entry: 8
@@ -126,43 +153,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 3
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 1
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 2
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 3
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
@@ -170,9 +161,10 @@ MonoBehaviour:
       Entry: 8
       Data: 
   parent: {fileID: 2120997258007688786, guid: 295de45a64aabe444b545e2374cdff63, type: 3}
-  stepEnergy: 3
+  stepEnergy: -1
   startingChargePositive: 1
   defaultGunRotation: 45
+  accurateGunRotation: 1
   bulletBounceLimit: 10
   bulletSpeed: 6
   playerDir: 1
