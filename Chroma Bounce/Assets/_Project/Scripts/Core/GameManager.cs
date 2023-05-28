@@ -44,12 +44,12 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     void Update(){
         if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<=0){gameSpeed=0;}
         if(GSceneManager.CheckScene("Game")){
-            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused||StepsManager.StepsUIOpen){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
+            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused||StepsManager.StepsUIOpen||VictoryCanvas.Won){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
             if((GlobalTimeIsPaused)&&!StepsManager.StepsUIOpen){GlobalTimeIsPausedNotStepped=true;}else{GlobalTimeIsPausedNotStepped=false;}
             //Debug.Log(GlobalTimeIsPaused+" | "+GlobalTimeIsPausedNotStepped);
         }else{GlobalTimeIsPaused=false;}
 
-        if(SceneManager.GetActiveScene().name=="Game"&&FindObjectOfType<Player>()!=null&&gameSpeed>0.0001f){GameManagerTime+=Time.unscaledDeltaTime;}
+        if(SceneManager.GetActiveScene().name=="Game"&&!GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){GameManagerTime+=Time.unscaledDeltaTime;}
         //Set speed to normal
         //if(!GlobalTimeIsPausedNotStepped&&(FindObjectOfType<Player>()!=null)&&speedChanged!=true){gameSpeed=defaultGameSpeed;}
         if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}

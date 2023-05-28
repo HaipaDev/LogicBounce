@@ -209,3 +209,39 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: StepAdd
+    clip: {fileID: 8300000, guid: 71e98f99cb1b91744a7bcaaa7c1e4b80, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: StepRemove
+    clip: {fileID: 8300000, guid: c3d1d8ffa115cd6458656a1206769007, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Deny
+    clip: {fileID: 8300000, guid: c55a156533d672b4693401b905c47894, type: 3}
+    volume: 0.75
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Victory
+    clip: {fileID: 8300000, guid: 8865a2263de04664ea0235274575d5fb, type: 3}
+    volume: 1
+    volumeVariance: 0.05
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}

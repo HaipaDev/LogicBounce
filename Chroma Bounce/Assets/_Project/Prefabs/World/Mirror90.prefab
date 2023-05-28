@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6449469490018414384}
   - component: {fileID: 6449469490018414385}
   - component: {fileID: 8983441259418299415}
-  - component: {fileID: 8157095360836019176}
+  - component: {fileID: 2844364735573052678}
   - component: {fileID: 3978522219565201944}
   m_Layer: 6
   m_Name: Mirror90
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: db4dea5d1d4902140bab86eeb84aa584, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -108,7 +108,7 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!60 &8157095360836019176
+--- !u!60 &2844364735573052678
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,12 +133,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.25, y: 0.25}
+    - - {x: 0.1296655, y: 0.25}
+      - {x: 0.12623942, y: -0.12628889}
+      - {x: -0.24711847, y: -0.12390232}
       - {x: -0.25, y: -0.25}
       - {x: 0.25, y: -0.25}
-      - {x: 0.25, y: -0.12966585}
-      - {x: -0.12280929, y: -0.13155699}
-      - {x: -0.1239028, y: 0.25}
+      - {x: 0.25, y: 0.25}
 --- !u!114 &3978522219565201944
 MonoBehaviour:
   m_ObjectHideFlags: 0

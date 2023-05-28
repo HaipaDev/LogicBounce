@@ -44,15 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e289a3aa85212d459fdca48abcc5105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorPalette:
-  - {r: 0, g: 0, b: 0, a: 0}
   smthOn: 1
   score: 0
   gameSpeed: 1
   defaultGameSpeed: 1
   speedChanged: 0
-  gameVersion: 0.1
-  buildVersion: 0.1
+  gameVersion: 1
+  buildVersion: 1
   cheatmode: 0
   dmgPopups: 1
   analyticsOn: 1

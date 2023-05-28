@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 828853375955266655}
   m_Layer: 0
   m_Name: spawnPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,7 +133,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerOffset: {x: 0, y: 0.5}
   playerDir: 1
-  playerSprites: []
 --- !u!1 &4065659902161216842
 GameObject:
   m_ObjectHideFlags: 0

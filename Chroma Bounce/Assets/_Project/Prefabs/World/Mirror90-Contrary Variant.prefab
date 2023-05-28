@@ -61,7 +61,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 5a27f102aa60c554a93b7b5137858ab6, type: 3}
     - target: {fileID: 6449469490018414386, guid: 74ea658ed89bea64fa85379af4bc33fb, type: 3}
       propertyPath: m_Name
-      value: Mirror90-Contrary
+      value: Mirror90-Contrary Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74ea658ed89bea64fa85379af4bc33fb, type: 3}

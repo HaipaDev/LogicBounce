@@ -42,7 +42,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 
 			if(ES3.KeyExists("playerData",settings)){ES3.LoadInto<PlayerData>("playerData",playerData,settings);}
 			else{Debug.LogWarning("Key for playerData not found in: "+_playerDataPath());}
-			//var hi=-1;foreach(int h in playerData.highscore){hi++;if(h!=0)playerData.highscore[hi]=h;}
+			
 			Debug.Log("Game Data loaded");
 		}else Debug.LogWarning("Game Data file not found in: "+_playerDataPath());
 	}
@@ -57,16 +57,17 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		}
 	}
 	public void RecreatePlayerData(){
-		if(LevelMapManager.instance!=null){
-			if(playerData.levelPassedValues.Length==0||playerData.levelPassedValues==null){
-				playerData.levelPassedValues=new LevelPassValues[LevelMapManager.instance.levelMaps.Length];
-				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
+		if(playerData!=null){
+			int _length=1;
+			if((playerData.levelPassedValues!=null&&playerData.levelPassedValues.Length==0)||playerData.levelPassedValues==null){
+			if(LevelMapManager.instance!=null){
+				_length=LevelMapManager.instance.levelMaps.Length;
 			}
-		}else{
-			if(playerData.levelPassedValues.Length==0||playerData.levelPassedValues==null){
-				playerData.levelPassedValues=new LevelPassValues[CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>().levelMaps.Length];
-				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
+			}else{
+				_length=CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>().levelMaps.Length;
 			}
+			playerData.levelPassedValues=new LevelPassValues[_length];Debug.Log(_length);
+			for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
 		}
 		//playerData.achievsCompleted=new AchievData[StatsAchievsManager._AchievsListCount()];
 	}
@@ -87,6 +88,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		public bool pauseWhenOOF=true;
 		public bool pprocessing=true;
 		public bool screenshake=true;
+		public bool discordRPC=true;
 	}
 	
 	public string _settingsDataPath(){return Application.persistentDataPath+"/"+filenameSettings+".json";}
@@ -116,4 +118,6 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 [System.Serializable]
 public class LevelPassValues{
 	public bool passed;
+	//public LevelRankAchieved rankAchieved=LevelRankAchieved.C;
 }
+public enum LevelRankAchieved{S,A,B,C}

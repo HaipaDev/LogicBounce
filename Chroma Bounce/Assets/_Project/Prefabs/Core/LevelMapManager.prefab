@@ -45,13 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelMaps:
-  - parent: {fileID: 2120997258007688786, guid: 295de45a64aabe444b545e2374cdff63, type: 3}
-    startingChargePositive: 1
-    bulletBounceLimit: 10
-    bulletSpeed: 6
-    playerDir: 0
+  - {fileID: 11400000, guid: 5e1b5b2f403585c40ad00e89492d6f0b, type: 2}
+  - {fileID: 11400000, guid: e5762355d15315345b312e0cabfa5a64, type: 2}
   levelParent: {fileID: 0}
-  playerPrefab: {fileID: 244919577038031875, guid: 94d7795345bbf1649939c0ce57f876c1, type: 3}
   _delaySet: 1
   _delay: 0
   levelCurrent: 0
+  laserListSorted: []
+  mirrorListSorted: []
+  logicGateListSorted: []

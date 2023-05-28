@@ -11,8 +11,6 @@ using Sirenix.OdinInspector;
 public class SettingsMenu : MonoBehaviour{      public static SettingsMenu instance;
     [SerializeField] int panelActive=0;
     [SerializeField] GameObject[] panels;
-    [Title("Game")]
-    //[SceneObjectsOnly][SerializeField]Toggle discordRPCToggle;
     [Title("Sound")]
     public AudioMixer audioMixer;
     [SceneObjectsOnly][SerializeField]Slider masterSlider;
@@ -29,6 +27,8 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     [SceneObjectsOnly][SerializeField]Toggle pauseWhenOOFToggle;
     [SceneObjectsOnly][SerializeField]TMP_Dropdown qualityDropdopwn;
     [SceneObjectsOnly][SerializeField]Toggle pprocessingToggle;
+    [SceneObjectsOnly][SerializeField]Toggle screenshakeToggle;
+    [SceneObjectsOnly][SerializeField]Toggle discordRPCToggle;
 
     [AssetsOnly][SerializeField]VolumeProfile pprocessingPrefab;
     SaveSerial.SettingsData settingsData;
@@ -46,6 +46,8 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         pauseWhenOOFToggle.isOn=settingsData.pauseWhenOOF;
         lockCursorToggle.isOn=settingsData.lockCursor;
         pprocessingToggle.isOn=settingsData.pprocessing;
+        screenshakeToggle.isOn=settingsData.screenshake;
+        discordRPCToggle.isOn=settingsData.discordRPC;
 
         if(SceneManager.GetActiveScene().name=="Options")OpenSettings();
         SetPanelActive(0);
@@ -72,7 +74,7 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
 
 
 #region//Game
-    //public void SetDiscordRPC(bool isOn){settingsData.discordRPC=isOn;}
+    public void SetDiscordRPC(bool isOn){settingsData.discordRPC=isOn;}
 #endregion
 
 

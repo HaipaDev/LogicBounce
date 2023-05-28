@@ -24,9 +24,9 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
     [AssetsOnly][SerializeField] GameObject stepsManagerPrefab;
     [AssetsOnly][SerializeField] Player playerPrefab;
     
-    //[Header("Networking, Advancements etc")]
+    [Header("Networking, Advancements etc")]
     //[AssetsOnly][SerializeField] GameObject dbaccessPrefab;
-    //[AssetsOnly][SerializeField] GameObject discordRPCPrefab;
+    [AssetsOnly][SerializeField] GameObject discordRPCPrefab;
     void Awake(){
         instance=this;
         if(SceneManager.GetActiveScene().name=="Loading")LoadPre();
@@ -47,13 +47,13 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
 
         //if(FindObjectOfType<DBAccess>()==null){Instantiate(dbaccessPrefab);}
         //#if (!UNITY_ANDROID && !UNITY_EDITOR) || (UNITY_ANDROID && UNITY_EDITOR)
-        //if(FindObjectOfType<DiscordPresence.PresenceManager>()==null){Instantiate(discordRPCPrefab);}
+        if(FindObjectOfType<DiscordPresence.PresenceManager>()==null){Instantiate(discordRPCPrefab);}
         
         if(FindObjectOfType<PostProcessVolume>()!=null&& FindObjectOfType<SaveSerial>().settingsData.pprocessing!=true){FindObjectOfType<PostProcessVolume>().enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
         //if(FindObjectOfType<EventSystem>()!=null){if(FindObjectOfType<EventSystem>().GetComponent<UIInputSystem>()==null)FindObjectOfType<EventSystem>().gameObject.AddComponent<UIInputSystem>();}
         if(FindObjectOfType<Jukebox>()==null&&SceneManager.GetActiveScene().name=="Menu"){Instantiate(jukeboxPrefab);}
         
-        if(FindObjectOfType<LevelMapManager>()==null&&LevelMapManager.InContextScene()){Instantiate(levelMapManagerPrefab);}
+        if(FindObjectOfType<LevelMapManager>()==null/*&&LevelMapManager.InContextScene()*/){Instantiate(levelMapManagerPrefab);}
         if(FindObjectOfType<StepsManager>()==null&&SceneManager.GetActiveScene().name=="Game"){Instantiate(stepsManagerPrefab);}
     }
 

@@ -10,6 +10,7 @@ public class LogicGate : MonoBehaviour{
     [SerializeField] public bool charged;
     [SerializeField] public bool active;
     [SerializeField] float _delaySet=0.15f;
+    [SerializeField] public bool motherGate=false;
 
     [Header("References")]
     [AssetsOnly][SerializeField] GameObject gatePoweringLinePrefab;
@@ -85,6 +86,7 @@ public class LogicGate : MonoBehaviour{
             if(_initialized){
                 AudioManager.instance.Play("GateActivate");
                 AudioManager.instance.StopPlaying("GateDeactivate");
+                if(motherGate){VictoryCanvas.instance.Win();}
             }if(!_initialized){_initialized=true;}
         }
         

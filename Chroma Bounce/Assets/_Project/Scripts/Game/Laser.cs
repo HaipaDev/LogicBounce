@@ -12,6 +12,7 @@ public class Laser : MonoBehaviour{
     //[SerializeField] Material material_negative;
     [Header("Variables")]
     [SerializeField]public bool positive=true;
+    [SerializeField]public bool bouncy=false;
     [SerializeField]float scaleupSpeed=3.5f;
     [SerializeField]Laser laserMirrored;
     [DisableInEditorMode][SerializeField]Laser laserParentReference;
@@ -37,19 +38,32 @@ public class Laser : MonoBehaviour{
     Vector2 raycastUpOrigin,laserUpDirection;
     Vector2 _posWhenTouched;
     void AutoScale(){
-        if(!touchingUp){//Move upwards till hits a wall
-            float _step=scaleupSpeed*Time.fixedDeltaTime;
+        if(!touchingUp){MoveUp();}//Move upwards till hits a wall
+        if(touchingUp&&!touchingBottom){ScaleDownwards();}//Scale up downwards
+        if(!touchingUp&&!touchingBottom&&!clonedLaser){//Move upwards & scale down
+            MoveUp(true);
+            ScaleDownwards();
+        }
+        if(touchingBottom&&!touchingUp&&!clonedLaser){ScaleBackDown();}//Scale down if touching bottom but not up
+        void MoveUp(bool slowerrate=false){
+            float _step=scaleupSpeed*Time.fixedDeltaTime;if(slowerrate){_step=(scaleupSpeed/2)*Time.fixedDeltaTime;}
             Vector2 moveUpwards=laserUpDirection.normalized*_step;
             transform.Translate(moveUpwards);
         }
-        if(touchingUp&&!touchingBottom){//Scale up downwards
+        void ScaleDownwards(){
             float step=scaleupSpeed*Time.fixedDeltaTime;
             transform.localScale=new Vector2(transform.localScale.x,transform.localScale.y+step);
         }
+        void ScaleBackDown(){
+            float step=scaleupSpeed*Time.fixedDeltaTime;
+            transform.localScale=new Vector2(transform.localScale.x,transform.localScale.y-step);
+        }
+
+
         if((Vector2)transform.position!=_posWhenTouched&&_posWhenTouched!=Vector2.zero||transform.localScale.y>12f){//Reset when position changed or too big (outside walls) [12 is the maximum diagonal]
             transform.localScale=new Vector2(transform.localScale.x,0.1f);_posWhenTouched=Vector2.zero;
         }
-        if(touchingUp&&touchingBottom&&transform.localScale.y<0.15f){//Push out of the wall
+        if(touchingUp&&touchingBottom&&transform.localScale.y<0.15f){//Push out of the walls
             float _step=scaleupSpeed*Time.fixedDeltaTime;
             Vector2 moveUpwards=laserUpDirection.normalized*_step;
             transform.Translate(-moveUpwards);

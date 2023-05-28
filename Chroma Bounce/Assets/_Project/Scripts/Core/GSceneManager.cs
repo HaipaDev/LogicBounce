@@ -72,7 +72,7 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
             if(CheckScene("LevelSelect")||CheckScene("Credits")){LoadStartMenu();}
     }}
     void OnChangeScene(){
-        if(LevelMapManager.instance!=null){if(LevelMapManager.OutOfContextScene()){Destroy(LevelMapManager.instance.gameObject);}SaveSerial.instance.RecreatePlayerData();}
+        //if(LevelMapManager.instance!=null){if(LevelMapManager.OutOfContextScene()){Destroy(LevelMapManager.instance.gameObject);}SaveSerial.instance.RecreatePlayerData();}
     }
     public static bool CheckScene(string name){return SceneManager.GetActiveScene().name==name;}
 }

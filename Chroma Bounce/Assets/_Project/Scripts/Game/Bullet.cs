@@ -55,7 +55,7 @@ public class Bullet : MonoBehaviour{
     }
     void OnCollisionEnter2D(Collision2D other){
         if(other.gameObject.CompareTag("Laser")){
-            if(other.gameObject.GetComponent<Laser>().positive!=this.positive){
+            if(other.gameObject.GetComponent<Laser>().positive!=this.positive&&other.gameObject.GetComponent<Laser>().bouncy){
                 Ricochet(other);bounceCountLaser++;
                 SwitchPolarity();
                 AudioManager.instance.Play("BounceLaser");
@@ -80,6 +80,12 @@ public class Bullet : MonoBehaviour{
         if(other.gameObject.CompareTag("LogicGate")){
             if(positive){other.gameObject.GetComponent<LogicGate>().Charge();return;}
             else{other.gameObject.GetComponent<LogicGate>().Discharge();return;}
+        }else if(other.gameObject.CompareTag("Laser")){
+            if(other.gameObject.GetComponent<Laser>().positive!=this.positive&&!other.gameObject.GetComponent<Laser>().bouncy){
+                SwitchPolarity();
+                //AudioManager.instance.Play("BounceLaser");
+                return;
+            }
         }
     }
 }

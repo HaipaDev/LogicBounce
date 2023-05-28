@@ -48,7 +48,17 @@ MonoBehaviour:
   vfx:
   - name: RestartLevel
     gobj: {fileID: 8308638122062445159, guid: 78c5c10cc731f4b4abb9e0bbc878befb, type: 3}
-  sprites: []
+  - name: Victory
+    gobj: {fileID: 8308638122062445159, guid: e0a21353067ca124697a5d12ef98ae3e, type: 3}
+  sprites:
+  - name: uiSquare
+    spr: {fileID: 21300000, guid: a2cfa92cfea30ea4fb6b2e5271aa02a5, type: 3}
+  - name: uiSquareBlue
+    spr: {fileID: 21300000, guid: e3fd4b14d523a444a8b9b5ea4411030a, type: 3}
+  - name: uiSquareRed
+    spr: {fileID: 21300000, guid: 5728cb1ae9e26e3478f4a3743392f994, type: 3}
+  - name: uiSquareYellow
+    spr: {fileID: 21300000, guid: 6ca87a6543801cc448f3602a52ff1d77, type: 3}
   materials:
   - name: AIOShaderMat
     mat: {fileID: 2100000, guid: 54dd26c80f9c40f4e828cb74cc08e7b3, type: 2}

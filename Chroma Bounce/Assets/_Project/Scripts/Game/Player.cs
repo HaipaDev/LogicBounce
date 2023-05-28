@@ -77,7 +77,7 @@ public class Player : MonoBehaviour{    public static Player instance;
         }
     }
     public void SetGunRotation(float rotZ){
-        rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,rotZ);
+        rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,360-rotZ);
     }
     public void ShootBullet(){
         canFire=false;timer=timeBetweenFiring;
@@ -117,6 +117,10 @@ public class Player : MonoBehaviour{    public static Player instance;
                 if(!quiet){AudioManager.instance.Play("GunChangeNegative");AudioManager.instance.StopPlaying("GunChangePositive");}
             }
         }
+    }
+    public Sprite GetGunSpr(bool positive=true){
+        if(positive)return gunSpritencolor_positive.spr;
+        else return gunSpritencolor_negative.spr;
     }
     public void SetDirection(dir dir){
         if(playerSprites.Length>(int)dir){GetComponent<SpriteRenderer>().sprite=playerSprites[(int)dir];}

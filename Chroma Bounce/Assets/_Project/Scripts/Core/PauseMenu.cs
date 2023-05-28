@@ -22,8 +22,9 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
         #if UNITY_EDITOR
             _isEditor=true;
         #endif
-        if((GSceneManager.EscPressed()||Input.GetKeyDown(KeyCode.Backspace)||Input.GetKeyDown(KeyCode.JoystickButton7))
-        ||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData.pauseWhenOOF)){
+        if(((GSceneManager.EscPressed()||Input.GetKeyDown(KeyCode.Backspace)||Input.GetKeyDown(KeyCode.JoystickButton7))
+        ||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData.pauseWhenOOF))
+        &&(UIInputSystem.instance.currentSelected==null||(UIInputSystem.instance.currentSelected!=null&&UIInputSystem.instance.currentSelected.GetComponent<TMPro.TextMeshProUGUI>()!=null))){
             if(GameIsPaused){
                 if(Application.isFocused){
                     if(pauseMenuUI.activeSelf){Resume();return;}
@@ -71,7 +72,8 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
             _isEditor=true;
         #endif
         return
+        (!VictoryCanvas.Won)&&
         ((unpausedTimer>=unpausedTimeReq||unpausedTimer==-1))&&
-        ((Application.isFocused)||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData.pauseWhenOOF));
+        ((Application.isFocused)||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData!=null&&SaveSerial.instance.settingsData.pauseWhenOOF));
     }
 }
