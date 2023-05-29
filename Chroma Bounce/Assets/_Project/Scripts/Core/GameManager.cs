@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     void Update(){
         if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<=0){gameSpeed=0;}
         if(GSceneManager.CheckScene("Game")){
-            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused||StepsManager.StepsUIOpen||VictoryCanvas.Won){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
+            if(Time.timeScale<=0.001f||PauseMenu.GameIsPaused||StepsManager.StepsUIOpen||StoryboardManager.IsOpen||VictoryCanvas.Won){GlobalTimeIsPaused=true;}else{GlobalTimeIsPaused=false;}
             if((GlobalTimeIsPaused)&&!StepsManager.StepsUIOpen){GlobalTimeIsPausedNotStepped=true;}else{GlobalTimeIsPausedNotStepped=false;}
             //Debug.Log(GlobalTimeIsPaused+" | "+GlobalTimeIsPausedNotStepped);
         }else{GlobalTimeIsPaused=false;}

@@ -80,22 +80,22 @@ public class Laser : MonoBehaviour{
         else if(transform.eulerAngles.z==180){_correction=180f;}
         laserUpDirection = Quaternion.Euler(0f,0f,transform.eulerAngles.z+_correction) * Vector2.up;
 
-        raycastDownOrigin = transform.position - (transform.up * (transform.localScale.y * 2f))+(transform.up*raycastLengthDown/4);
+        raycastDownOrigin = transform.position - (transform.up * (transform.localScale.y * 2f))+(transform.up*raycastLengthDown/3);
         raycastUpOrigin = transform.position-(transform.up*raycastLengthUp/2);//raycastLength gives it some buffer to detect when inside a wall
         
-        LayerMask wallLayer=LayerMask.GetMask("StaticColliders");
+        LayerMask staticLayer=LayerMask.GetMask("StaticColliders");
         LayerMask laserLayer=LayerMask.GetMask("Lasers");
-        RaycastHit2D hitDown = Physics2D.Raycast(raycastDownOrigin, laserDownDirection, raycastLengthDown, wallLayer);
+        RaycastHit2D hitDown = Physics2D.Raycast(raycastDownOrigin, laserDownDirection, raycastLengthDown, staticLayer);
         RaycastHit2D hitDownLaser = Physics2D.Raycast(raycastDownOrigin, laserDownDirection, raycastLengthDown, laserLayer);
-        RaycastHit2D hitUp = Physics2D.Raycast(raycastUpOrigin, laserUpDirection, raycastLengthUp, wallLayer);
+        RaycastHit2D hitUp = Physics2D.Raycast(raycastUpOrigin, laserUpDirection, raycastLengthUp, staticLayer);
         
         if((hitDown.collider!=null)||(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject!=gameObject/*&&hitDownLaser.collider.gameObject.GetComponent<Laser>().positive==!positive*/)){
             if(!touchingBottom){
-                touchingBottom=true;
                 if(_posWhenTouched==Vector2.zero){_posWhenTouched=transform.position;}
                 if(hitDown.collider!=null&&hitDown.collider.gameObject.CompareTag("Mirror")&&laserMirrored==null){ReflectLaserFromMirror(hitDown);}
                 else if(hitDown.collider!=null&&!hitDown.collider.gameObject.CompareTag("Mirror")){AudioManager.instance.Play("Laser");}
                 if(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject!=gameObject){AudioManager.instance.Play("LasersCollision");}
+                touchingBottom=true;
             }
         }else if(hitDown.collider==null&&hitDownLaser.collider==false||(hitDownLaser.collider!=null&&hitDownLaser.collider.gameObject==gameObject)){
             touchingBottom=false;if(laserMirrored!=null){Destroy(laserMirrored.gameObject);laserMirrored=null;}mirrorReference=null;
@@ -104,6 +104,7 @@ public class Laser : MonoBehaviour{
         if(hitUp.collider!=null){touchingUp=true;}
         else{touchingUp=false;}
     }
+    ///Broken attempt at doing Mirror Reflection
     /*void ReflectLaserFromMirror(RaycastHit2D hit){
         if(laserMirrored == null && (laserParentReference == null || (laserParentReference != null && laserParentReference != this.gameObject && this.mirrorReference != laserParentReference.mirrorReference))){
             mirrorReference = hit.collider.gameObject;
@@ -192,32 +193,37 @@ public class Laser : MonoBehaviour{
             laserMirrored.laserParentReference = this.gameObject.GetComponent<Laser>();*/
         //}
     //}
+    ///Only works for 0 degree colision so for going left
     Vector2 mirrorFaceDirection;Vector2 mirrorPosition;
     void ReflectLaserFromMirror(RaycastHit2D hit){
+        Debug.Log("ReflectLaserFromMirror");
         if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
+            Debug.Log("Reflecting laser");
             mirrorReference=hit.collider.gameObject;
-            Vector2 mirrorNormal=hit.normal;mirrorPosition = hit.transform.position;Vector2 hitPos=hit.point;
-            float mirrorRotation=hit.transform.eulerAngles.z;float _correction=-90f;
-            mirrorFaceDirection = Quaternion.Euler(0f,0f,hit.transform.eulerAngles.z) * Vector2.up;
+            Vector2 mirrorNormal=hit.normal;mirrorPosition=hit.transform.position;Vector2 hitPos=hit.point;
+            float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90f;
+            mirrorFaceDirection = Quaternion.Euler(0f,0f,mirrorRotation+_correction) * Vector2.up;
 
             Vector2 reflectDir = mirrorFaceDirection * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
-            float reflectionAngle = Vector2.SignedAngle(mirrorFaceDirection, reflectDir)+_correction;//(Mathf.Atan2(reflectDir.y,reflectDir.x) * Mathf.Rad2Deg)+_correction;
-            float dotProduct = Vector2.Dot(mirrorNormal, mirrorFaceDirection);
+            float reflectionAngle = Vector2.SignedAngle(mirrorFaceDirection, reflectDir);Debug.Log(reflectionAngle);//(Mathf.Atan2(reflectDir.y,reflectDir.x) * Mathf.Rad2Deg)+_correction;
+            float dotProduct = Vector2.Dot(mirrorNormal, mirrorFaceDirection);Debug.Log(dotProduct);
 
             if(reflectDir!=laserUpDirection&&dotProduct>=0f){
+                Debug.Log("Creating Reflected Laser");
                 laserMirrored=Instantiate(this.gameObject,hitPos,Quaternion.identity).GetComponent<Laser>();//Clone
                 laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, reflectionAngle);
                 laserMirrored.mirrorReference=hit.collider.gameObject;
                 laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
                 laserMirrored.clonedLaser=true;
-                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.positive=!positive;AudioManager.instance.Play("ReflectLaserMirrorContrary");}
+                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
                 else{AudioManager.instance.Play("ReflectLaserMirror");}
             }
-            
         }
     }
+    ///Almost working attempt at Mirrors I think
     /*void ReflectLaserFromMirror(RaycastHit2D hit){
         if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
+            Debug.Log("Reflecting laser");
             mirrorReference=hit.collider.gameObject;
             Vector2 mirrorNormal=hit.normal;
             float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90;
@@ -225,11 +231,15 @@ public class Laser : MonoBehaviour{
             Vector2 reflectDir = Quaternion.Euler(0f,0f,mirrorRotation) * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
 
             if(reflectDir!=laserUpDirection){
+                Debug.Log("Creating Reflected Laser");
                 laserMirrored=Instantiate(this.gameObject,hit.transform.position,Quaternion.identity).GetComponent<Laser>();//Clone
-                float rotation = (Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg) + _correction;
+                float rotation = (Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg);// + _correction;
                 laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
                 laserMirrored.mirrorReference=hit.collider.gameObject;
                 laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
+                laserMirrored.clonedLaser=true;
+                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
+                else{AudioManager.instance.Play("ReflectLaserMirror");}
             }
         }
     }*/
@@ -243,7 +253,7 @@ public class Laser : MonoBehaviour{
         Gizmos.DrawRay(raycastUpOrigin,laserUpDirection*raycastLengthUp);
         //#endif
     }
-    public void SwitchPolarity(){SetPolarity(!positive);Debug.Log(!positive);return;}
+    public void SwitchPolarity(){SetPolarity(!positive);return;}
     public void SetPolarity(bool _positive=true,bool force=true,bool quiet=false){
         if(spr==null){spr=GetComponent<SpriteRenderer>();}
         if(positive!=_positive||force){

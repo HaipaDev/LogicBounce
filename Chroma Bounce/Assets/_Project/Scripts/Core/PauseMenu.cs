@@ -71,9 +71,12 @@ public class PauseMenu : MonoBehaviour{     public static PauseMenu instance;
         #if UNITY_EDITOR
             _isEditor=true;
         #endif
-        return
-        (!VictoryCanvas.Won)&&
+        bool _firstLevel=SaveSerial.instance!=null&&SaveSerial.instance.playerData!=null&&SaveSerial.instance.playerData.firstLevelPassedInitial;
+        bool _pauseWhenOOF=SaveSerial.instance!=null&&SaveSerial.instance.settingsData!=null&&SaveSerial.instance.settingsData.pauseWhenOOF;
+        return(
+        (!VictoryCanvas.Won)&&//(_firstLevel==true)&&
         ((unpausedTimer>=unpausedTimeReq||unpausedTimer==-1))&&
-        ((Application.isFocused)||(!Application.isFocused&&!_isEditor&&SaveSerial.instance!=null&&SaveSerial.instance.settingsData!=null&&SaveSerial.instance.settingsData.pauseWhenOOF));
+        ((Application.isFocused)||(!Application.isFocused&&!_isEditor&&_pauseWhenOOF))
+        );
     }
 }

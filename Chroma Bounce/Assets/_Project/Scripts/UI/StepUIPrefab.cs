@@ -45,7 +45,32 @@ public class StepUIPrefab : MonoBehaviour{
     public void SetSelectedSpr(){GetComponent<Image>().sprite=selectedSpr;}
     public void SetDefaultSpr(){GetComponent<Image>().sprite=defaultSpr;}
     public void SelectButton(){StepsManager.instance.SelectStep(GetComponent<Button>(),true);}
+    public void DeselectButton(){StepsManager.instance.SelectStep(null);}
     
+    public void SetAutoFromComponent(){
+        var val=GetComponentInChildren<TMP_InputField>().text;
+        switch(stepProperties.stepType){
+            case StepPropertiesType.delay:
+                SetDelay(val);
+            break;
+            case StepPropertiesType.gunRotation:
+                SetGunRotation(val);
+            break;
+            /*case StepPropertiesType.mirrorPos:
+                SetObjectId(val);
+            break;*/
+        }
+    }
+    public void SetAutoFromComponentDelay(float delay){StartCoroutine(SetAutoFromComponentDelayI(delay));}
+    IEnumerator SetAutoFromComponentDelayI(float delay){
+        yield return new WaitForSecondsRealtime(delay);
+        SetAutoFromComponent();
+    }
+    public void SetTextInComponentDelay(string val,float delay=0.2f){StartCoroutine(SetTextInComponentDelayI(val,delay));}
+    IEnumerator SetTextInComponentDelayI(string val,float delay=0.2f){
+        yield return new WaitForSecondsRealtime(delay);
+        GetComponentInChildren<TMP_InputField>().text=val;
+    }
     public void SetDelay(string val){StartCoroutine(SetDelayI(val));}
     IEnumerator SetDelayI(string val){
         yield return new WaitForSecondsRealtime(0.05f);

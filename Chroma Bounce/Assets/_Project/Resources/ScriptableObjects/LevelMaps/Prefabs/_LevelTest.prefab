@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8371854436963678329}
   m_Layer: 0
-  m_Name: LevelTest
+  m_Name: _LevelTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

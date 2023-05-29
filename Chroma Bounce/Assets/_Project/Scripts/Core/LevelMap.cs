@@ -26,6 +26,7 @@ public class LevelMap : SerializedScriptableObject{
     };
     [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "Cost")]
     public Dictionary<StepPropertiesType,int> stepTypesCosts=new Dictionary<StepPropertiesType,int>();
+    public List<StoryboardText> storyboardText;
 }
 public class LevelRankCritiria{
     public LevelRankAchieved rank;

@@ -13,229 +13,14 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
+    SerializedFormat: 0
+    SerializedBytes: 0101110000006c006500760065006c00520061006e006b00430072006900740069007200690061002f000000000151000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e004c00690073007400600031005b005b004c006500760065006c00520061006e006b00430072006900740069007200690061002c00200041007300730065006d0062006c0079002d004300530068006100720070005d005d002c0020006d00730063006f0072006c006900620000000000060300000000000000022f0100000001220000004c006500760065006c00520061006e006b00430072006900740069007200690061002c00200041007300730065006d0062006c0079002d00430053006800610072007000010000001d0104000000720061006e006b00000000000000000017010d00000065006e00650072006700790055007300650064004d0061007800020000001f0110000000740069006d00650054006f0043006f006d0070006c006500740069006f006e006666a63f05023001000000020000001d0104000000720061006e006b00010000000000000017010d00000065006e00650072006700790055007300650064004d0061007800020000001f0110000000740069006d00650054006f0043006f006d0070006c006500740069006f006e003333534005023001000000030000001d0104000000720061006e006b00020000000000000017010d00000065006e00650072006700790055007300650064004d0061007800020000001f0110000000740069006d00650054006f0043006f006d0070006c006500740069006f006e009a99994005070501011000000061006c006c006f007700650064005300740065007000540079007000650073002f020000000173000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e00440069006300740069006f006e00610072007900600032005b005b005300740065007000500072006f00700065007200740069006500730054007900700065002c00200041007300730065006d0062006c0079002d004300530068006100720070005d002c005b00530079007300740065006d002e0042006f006f006c00650061006e002c0020006d00730063006f0072006c00690062005d005d002c0020006d00730063006f0072006c00690062000400000001010800000063006f006d00700061007200650072002f030000000162000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e0045006e0075006d0045007100750061006c0069007400790043006f006d0070006100720065007200600031005b005b005300740065007000500072006f00700065007200740069006500730054007900700065002c00200041007300730065006d0062006c0079002d004300530068006100720070005d005d002c0020006d00730063006f0072006c0069006200050000000600000000000000000705060700000000000000042e1d010200000024006b0000000000000000002b0102000000240076000005042e1d010200000024006b0001000000000000002b0102000000240076000105042e1d010200000024006b0002000000000000002b0102000000240076000105042e1d010200000024006b0003000000000000002b0102000000240076000105042e1d010200000024006b0004000000000000002b0102000000240076000005042e1d010200000024006b0005000000000000002b0102000000240076000005042e1d010200000024006b0006000000000000002b0102000000240076000005070501010e00000073007400650070005400790070006500730043006f007300740073002f040000000171000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e00440069006300740069006f006e00610072007900600032005b005b005300740065007000500072006f00700065007200740069006500730054007900700065002c00200041007300730065006d0062006c0079002d004300530068006100720070005d002c005b00530079007300740065006d002e0049006e007400330032002c0020006d00730063006f0072006c00690062005d005d002c0020006d00730063006f0072006c00690062000600000001010800000063006f006d00700061007200650072003003000000070000000600000000000000000705060300000000000000042e1d010200000024006b000100000000000000170102000000240076000100000005042e1d010200000024006b000200000000000000170102000000240076000100000005042e1d010200000024006b0003000000000000001701020000002400760001000000050705
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: levelRankCritiria
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[LevelRankCritiria, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 7
-      Data: 1|LevelRankCritiria, Assembly-CSharp
-    - Name: rank
-      Entry: 3
-      Data: 0
-    - Name: energyUsedMax
-      Entry: 3
-      Data: 2
-    - Name: timeToCompletion
-      Entry: 4
-      Data: 1.3
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 2|LevelRankCritiria, Assembly-CSharp
-    - Name: rank
-      Entry: 3
-      Data: 1
-    - Name: energyUsedMax
-      Entry: 3
-      Data: 2
-    - Name: timeToCompletion
-      Entry: 4
-      Data: 3.3
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: allowedStepTypes
-      Entry: 7
-      Data: 3|System.Collections.Generic.Dictionary`2[[StepPropertiesType, Assembly-CSharp],[System.Boolean,
-        mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 4|System.Collections.Generic.EnumEqualityComparer`1[[StepPropertiesType,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 7
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 0
-    - Name: $v
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 1
-    - Name: $v
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 2
-    - Name: $v
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 3
-    - Name: $v
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 4
-    - Name: $v
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 5
-    - Name: $v
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 6
-    - Name: $v
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: stepTypesCosts
-      Entry: 7
-      Data: 5|System.Collections.Generic.Dictionary`2[[StepPropertiesType, Assembly-CSharp],[System.Int32,
-        mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 6|System.Collections.Generic.EnumEqualityComparer`1[[StepPropertiesType,
-        Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 3
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 1
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 2
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 3
-    - Name: $v
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
   parent: {fileID: 7974915703021518228, guid: e38bb54624458cd41a83e7bcddac1e76, type: 3}
   stepEnergy: 3
   startingChargePositive: 0
@@ -252,10 +37,42 @@ MonoBehaviour:
     objectId: 0
     mirrorPos: {x: 0, y: 0}
     laserPos: {x: 0, y: 0}
-  - stepType: 1
-    delay: 0.1
-    gunPolarity: 1
-    gunRotation: 0
-    objectId: 0
-    mirrorPos: {x: 0, y: 0}
-    laserPos: {x: 0, y: 0}
+  storyboardText:
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Dang it, why <b>this</b> glitch again, who's child threw something at the
+      TV??
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Hey you, behind the 3rd wall, only you can save me from this crap Im stuck
+      in. Since you can control this world
+  - storyboardTextType: 0
+    speed: 0.07
+    text: All you need to do is to power the Mother Logic Gate on the right
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Experiment with what you can do in here while youre at it since you have
+      a lot to learn
+  - storyboardTextType: 1
+    speed: 0.1
+    text: 'You can always turn on/off the Steps menu by pressing
+
+      <b>E<b>
+
+
+      and
+      Start the Steps by
+
+      SPACE'
+  - storyboardTextType: 1
+    speed: 0.1
+    text: 'You can also forcefuly restart the world with R while in the Steps Menu.
+
+
+      And
+      reset the level by opening the Steps Menu after starting execution'
+  - storyboardTextType: 1
+    speed: 0.1
+    text: The steps run consecutively from left to right. If you think something
+      like the angle feels not correct to what you set; retry and try pressing on
+      the said steps to give it a push, it gets a bit buggy

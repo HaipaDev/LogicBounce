@@ -263,3 +263,39 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: Typing
+    clip: {fileID: 8300000, guid: 9d90f7289e024b34195236e03ac7bbde, type: 3}
+    volume: 0.75
+    volumeVariance: 0.15
+    pitch: 1
+    pitchVariance: 0.15
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Typing2
+    clip: {fileID: 8300000, guid: 90872ca9526027e4a96d87da58cba2bb, type: 3}
+    volume: 0.75
+    volumeVariance: 0.15
+    pitch: 1
+    pitchVariance: 0.15
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Glitch
+    clip: {fileID: 8300000, guid: bcef5de1865721544853cd30aa92209e, type: 3}
+    volume: 0.7
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Glitch2
+    clip: {fileID: 8300000, guid: 92c16f2928deb6140ae4883a902d2856, type: 3}
+    volume: 0.5
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}

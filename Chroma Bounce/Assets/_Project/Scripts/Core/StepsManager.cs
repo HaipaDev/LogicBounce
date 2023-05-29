@@ -29,18 +29,16 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     CameraSettings targetCamSettings;
     void Awake(){if(StepsManager.instance!=null){Destroy(gameObject);}else{instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
     void Start(){
-        //defaultCameraSettings.pos=Camera.main.transform.position;defaultCameraSettings.size=Camera.main.orthographicSize;
-        targetCamSettings=openCameraSettings;
-        if(currentSteps.Count==0){Debug.LogWarning("No starting steps!");AddStep((int)StepPropertiesType.gunShoot,true);RefreshStartingElements();}
-        OpenStepsUI();addStepsUI.SetActive(false);
-        //RefreshStartingElements();
+        targetUIPos=Vector2.zero;
+        targetCamSettings=defaultCameraSettings;
+        //if(currentSteps.Count==0){Debug.LogWarning("No starting steps!");AddStep((int)StepPropertiesType.gunShoot,true);RefreshStartingElements();}
+        CloseStepsUI(true);addStepsUI.SetActive(false);
         RepopulateUIFromSteps();
-        //ClearAllSteps();
     }
     void Update(){
-        if(!GameManager.GlobalTimeIsPausedNotStepped){
-            if(!VictoryCanvas.Won){
-                if(Input.GetKeyDown(KeyCode.E)){if(!StepsUIOpen){OpenStepsUI(true);}else{CloseStepsUI();}}
+        if(!GameManager.GlobalTimeIsPausedNotStepped||StoryboardManager.IsOpen){
+            if(!VictoryCanvas.Won&&!StoryboardManager.IsOpen){
+                if(Input.GetKeyDown(KeyCode.E)){if(!StepsUIOpen){OpenStepsUI();}else{CloseStepsUI();}}
                 if(Input.GetKeyDown(KeyCode.Space)){UIInputSystem.instance.currentSelected=null;StartSteps();}
             }
 
@@ -57,7 +55,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             Camera.main.orthographicSize=Vector2.MoveTowards(new Vector2(0,Camera.main.orthographicSize),new Vector2(0,cs.size),_stepCamSize).y;
 
             if(allStepsDone&&reopenStepsUIDelay>0&&FindObjectsOfType<Bullet>().Length==0)reopenStepsUIDelay-=Time.unscaledDeltaTime;
-            if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI(true);}
+            if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI();}
 
             /*ChangeValuesWithArrows();*/
             //if(selectedStep==null)ResetAfterPreviewingSteps();
@@ -106,10 +104,12 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     public bool _areStepsBeingRun(){return (stepsRunning&&!allStepsDone);}
     public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0);}
     public void StartSteps(){
-        if(currentSteps.Count>0&&!VictoryCanvas.Won){
-            SelectStep(null,true);UIInputSystem.instance.currentSelected=null;
+        if(currentSteps.Count>0&&!VictoryCanvas.Won&&!StoryboardManager.IsOpen){
+            RepopulateStepsFromUI();
+            SelectStep(null,true);UIInputSystem.instance.currentSelected=null;UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);SwitchSelectables(false);
+            ResetAfterPreviewingSteps();
             if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){StartCoroutine(StartStepsI());}
-        }
+        }else if(currentSteps.Count==0){AudioManager.instance.Play("Deny");}
     }
     IEnumerator StartStepsI(){
         if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){
@@ -118,10 +118,15 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             allStepsDone=false;
             CloseStepsUI();
             yield return new WaitForSeconds(1.5f);//Wait for end of animation
+            SelectStep(null,true);UIInputSystem.instance.currentSelected=null;UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);SwitchSelectables(false);ResetAfterPreviewingSteps();
             if(stepsCoroutine==null){stepsRunning=true;stepsCoroutine=StartCoroutine(ExecuteStepsI());}
         }else{yield return null;}
     }
-    public void StopSteps(){if(stepsCoroutine!=null){StopCoroutine(stepsCoroutine);stepsCoroutine=null;}currentStepId=0;startedSteps=false;stepsRunning=false;}
+    public void StopSteps(){
+        Debug.Log("Stopping steps");
+        currentStepId=0;startedSteps=false;stepsRunning=false;SwitchSelectables(true);
+        if(stepsCoroutine!=null){StopCoroutine(stepsCoroutine);stepsCoroutine=null;}
+    }
     void ReexecuteSteps(){Debug.Log("ReexecuteSteps()");if(stepsCoroutine!=null){stepsCoroutine=null;stepsCoroutine=StartCoroutine(ExecuteStepsI());Debug.Log("ReexecutingSteps..");}}
     Coroutine stepsCoroutine;//,singleStepCoroutine;
     IEnumerator ExecuteStepsI(){
@@ -152,7 +157,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 Player.instance.SwitchPolarity();
             break;
             case StepPropertiesType.gunRotation:
-                Player.instance.SetGunRotation(_s.gunRotation);//Reverse rotation
+                Player.instance.SetGunRotation(_s.gunRotation);
             break;
             case StepPropertiesType.mirrorPos:
                 LevelMapManager.instance.mirrorListSorted[_s.objectId].transform.position=_s.mirrorPos;
@@ -170,8 +175,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         Player.instance.SetGunRotation(l.defaultGunRotation);
     }
 
-    public void OpenStepsUI(bool reset=false,bool force=false){
-        if(!StepsUIOpen){
+    public void OpenStepsUI(bool reset=true,bool force=false){
+        if(!StepsUIOpen||force){
             StopSteps();
             if(currentStepId==0||force){
                 targetUIPos=Vector2.zero;
@@ -184,8 +189,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             }
         }
     }
-    public void CloseStepsUI(){
-        if(StepsUIOpen){
+    public void CloseStepsUI(bool force=false){
+        if(StepsUIOpen||force){
             targetUIPos=new Vector2(0,stepsUIAnchoredPosHidden);
             SetCameraSettings(defaultCameraSettings);
             StepsUIOpen=false;
@@ -222,6 +227,9 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 if(id==(int)StepPropertiesType.gunRotation&&LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
                     gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
                     gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
+                    gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45,00",0.2f);
+                    gos.GetComponent<StepUIPrefab>().SetAutoFromComponentDelay(0.21f);
+                    Debug.Log("Set GunRotation to Float");
                 }else if(id==(int)StepPropertiesType.gunRotation&&!LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
                     gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
                     gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
@@ -235,6 +243,9 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         currentSteps.Clear();currentSteps=new List<StepProperties>();currentStepsEnergyUsed=0;RefreshStartingElements();
         yield return new WaitForSecondsRealtime(0.1f);
         foreach(StepUIPrefab s in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){
+            if(s.GetComponentsInChildren<LimitInputFieldNum>().Length>0){
+                s.GetComponentInChildren<LimitInputFieldNum>().UpdateInputFieldAutoFromComponent();
+                s.SetAutoFromComponent();}
             int _stepCost=_stepCostForTypeCurrentLvl(s.stepProperties.stepType);
             currentSteps.Add(s.stepProperties);currentStepsEnergyUsed+=_stepCost;
             RefreshStartingElements();
@@ -268,28 +279,37 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             if(gos.GetComponent<Button>()!=null){bt=gos.GetComponent<Button>();}
             else{bt=gos.AddComponent<Button>();}
             bt.onClick.AddListener(delegate { StepsManager.instance.SelectStep(bt);});
+            Navigation n=Navigation.defaultNavigation;n.mode=Navigation.Mode.None;
+            bt.navigation=n;
         }
     }
     public void SelectStep(Button bt,bool forceUpdate=false){
-        if(bt!=null){
+        if(bt!=null&&!startedSteps){
             var sui=bt.GetComponent<StepUIPrefab>();
             if(selectedStep!=bt||selectedStep==null||forceUpdate){
-                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                 selectedStep=bt;
+                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                 sui.SetSelectedSpr();
                 ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
                 Debug.Log("Selecting Step");
             }else if(selectedStep==bt){
-                selectedStep=null;
+                selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                 sui.SetDefaultSpr();
                 ResetAfterPreviewingSteps();
-                Debug.Log("UnSelecting Steps");
+                Debug.Log("UnSelecting Step");
             }
         }else{
-            selectedStep=null;ResetAfterPreviewingSteps();
-            foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){sui.SetDefaultSpr();}
+            selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+            if(!startedSteps){
+                ResetAfterPreviewingSteps();
+                foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){sui.SetDefaultSpr();}
+            }
             Debug.Log("UnSelecting Steps");
         }
+    }
+    public void SwitchSelectables(bool on=true){
+        foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){if(sui.GetComponent<Button>()!=null)sui.GetComponent<Button>().interactable=on;}
     }
     public void SetAllowedSteps(float delay=0f){StartCoroutine(SetAllowedStepsI(delay));}
     IEnumerator SetAllowedStepsI(float delay){
@@ -319,7 +339,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     public void SumUpEnergy(){
         currentStepsEnergyUsed=0;
         foreach(StepProperties s in currentSteps){
-            int _stepCost=0;
+            int _stepCost=_stepCostForTypeCurrentLvl(s.stepType);
             currentStepsEnergyUsed+=_stepCost;
             RefreshStartingElements();
         }

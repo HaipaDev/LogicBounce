@@ -233,3 +233,12 @@ MonoBehaviour:
   bulletSpeed: 6
   playerDir: 1
   defaultSteps: []
+  storyboardText:
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Some of these Logic Gates really dont like positive energy.. You can tell
+      it by their faces
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Notice that the symbols below their head; be it a bullet or a logic gate
+      tells you what is required to change its <b>current</b> state

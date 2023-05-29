@@ -26,7 +26,21 @@ public class Loader : MonoBehaviour{
         audioMixer.SetFloat("MasterVolume", ss.masterVolume);
         audioMixer.SetFloat("SoundVolume", ss.soundVolume);
         audioMixer.SetFloat("MusicVolume", ss.musicVolume);
+        //#if !UNITY_EDITOR
+            if(_firstInitialLevelLoader==null)_firstInitialLevelLoader=StartCoroutine(LoadFirstInitialLevel());
+        //#endif
         //Jukebox.instance.SetMusicToCstmzMusic();
+    }
+    Coroutine _firstInitialLevelLoader;
+    IEnumerator LoadFirstInitialLevel(){
+        CoreSetup.instance.Load();
+        yield return new WaitForSecondsRealtime(0.1f);
+        if(!SaveSerial.instance.playerData.firstLevelPassedInitial){
+            AudioManager.instance.Play("Glitch2");
+            //GSceneManager.instance.LoadGameScene();}
+            if(LevelMapManager.instance==null){Instantiate(CoreSetup.instance._levelMapManagerPrefab(),Vector2.zero,Quaternion.identity);}
+            LevelMapManager.instance.LoadLevel(0);
+        }
     }
     public void ForceLoad(){
         if(loaded)GSceneManager.instance.LoadStartMenuEmpty();

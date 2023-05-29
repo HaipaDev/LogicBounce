@@ -255,3 +255,12 @@ MonoBehaviour:
     objectId: 0
     mirrorPos: {x: 0, y: 0}
     laserPos: {x: 0, y: 0}
+  storyboardText:
+  - storyboardTextType: 0
+    speed: 0.07
+    text: Well alright, here we go again, I guess this is gonna go for a while, we
+      need a lot of fixing..
+  - storyboardTextType: 0
+    speed: 0.07
+    text: But I guess we got more possibilites and more thinking, Im just gonna leave
+      you with a suggestion, but maybe Im wrong idk

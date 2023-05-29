@@ -12,6 +12,10 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	[SerializeField] string filenameSettings = "settings";
 	void Start(){
 		RecreatePlayerData();
+
+		#if UNITY_EDITOR
+		playerData.firstLevelPassedInitial=true;playerData.secondLevelEntered=true;
+		#endif
 	}
 
 #region//Player Data
@@ -20,6 +24,8 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	public float buildLastLoaded;
 	[System.Serializable]public class PlayerData{
 		public LevelPassValues[] levelPassedValues;
+		public bool firstLevelPassedInitial;
+		public bool secondLevelEntered;
 	}
 
 	public string _playerDataPath(){return Application.persistentDataPath+"/"+filename+".hyper";}
@@ -57,7 +63,9 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		}
 	}
 	public void RecreatePlayerData(){
+		Debug.Log("Attempting to recreate player data");
 		if(playerData!=null){
+		Debug.Log("Recreating player data");
 			int _length=1;
 			if((playerData.levelPassedValues!=null&&playerData.levelPassedValues.Length==0)||playerData.levelPassedValues==null){
 			if(LevelMapManager.instance!=null){

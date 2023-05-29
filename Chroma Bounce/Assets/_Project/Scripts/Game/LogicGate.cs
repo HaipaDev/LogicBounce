@@ -230,12 +230,12 @@ public class LogicGate : MonoBehaviour{
                 AudioManager.instance.Play("GateActivate");
                 AudioManager.instance.StopPlaying("GateDeactivate");
                 if(motherGate){VictoryCanvas.instance.Win();}
-            }if(!_initialized){_initialized=true;}
+            }else{_initialized=true;}
         }
         
     }
     public void Deactivate(bool force=false){
-        if(!_initialized){_initialized=true;return;}
+        //if(!_initialized){_initialized=true;return;}
         if(active||force){
             spr.sprite=spritencolor_deactivated.spr;
             lightChild.GetComponent<Light2D>().enabled=false;
@@ -244,7 +244,7 @@ public class LogicGate : MonoBehaviour{
             if(_initialized){
                 AudioManager.instance.Play("GateDeactivate");
                 AudioManager.instance.StopPlaying("GateActivate");
-            }if(!_initialized){_initialized=true;}
+            }else{_initialized=true;}
         }
     }
     public void Charge(){
@@ -269,8 +269,7 @@ public class LogicGate : MonoBehaviour{
     }
     public void ForceUpdateActive(bool _active){
         _initialized=false;
-        active=_active;
-        if(active){Activate(true);}else{Deactivate(true);}
+        if(_active){Activate(true);}else{Deactivate(true);}
     }
 
     public void ConnectWithGatePoweringDelay(float delay=0.2f){StartCoroutine(ConnectWithGatePoweringDelayI(delay));}

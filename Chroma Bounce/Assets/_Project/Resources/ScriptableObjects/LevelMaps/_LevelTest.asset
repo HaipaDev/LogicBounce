@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93e565756616f3b4bbf02706699ac978, type: 3}
-  m_Name: LevelTest
+  m_Name: _LevelTest
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2

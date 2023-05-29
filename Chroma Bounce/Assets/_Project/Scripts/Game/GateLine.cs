@@ -33,7 +33,7 @@ public class GateLine : MonoBehaviour{
         //uiLine.OnRebuildRequested();
     }
     void SetNewMaterial(){if(AssetsManager.instance.GetMat("HolographDissolve")!=null&&!_setNewMaterial){uiLine.material=Instantiate(AssetsManager.instance.GetMat("HolographDissolve"));_setNewMaterial=true;}}
-    public bool CompareColors(Color c){Color _c=uiLine.material.GetColor("Color_7C878D04");return (_c.r==c.r && _c.g==c.g && _c.b==c.b);}
+    public bool CompareColors(Color c){if(uiLine.material.HasProperty("Color_7C878D04")){Color _c=uiLine.material.GetColor("Color_7C878D04");return (_c.r==c.r && _c.g==c.g && _c.b==c.b);}else{Debug.LogWarning("Material/Color not correctly set for GateLine");return false;}}
     public void SetScanningDir(bool downwards=false){
         if(!_setNewMaterial)SetNewMaterial();
         uiLine.material.SetFloat("Boolean_BC76AE63",AssetsManager.BoolToInt(downwards));

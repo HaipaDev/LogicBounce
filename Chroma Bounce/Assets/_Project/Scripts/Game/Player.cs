@@ -76,8 +76,9 @@ public class Player : MonoBehaviour{    public static Player instance;
             }*/
         }
     }
-    public void SetGunRotation(float rotZ){
-        rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,360-rotZ);
+    public void SetGunRotation(float rotZ,bool _flipped=false){
+        float _rotZ=360-rotZ;if(_flipped)_rotZ=rotZ;
+        rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,_rotZ);
     }
     public void ShootBullet(){
         canFire=false;timer=timeBetweenFiring;

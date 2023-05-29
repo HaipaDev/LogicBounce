@@ -41,7 +41,6 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         else yield return new WaitForSecondsRealtime(0.25f);
         Restart();
     }
-    public void CallRestartQuiet(){Restart();}
     void Restart(){
         levelTimer=0;
         if(levelParent!=null&&levelMaps[levelCurrent].parent!=null){
@@ -54,6 +53,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                 var _prefabChild=levelMaps[levelCurrent].parent.transform.GetChild(i);
                 _parentChild.gameObject.SetActive(_prefabChild.gameObject.activeSelf);
                 _parentChild.transform.position=_prefabChild.transform.position;
+                _parentChild.transform.eulerAngles=_prefabChild.transform.eulerAngles;
 
                 WorldCanvas.instance.Cleanup();
 
@@ -65,7 +65,6 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                     _parentC.logicGateSignalsType=_prefabC.logicGateSignalsType;
                     _parentC.charged1=_prefabC.charged1;
                     _parentC.charged2=_prefabC.charged2;
-                    _parentC.active=_prefabC.active;
                     _parentC.ForceUpdateActive(_prefabC.active);
                     _parentC.motherGate=_prefabC.motherGate;
                     /*_parentC.gatePowering1=_prefabC.gatePowering1;
@@ -112,7 +111,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             if(GSceneManager.CheckScene("Game")){
                 if(levelParent==null){Debug.LogWarning("levelParent is null!");
                     if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}
-                    else{InstantiateLevelParent();Restart();}
+                    InstantiateLevelParent();CallRestart(0,true);
                 }
                 if(levelMaps.Length<levelCurrent){Debug.LogWarning("Level list shorter than "+levelCurrent);}
                 else{if(levelMaps[levelCurrent].parent==null){Debug.LogWarning("Level "+levelCurrent+" not assigned null!");}}
@@ -162,7 +161,11 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
         StepsManager.instance.ClearAllSteps();
         if(levelMaps[levelCurrent].defaultSteps!=null){if(levelMaps[levelCurrent].defaultSteps.Count>0){
-            StepsManager.instance.currentSteps=levelMaps[levelCurrent].defaultSteps;StepsManager.instance.RepopulateUIFromSteps();StepsManager.instance.SumUpEnergy();
+            foreach(StepProperties s in levelMaps[levelCurrent].defaultSteps){
+                StepsManager.instance.currentSteps.Add(s);
+                //StepsManager.instance.AddStep(s,true);
+            }
+            StepsManager.instance.RepopulateUIFromSteps();StepsManager.instance.SumUpEnergy();
         }}
         CallRestart(0,true);
         ResetLists();

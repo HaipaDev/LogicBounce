@@ -25,7 +25,8 @@ public class ValueDisplay : MonoBehaviour{
     void ChangeText(){      string _txt="";
     #region//GameManager
         if(GameManager.instance!=null){     var gs=GameManager.instance;
-            if(value=="score") _txt=gs.score.ToString();
+            if(value=="gameVersion") _txt="Version "+gs.gameVersion;
+            if(value=="buildVersion") _txt="Build "+gs.buildVersion.ToString();
         }
     #endregion
     #region//Player
