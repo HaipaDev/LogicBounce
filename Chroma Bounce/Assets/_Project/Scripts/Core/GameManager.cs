@@ -29,17 +29,19 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     bool setValues;
     public float GameManagerTime=0;
     [Range(0,2)]public static int maskMode=1;
+    bool _webglFullscreenRequested=false;
+    bool _webglCanFullscreen=false;
+    bool _webglDidFullscreen=false;
 
     void Awake(){
         SetUpSingleton();
-        instance=this;
         #if UNITY_EDITOR
         cheatmode=true;
         #else
         cheatmode=false;
         #endif
     }
-    void SetUpSingleton(){int numberOfObj=FindObjectsOfType<GameManager>().Length;if(numberOfObj>1){Destroy(gameObject);}else{DontDestroyOnLoad(gameObject);}}
+    void SetUpSingleton(){if(GameManager.instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
     void Start(){}
     void Update(){
         if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<=0){gameSpeed=0;}
@@ -80,13 +82,20 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
         void FindPostProcess(){if(postProcessVolume==null){postProcessVolume=Camera.main.gameObject.GetComponentInChildren<Volume>();}if(postProcessVolume==null){postProcessVolume=FindObjectOfType<Volume>();}}
         }
 
-        CheckCodes(0,0);
+        if(Application.platform==RuntimePlatform.WebGLPlayer){
+            if(!_webglFullscreenRequested){if(Input.GetMouseButtonDown(0)){_webglFullscreenRequested=true;_webglCanFullscreen=true;return;}}
+            if(_webglCanFullscreen&&!_webglDidFullscreen){if(Input.GetMouseButtonDown(0)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));_webglDidFullscreen=true;return;}}
+            if(Input.GetKeyDown(KeyCode.F)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));return;}
+        }
     }
     public Volume PostProcessVolume(){return postProcessVolume;}
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
     public void Save(){ SaveSerial.instance.Save(); SaveSerial.instance.SaveSettings(); }
     public void Load(){ SaveSerial.instance.Load(); SaveSerial.instance.LoadSettings(); }
-    public void DeleteAll(){ SaveSerial.instance.Delete(); /*ResetSettings();*/ GSceneManager.instance.LoadStartMenu();}
+    public void DeleteAll(){
+        SaveSerial.instance.Delete(); SaveSerial.instance.DeleteSettings();/*ResetSettings();*/ GSceneManager.instance.LoadStartMenu();
+        if(Application.platform==RuntimePlatform.WebGLPlayer){PlayerPrefs.DeleteAll();Application.ExternalEval("window.location.reload();");}
+    }
     public void ResetSettings(){
         SaveSerial.instance.DeleteSettings();
         GSceneManager.instance.ReloadScene();
@@ -97,31 +106,10 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     public void CloseSettings(bool goToPause){
     if(GameManager.instance!=null){
         if(SceneManager.GetActiveScene().name=="Options"){if(GSceneManager.instance!=null)GSceneManager.instance.LoadStartMenu();}
-        else if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused){if(FindObjectOfType<SettingsMenu>()!=null)FindObjectOfType<SettingsMenu>().Close();if(FindObjectOfType<PauseMenu>()!=null&&goToPause)FindObjectOfType<PauseMenu>().Pause();}
+        else if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused){if(FindObjectOfType<SettingsMenu>()!=null)FindObjectOfType<SettingsMenu>().Close();if(PauseMenu.instance!=null&&goToPause)PauseMenu.instance.Pause();}
     }}
-    public void ResetMusicPitch(){if(FindObjectOfType<Jukebox>()!=null)if(FindObjectOfType<Jukebox>().GetComponent<AudioSource>()!=null)FindObjectOfType<Jukebox>().GetComponent<AudioSource>().pitch=1;}
+    public void ResetMusicPitch(){if(Jukebox.instance!=null)if(Jukebox.instance.GetComponent<AudioSource>()!=null)Jukebox.instance.GetComponent<AudioSource>().pitch=1;}
 
-    public void CheckCodes(int fkey, int nkey){
-        if(fkey==0&&nkey==0){}
-        if(Input.GetKey(KeyCode.Delete) || fkey==-1){
-            if(Input.GetKeyDown(KeyCode.Alpha0) || nkey==0){
-                cheatmode=true;
-            }if(Input.GetKeyDown(KeyCode.Alpha9) || nkey==9){
-                cheatmode=false;
-            }
-        }
-        if(cheatmode==true){
-            if(Input.GetKey(KeyCode.F1) || fkey==1){
-                if(Input.GetKeyDown(KeyCode.Alpha1) || nkey==1){}
-            }
-            if(Input.GetKey(KeyCode.F2) || fkey==2){
-                if(Input.GetKeyDown(KeyCode.Alpha1) || nkey==1){}
-            }
-            if(Input.GetKey(KeyCode.F3) || fkey==3){
-                if(Input.GetKeyDown(KeyCode.Alpha1) || nkey==1){}
-            }
-        }
-    }
     public string FormatTime(float time){
         int minutes = (int) time / 60 ;
         int seconds = (int) time - 60 * minutes;

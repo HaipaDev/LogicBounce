@@ -49,8 +49,8 @@ MonoBehaviour:
   gameSpeed: 1
   defaultGameSpeed: 1
   speedChanged: 0
-  gameVersion: 1
-  buildVersion: 1.1
+  gameVersion: 1.0.1
+  buildVersion: 2.1
   cheatmode: 0
   dmgPopups: 1
   analyticsOn: 1

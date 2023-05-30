@@ -107,7 +107,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
     IEnumerator AfterFirstInitialLevel(){
         AudioManager.instance.Play("Glitch");
         yield return new WaitForSecondsRealtime(0.5f);//Because its before the VictoryVFX etc
-        foreach(Button bt in GetComponentsInChildren<Button>()){bt.interactable=false;}
+        foreach(Button bt in GetComponentsInChildren<Button>()){bt.interactable=false;}Destroy(victoryUI);
         yield return new WaitForSecondsRealtime(0.01f);
         SaveSerial.instance.playerData.firstLevelPassedInitial=true;SaveSerial.instance.Save();
         yield return new WaitForSecondsRealtime(0.04f);

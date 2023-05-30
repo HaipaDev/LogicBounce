@@ -44,8 +44,8 @@ PlayerSettings:
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1920
   defaultScreenHeight: 1080
-  defaultScreenWidthWeb: 960
-  defaultScreenHeightWeb: 600
+  defaultScreenWidthWeb: 1920
+  defaultScreenHeightWeb: 1080
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
   m_MTRendering: 1
@@ -129,13 +129,15 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   m_SupportedAspectRatios:
-    4:3: 1
-    5:4: 1
-    16:10: 1
+    4:3: 0
+    5:4: 0
+    16:10: 0
     16:9: 1
-    Others: 1
+    Others: 0
   bundleVersion: 1.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11500000, guid: 51a11341821f7984589c29719ddaac01, type: 3}
+  - {fileID: 11500000, guid: cdc25a53b5f528d4db0a828a1bb19101, type: 3}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -381,7 +383,10 @@ PlayerSettings:
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
-  m_TemplateCustomTags: {}
+  m_TemplateCustomTags:
+    BACKGROUND: '#272727'
+    OPTIMIZE_FOR_PIXEL_ART: true
+    SCALE_TO_FIT: true
   mobileMTRendering:
     Android: 1
     iPhone: 1
@@ -630,10 +635,10 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: APPLICATION:Default
+  webGLTemplate: PROJECT:BetterMinimal
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
-  webGLCompressionFormat: 0
+  webGLCompressionFormat: 2
   webGLWasmArithmeticExceptions: 0
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
@@ -651,7 +656,7 @@ PlayerSettings:
     Server: UNITY_VISUAL_SCRIPTING
     Stadia: UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING
     Standalone: ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING
-    WebGL: UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING
+    WebGL: UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1
     Windows Store Apps: UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING
     XboxOne: UNITY_POST_PROCESSING_STACK_V2;UNITY_VISUAL_SCRIPTING
     iPhone: UNITY_VISUAL_SCRIPTING

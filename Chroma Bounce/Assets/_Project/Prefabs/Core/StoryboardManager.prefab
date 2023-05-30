@@ -69,8 +69,8 @@ MonoBehaviour:
   m_text: Dang it, why <b>this</b> glitch again, who's child threw something at the
     TV??
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a2f08758f2c849e4a867054585de6b96, type: 2}
-  m_sharedMaterial: {fileID: -6494487853230084892, guid: a2f08758f2c849e4a867054585de6b96, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
+  m_sharedMaterial: {fileID: -3640924823094735546, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
+  m_fontSize: 88.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -798,8 +798,8 @@ MonoBehaviour:
     You can also forcefuly restart the world
     with R while in the steps menu'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a2f08758f2c849e4a867054585de6b96, type: 2}
-  m_sharedMaterial: {fileID: -6494487853230084892, guid: a2f08758f2c849e4a867054585de6b96, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
+  m_sharedMaterial: {fileID: -3640924823094735546, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 99.4
+  m_fontSize: 71.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

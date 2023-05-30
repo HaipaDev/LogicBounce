@@ -11,6 +11,7 @@ public class Loader : MonoBehaviour{
     void Load(){
         var ss=SaveSerial.instance.settingsData;
         if(Application.platform==RuntimePlatform.Android){ss.pprocessing=false;ss.pauseWhenOOF=false;}
+        if(Application.platform==RuntimePlatform.WebGLPlayer){ss.windowMode=2;}
         else{ss.pprocessing=true;}
 
         if(!loaded){
@@ -18,10 +19,11 @@ public class Loader : MonoBehaviour{
             SaveSerial.instance.LoadSettings();
             loaded=true;
         }
-        if(Application.platform!=RuntimePlatform.Android){Screen.SetResolution(Display.main.systemWidth,Display.main.systemHeight,FullScreenMode.FullScreenWindow);//Screen.fullScreen=ss.fullscreen;if(ss.fullscreen)Screen.SetResolution(Display.main.systemWidth,Display.main.systemHeight,true,60);
-        }if(Application.platform!=RuntimePlatform.Android){
+        if(Application.platform!=RuntimePlatform.Android&&Application.platform!=RuntimePlatform.WebGLPlayer){Screen.SetResolution(Display.main.systemWidth,Display.main.systemHeight,FullScreenMode.FullScreenWindow);//Screen.fullScreen=ss.fullscreen;if(ss.fullscreen)Screen.SetResolution(Display.main.systemWidth,Display.main.systemHeight,true,60);
+        }if(Application.platform!=RuntimePlatform.Android&&Application.platform!=RuntimePlatform.WebGLPlayer){
             Screen.SetResolution(ss.resolution.x,ss.resolution.y,SettingsMenu.GetFullScreenMode(ss.windowMode));
         }
+        //if(Application.platform==RuntimePlatform.WebGLPlayer){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));}
         //if (Application.platform == RuntimePlatform.Android)ss.moveByMouse=false;
         audioMixer.SetFloat("MasterVolume", ss.masterVolume);
         audioMixer.SetFloat("SoundVolume", ss.soundVolume);

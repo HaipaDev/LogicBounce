@@ -19,7 +19,7 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
     }
     public void LoadStartMenuGame(){
         if(SaveSerial.instance.playerData.firstLevelPassedInitial){GSceneManager.instance.StartCoroutine(GSceneManager.instance.LoadStartMenuGameI());}
-        else{SaveSerial.instance.SaveSettings();Application.Quit();}
+        else{if(Application.platform!=RuntimePlatform.WebGLPlayer){SaveSerial.instance.SaveSettings();Application.Quit();}}
     }
     IEnumerator LoadStartMenuGameI(){
         if(SceneManager.GetActiveScene().name=="Game"){
@@ -85,7 +85,7 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
         GameManager.instance.gameSpeed=1f;
         OnChangeScene();
     }
-    public void QuitGame(){Application.Quit();}
+    public void QuitGame(){if(Application.platform!=RuntimePlatform.WebGLPlayer)Application.Quit();}
     public void RestartApp(){
         SceneManager.LoadScene("Loading");
         GameManager.instance.speedChanged=false;
@@ -93,15 +93,24 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
         OnChangeScene();
     }
     public void RelaunchTheGame(){
-        #if !UNITY_EDITOR
+        #if !UNITY_EDITOR && !UNITY_WEBGL && !UNITY_WEBGL_API
         Debug.Log("Relaunching the game...");
-        string executablePath = Application.dataPath.Replace("_Data", "");//System.IO.Path.Combine(Application.dataPath.Replace("_Data", ""), "Chroma Bounce.exe");
+        string executablePath = Application.dataPath.Replace("_Data", "");
         System.Diagnostics.Process.Start(executablePath);
         Application.Quit();
+        #elif UNITY_WEBGL || UNITY_WEBGL_API
+        StartCoroutine(RelaunchWebGL());
         #endif
     }
+    IEnumerator RelaunchWebGL(){
+        Debug.Log("Relaunching the website...");
+        Application.OpenURL(Application.absoluteURL);
+        yield return new WaitForSeconds(0.4f);
+        Application.ExternalEval("window.close();");
+        Application.Quit();
+    }
     public static bool EscPressed(){return Input.GetKeyDown(KeyCode.Escape)||Input.GetKeyDown(KeyCode.Joystick1Button1);}
-    void CheckESC(){    if(EscPressed()){
+    void CheckESC(){    if(EscPressed()||Input.GetKeyDown(KeyCode.Backspace)){
             var scene=SceneManager.GetActiveScene().name;
             if(CheckScene("LevelSelect")||CheckScene("Credits")){LoadStartMenu();}
     }}

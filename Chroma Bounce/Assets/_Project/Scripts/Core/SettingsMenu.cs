@@ -39,7 +39,7 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         soundSlider.value=settingsData.soundVolume;
         musicSlider.value=settingsData.musicVolume;
 
-        SetAvailableResolutions();
+        if(Application.platform!=RuntimePlatform.WebGLPlayer){SetAvailableResolutions();}
         windowModeDropdown.value=settingsData.windowMode;
         //fullscreenToggle.isOn=settingsData.fullscreen;
         vSyncToggle.isOn=settingsData.vSync;
@@ -58,7 +58,7 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         if(settingsData.soundVolume<=-50){settingsData.soundVolume=-80;}
         if(settingsData.musicVolume<=-50){settingsData.musicVolume=-80;}
 
-        if(GSceneManager.EscPressed()){Back();}
+        if(GSceneManager.EscPressed()||Input.GetKeyDown(KeyCode.Backspace)){Back();}
     }
     public void SetPanelActive(int i){panelActive=i;foreach(GameObject p in panels){p.SetActive(false);}panels[panelActive].SetActive(true);}
     public void OpenSettings(){transform.GetChild(0).gameObject.SetActive(true);transform.GetChild(1).gameObject.SetActive(false);}
@@ -107,6 +107,11 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         Screen.SetResolution(settingsData.resolution.x,settingsData.resolution.y,GetFullScreenMode(settingsData.windowMode));
         settingsData.windowMode=id;
     }
+    public void SetResolution(int resIndex){
+        Vector2Int _res=_availableResolutionsList[resIndex];
+        Screen.SetResolution(_res.x,_res.y,GetFullScreenMode(settingsData.windowMode));
+        settingsData.resolution=_res;
+    }
     public void SetVSync(bool isOn){
         QualitySettings.vSyncCount=AssetsManager.BoolToInt(isOn);
         settingsData.vSync=isOn;
@@ -117,11 +122,6 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     }
     public void SetPauseWhenOOF(bool isOn){
         settingsData.pauseWhenOOF=isOn;
-    }
-    public void SetResolution(int resIndex){
-        Vector2Int _res=_availableResolutionsList[resIndex];
-        Screen.SetResolution(_res.x,_res.y,GetFullScreenMode(settingsData.windowMode));
-        settingsData.resolution=_res;
     }
     public void SetPostProcessing(bool isOn){
         settingsData.pprocessing=isOn;
