@@ -742,6 +742,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 571677787840262152, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 571677787840262152, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 571677787840262152, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11400000, guid: 3b5a2b10421529f46991f984b4ac82a3, type: 2}
+    - target: {fileID: 571677787840262152, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 988253443992851194, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1257,9 +1273,45 @@ PrefabInstance:
       value: LevelMapManager
       objectReference: {fileID: 0}
     - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
-      propertyPath: serializationData.Prefab
+      propertyPath: levelMaps.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[0]
       value: 
-      objectReference: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      objectReference: {fileID: 11400000, guid: e5762355d15315345b312e0cabfa5a64, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5e1b5b2f403585c40ad00e89492d6f0b, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 1643285c38819e34d9cb24a50d049d31, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2fd8e47381e0954428fe14bfe1b56b9c, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: c9ebf62b7e80a284b8defcb0591cf1a0, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6c761e7a24c5ea24e862468b3b917b12, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2cfa36ec636b838458539d7447d5c7f4, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[7]
+      value: 
+      objectReference: {fileID: 11400000, guid: 71e403b8e2d62e747b61b684d6955107, type: 2}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelMaps.Array.data[8]
+      value: 
+      objectReference: {fileID: 11400000, guid: 64bd0e27d8cb4844c863a8ee48dceda1, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
 --- !u!1001 &6300540799200658075
@@ -1291,7 +1343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6300540798740042668, guid: d7b311faf064355458b0d848c4af180b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6300540798874417268, guid: d7b311faf064355458b0d848c4af180b, type: 3}
       propertyPath: m_AnchorMax.y

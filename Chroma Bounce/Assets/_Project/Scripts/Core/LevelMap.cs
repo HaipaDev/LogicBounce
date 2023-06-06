@@ -13,7 +13,6 @@ public class LevelMap : SerializedScriptableObject{
     public bool accurateGunRotation=false;
     public int bulletBounceLimit=10;
     public float bulletSpeed=6f;
-    public dir playerDir=dir.down;
     public List<StepProperties> defaultSteps;
     public List<LevelRankCritiria> levelRankCritiria;
     [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "IsAllowed")]

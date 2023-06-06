@@ -31,9 +31,8 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	public string _playerDataPath(){return Application.persistentDataPath+"/"+filename+".hyper";}
 	public void Save(){
         var settings=new ES3Settings(_playerDataPath(),ES3.EncryptionType.None);
-		//#if UNITY_WEBGL || UNITY_WEBGL_API
 		if(Application.platform==RuntimePlatform.WebGLPlayer){settings=new ES3Settings(ES3.Location.PlayerPrefs);}
-		//#endif
+		
 		if(!ES3.KeyExists("buildFirstLoaded",settings)){buildFirstLoaded=GameManager.instance.buildVersion;ES3.Save("buildFirstLoaded",buildFirstLoaded,settings);}
 		buildLastLoaded=GameManager.instance.buildVersion;ES3.Save("buildLastLoaded",buildLastLoaded,settings);
 		ES3.Save("playerData",playerData,settings);
@@ -64,6 +63,10 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		if(ES3.FileExists(_playerDataPath())&&Application.platform!=RuntimePlatform.WebGLPlayer){
 			ES3.DeleteFile(_playerDataPath());
 			Debug.Log("Game Data deleted!");
+		}else if(Application.platform==RuntimePlatform.WebGLPlayer){
+			PlayerPrefs.DeleteKey("playerData");
+			PlayerPrefs.DeleteKey("buildFirstLoaded");
+			PlayerPrefs.DeleteKey("buildLastLoaded");
 		}
 	}
 	public void RecreatePlayerData(){
@@ -107,6 +110,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	public void SaveSettings(){
 		var settings=new ES3Settings(_settingsDataPath(),ES3.EncryptionType.None);
 		if(Application.platform==RuntimePlatform.WebGLPlayer){settings=new ES3Settings(ES3.Location.PlayerPrefs);}
+
 		ES3.Save("settingsData",settingsData,settings);
 		Debug.Log("Settings saved");
 	}
@@ -114,6 +118,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		if(ES3.FileExists(_settingsDataPath())||Application.platform==RuntimePlatform.WebGLPlayer){
 		var settings=new ES3Settings(_settingsDataPath(),ES3.EncryptionType.None);
 		if(Application.platform==RuntimePlatform.WebGLPlayer){settings=new ES3Settings(ES3.Location.PlayerPrefs);}
+
 			if(ES3.KeyExists("settingsData",settings)){ES3.LoadInto<SettingsData>("settingsData",settingsData,settings);}
 			else{Debug.LogWarning("Key for settingsData not found in: "+_settingsDataPath());}
 		}else Debug.LogWarning("Settings file not found in: "+_settingsDataPath());
@@ -124,7 +129,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		if(ES3.FileExists(_settingsDataPath())&&Application.platform!=RuntimePlatform.WebGLPlayer){
 			ES3.DeleteFile(_settingsDataPath());
 			Debug.Log("Settings deleted");
-		}
+		}else if(Application.platform==RuntimePlatform.WebGLPlayer){PlayerPrefs.DeleteKey("settingsData");}
 	}
 #endregion
 }

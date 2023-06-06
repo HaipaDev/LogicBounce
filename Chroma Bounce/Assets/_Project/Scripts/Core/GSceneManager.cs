@@ -18,15 +18,15 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
         OnChangeScene();
     }
     public void LoadStartMenuGame(){
-        if(SaveSerial.instance.playerData.firstLevelPassedInitial){GSceneManager.instance.StartCoroutine(GSceneManager.instance.LoadStartMenuGameI());}
-        else{if(Application.platform!=RuntimePlatform.WebGLPlayer){SaveSerial.instance.SaveSettings();Application.Quit();}}
+        if(SaveSerial.instance.playerData.firstLevelPassedInitial||(LevelMapManager.instance!=null&&LevelMapManager.instance.levelCurrent!=0)){GSceneManager.instance.StartCoroutine(GSceneManager.instance.LoadStartMenuGameI());}
+        else{if(Application.platform!=RuntimePlatform.WebGLPlayer){SaveSerial.instance.SaveSettings();Application.Quit();}else{AudioManager.instance.Play("Deny");}}
     }
     IEnumerator LoadStartMenuGameI(){
-        if(SceneManager.GetActiveScene().name=="Game"){
+        /*if(SceneManager.GetActiveScene().name=="Game"){
             //GameManager.instance.SaveHighscore();
             yield return new WaitForSecondsRealtime(0.01f);
             //GameManager.instance.ResetScore();
-        }
+        }*/
         yield return new WaitForSecondsRealtime(0.05f);
         SaveSerial.instance.Save();
         GameManager.instance.ResetMusicPitch();
@@ -85,7 +85,7 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
         GameManager.instance.gameSpeed=1f;
         OnChangeScene();
     }
-    public void QuitGame(){if(Application.platform!=RuntimePlatform.WebGLPlayer)Application.Quit();}
+    public void QuitGame(){if(Application.platform!=RuntimePlatform.WebGLPlayer){Application.Quit();}else{AudioManager.instance.Play("Deny");}}
     public void RestartApp(){
         SceneManager.LoadScene("Loading");
         GameManager.instance.speedChanged=false;
@@ -106,7 +106,7 @@ public class GSceneManager : MonoBehaviour{ public static GSceneManager instance
         Debug.Log("Relaunching the website...");
         Application.OpenURL(Application.absoluteURL);
         yield return new WaitForSeconds(0.4f);
-        Application.ExternalEval("window.close();");
+        SendMessage("CloseWindow");
         Application.Quit();
     }
     public static bool EscPressed(){return Input.GetKeyDown(KeyCode.Escape)||Input.GetKeyDown(KeyCode.Joystick1Button1);}

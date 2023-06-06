@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 7731364513848046091}
   - component: {fileID: 3935159428039332627}
   - component: {fileID: 574800885388418344}
-  - component: {fileID: 3501809872152700104}
   m_Layer: 5
   m_Name: InputField Y
   m_TagString: Untagged
@@ -277,9 +276,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3501809872152700104}
-        m_TargetAssemblyTypeName: LimitInputFieldNum, Assembly-CSharp
-        m_MethodName: UpdateInputField
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: HandleEndEdit
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -295,7 +294,7 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1039315793093193558}
         m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
         m_MethodName: SelectButton
         m_Mode: 1
@@ -322,6 +321,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: DeselectButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
@@ -330,7 +341,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: SetMirrorPosY
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -349,22 +372,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &3501809872152700104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446015317778886415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db186932f46ea2149b59deaeb6234cdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minVal: -47
-  maxVal: 47
-  minValF: 0
-  maxValF: 0
 --- !u!1 &857281180657465419
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +384,6 @@ GameObject:
   - component: {fileID: 6766582190317285595}
   - component: {fileID: 17731958258039944}
   - component: {fileID: 1566853917532632504}
-  - component: {fileID: 7193795433133941624}
   m_Layer: 5
   m_Name: InputField X
   m_TagString: Untagged
@@ -507,9 +513,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7193795433133941624}
-        m_TargetAssemblyTypeName: LimitInputFieldNum, Assembly-CSharp
-        m_MethodName: UpdateInputField
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: HandleEndEdit
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -525,7 +531,7 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1039315793093193558}
         m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
         m_MethodName: SelectButton
         m_Mode: 1
@@ -552,6 +558,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: DeselectButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []
@@ -560,7 +578,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1039315793093193558}
+        m_TargetAssemblyTypeName: StepUIPrefab, Assembly-CSharp
+        m_MethodName: SetMirrorPosX
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -579,22 +609,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &7193795433133941624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 857281180657465419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db186932f46ea2149b59deaeb6234cdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minVal: -87
-  maxVal: 87
-  minValF: 0
-  maxValF: 0
 --- !u!1 &2217628018370581371
 GameObject:
   m_ObjectHideFlags: 0
@@ -2231,7 +2245,7 @@ RectTransform:
   - {fileID: 237730993334740185}
   - {fileID: 5128529313459388659}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -75,16 +75,22 @@ public class StepUIPrefab : MonoBehaviour{
     IEnumerator SetDelayI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
         Debug.Log("Setting Delay");
-        var i=float.Parse(val);
-        stepProperties.delay=i;
+        if(!string.IsNullOrEmpty(val)){
+            if(float.TryParse(val.Replace(".",","), out float i)){
+                stepProperties.delay=i;
+            }
+        }
         SelectButton();
     }
     public void SetGunRotation(string val){StartCoroutine(SetGunRotationI(val));}
     IEnumerator SetGunRotationI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
         Debug.Log("Setting Gun rotation");
-        var i=float.Parse(val);
-        stepProperties.gunRotation=i;
+        if(!string.IsNullOrEmpty(val)){
+            if(float.TryParse(val.Replace(".",","), out float i)){
+                stepProperties.gunRotation=i;
+            }
+        }
         SelectButton();
     }
     public void SetObjectId(string val){StartCoroutine(SetObjectId_I(val));}
@@ -111,5 +117,11 @@ public class StepUIPrefab : MonoBehaviour{
         var i=int.Parse(val);
         stepProperties.mirrorPos=new Vector2(stepProperties.mirrorPos.x,i/10);
         SelectButton();
+    }
+
+    public void HandleEndEdit(string val){
+        if(string.IsNullOrEmpty(val)){
+            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(val);
+        }
     }
 }

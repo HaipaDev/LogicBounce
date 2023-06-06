@@ -54,28 +54,12 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             float _stepCamSize=5f*Time.unscaledDeltaTime;
             Camera.main.orthographicSize=Vector2.MoveTowards(new Vector2(0,Camera.main.orthographicSize),new Vector2(0,cs.size),_stepCamSize).y;
 
-            if(allStepsDone&&reopenStepsUIDelay>0&&FindObjectsOfType<Bullet>().Length==0)reopenStepsUIDelay-=Time.unscaledDeltaTime;
-            if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI();}
+            if(!VictoryCanvas.Won){
+                if(allStepsDone&&reopenStepsUIDelay>0&&FindObjectsOfType<Bullet>().Length==0)reopenStepsUIDelay-=Time.unscaledDeltaTime;
+                if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI();}
+            }
 
-            /*ChangeValuesWithArrows();*/
             //if(selectedStep==null)ResetAfterPreviewingSteps();
-        }
-    }
-    void ChangeValuesWithArrows(){
-        if(selectedStep!=null&&(Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.DownArrow))){var _add=Input.GetKey(KeyCode.UpArrow);
-            var _txtC=selectedStep.GetComponentInChildren<TMPro.TMP_InputField>();var _txt=_txtC.text;
-            var _limits=selectedStep.GetComponentInChildren<LimitInputFieldNum>();
-            var _val=0f;bool _isFloat=(_txt.Contains(",")||_txt.Contains("."));float _dif=1f;
-            float valMin=_limits.GetLimits().x,valMax=_limits.GetLimits().y;
-            if(_isFloat){_dif=0.1f;valMin=_limits.GetLimitsFloat().x;valMax=_limits.GetLimitsFloat().y;}
-            if(_isFloat&&float.TryParse(_txt,out float vfloat)){_val=vfloat;}
-            if(!_isFloat&&int.TryParse(_txt,out int vint)){_val=vint;}
-
-            if(!_add){_val=Mathf.Clamp(_val+_dif,valMin,valMax);}
-            else{_val=Mathf.Clamp(_val-_dif,valMin,valMax);}
-
-            if(!_isFloat){_txtC.SetTextWithoutNotify(_val.ToString());SelectStep(selectedStep,true);}
-            else{_txtC.SetTextWithoutNotify(_val.ToString("F2").Replace('.',','));SelectStep(selectedStep,true);}
         }
     }
     public void RefreshStartingElements(){
@@ -144,6 +128,14 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         }
     }
     void ExecuteSingleStep(int id){StartCoroutine(ExecuteSingleStepI(id));}
+    void PreviewStep(int id){
+        var _s=currentSteps[id];
+        switch(_s.stepType){
+            case StepPropertiesType.gunRotation:
+                Player.instance.SetGunRotation(_s.gunRotation);
+            break;
+        }
+    }
     IEnumerator ExecuteSingleStepI(int id){
         var _s=currentSteps[id];
         switch(_s.stepType){
@@ -225,14 +217,16 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 RepopulateStepsFromUI();
                 SetAllowedSteps(0.15f);
                 if(id==(int)StepPropertiesType.gunRotation&&LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
-                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
-                    gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
-                    gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45,00",0.2f);
+                    //gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
+                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.Custom;
+                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().inputValidator=AssetsManager.instance.angleInputValidator;
+                    //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
+                    gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45.00",0.2f);
                     gos.GetComponent<StepUIPrefab>().SetAutoFromComponentDelay(0.21f);
                     Debug.Log("Set GunRotation to Float");
                 }else if(id==(int)StepPropertiesType.gunRotation&&!LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
                     gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
-                    gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
+                    //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
                 }
                 if(!quiet)AudioManager.instance.Play("StepAdd");
             }
@@ -243,8 +237,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         currentSteps.Clear();currentSteps=new List<StepProperties>();currentStepsEnergyUsed=0;RefreshStartingElements();
         yield return new WaitForSecondsRealtime(0.1f);
         foreach(StepUIPrefab s in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){
-            if(s.GetComponentsInChildren<LimitInputFieldNum>().Length>0){
-                s.GetComponentInChildren<LimitInputFieldNum>().UpdateInputFieldAutoFromComponent();
+            if(s.GetComponentsInChildren<TMPro.TMP_InputField>().Length>0){
+                //s.GetComponentInChildren<LimitInputFieldNum>().UpdateInputFieldAutoFromComponent();
                 s.SetAutoFromComponent();}
             int _stepCost=_stepCostForTypeCurrentLvl(s.stepProperties.stepType);
             currentSteps.Add(s.stepProperties);currentStepsEnergyUsed+=_stepCost;
@@ -290,7 +284,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 selectedStep=bt;
                 foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                 sui.SetSelectedSpr();
-                ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
+                PreviewStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
+                //ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
                 Debug.Log("Selecting Step");
             }else if(selectedStep==bt){
                 selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);

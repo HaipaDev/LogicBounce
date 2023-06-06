@@ -17,7 +17,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     [DisableInEditorMode][SerializeField]public List<Mirror> mirrorListSorted;
 
     void Awake(){if(LevelMapManager.instance!=null/*||OutOfContextScene()*/){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
-    void Start(){if(GSceneManager.CheckScene("Game"))Restart();}//So that lists get populated
+    void Start(){if(GSceneManager.CheckScene("Game"))Restart();}
     public static bool OutOfContextScene(){return (!GSceneManager.CheckScene("Game")&&!GSceneManager.CheckScene("LevelSelect"));}
     public static bool InContextScene(){return (GSceneManager.CheckScene("Game")||GSceneManager.CheckScene("LevelSelect"));}
     void Update(){
@@ -102,7 +102,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                 if(_parentChild.GetComponent<Spawnpoint>()!=null&&_prefabChild.GetComponent<Spawnpoint>()!=null){
                     var _parentC=_parentChild.GetComponent<Spawnpoint>();
                     var _prefabC=_prefabChild.GetComponent<Spawnpoint>();
-                    _parentC.playerDir=_prefabC.playerDir;
+                    _parentC.playerOffset=_prefabC.playerOffset;
                 }
             }
             ///Player
@@ -135,7 +135,6 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         InstantiateLevelParent();
     }
     void InstantiateLevelParent(){
-        //levelParent=Instantiate(levelMaps[levelCurrent].parent,Vector2.zero,Quaternion.identity);levelParent.transform.position=Vector2.zero;
         levelParent=Instantiate(levelMaps[levelCurrent].parent,transform);levelParent.transform.position=Vector2.zero;
         levelParent.gameObject.name="Level";
     }
@@ -171,8 +170,9 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         ResetLists();
     }
     public void LoadNextLevel(){
-        if(levelMaps.Length>(levelCurrent+1)){LoadLevel(levelCurrent+1);CallRestart(0.35f,false);}
+        if(_nextLevelAvailable()){LoadLevel(levelCurrent+1);CallRestart(0.35f,false);}
         else{Debug.LogWarning("No more levels :(");}
     }
+    public bool _nextLevelAvailable(){return levelMaps.Length>(levelCurrent+1);}
     public LevelMap GetCurrentLevelMap(){return levelMaps[levelCurrent];}
 }

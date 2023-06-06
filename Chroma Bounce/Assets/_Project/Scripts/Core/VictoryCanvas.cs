@@ -12,6 +12,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
     [ChildGameObjectsOnly][SerializeField]GameObject blurChild;
     [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI levelText;
     [ChildGameObjectsOnly][SerializeField]Image rankDisplay;
+    [ChildGameObjectsOnly][SerializeField]GameObject nextButton;
     [SerializeField]Sprite[] ranksSprites;
     void Start(){
         instance=this;Won=false;
@@ -69,6 +70,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         rankDisplay.sprite=ranksSprites[(int)CalculateRank()];
         levelText.text="Level "+(LevelMapManager.instance.levelCurrent+1)+" completed!";
         StepsManager.instance.CloseStepsUI();
+        if(LevelMapManager.instance._nextLevelAvailable()){nextButton.SetActive(false);}else{nextButton.SetActive(true);}
 
         Destroy(GameObject.Find("bg"));Destroy(GameObject.Find("bg2"));
         Destroy(FindObjectOfType<Spawnpoint>());
@@ -106,11 +108,9 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
     }
     IEnumerator AfterFirstInitialLevel(){
         AudioManager.instance.Play("Glitch");
-        yield return new WaitForSecondsRealtime(0.5f);//Because its before the VictoryVFX etc
         foreach(Button bt in GetComponentsInChildren<Button>()){bt.interactable=false;}Destroy(victoryUI);
-        yield return new WaitForSecondsRealtime(0.01f);
         SaveSerial.instance.playerData.firstLevelPassedInitial=true;SaveSerial.instance.Save();
-        yield return new WaitForSecondsRealtime(0.04f);
+        yield return new WaitForSecondsRealtime(0.5f);//Because its before the VictoryVFX etc
         GSceneManager.instance.RelaunchTheGame();
         //UnityEngine.SceneManagement.SceneManager.LoadScene("Loading");
     }

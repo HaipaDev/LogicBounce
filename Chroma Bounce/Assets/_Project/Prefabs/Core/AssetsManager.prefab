@@ -78,3 +78,5 @@ MonoBehaviour:
     mat: {fileID: 2100000, guid: 602a7accce50c2d4cadc4d44a0660541, type: 2}
   - name: HolographDissolve
     mat: {fileID: 2100000, guid: 16ef4dd4a17bfb4429e2aa5cbc545f28, type: 2}
+  decimalInputValidator: {fileID: 11400000, guid: ab747b2f1e21adf4c80da1a2000dbd30, type: 2}
+  angleInputValidator: {fileID: 11400000, guid: 3b5a2b10421529f46991f984b4ac82a3, type: 2}

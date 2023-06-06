@@ -15,73 +15,29 @@ public class Player : MonoBehaviour{    public static Player instance;
     
     [Header("Variables")]
     [SerializeField][Range(0,360)] float currentAngle;
-    [SerializeField][Range(0,360)] int rotZmin=180;
-    [SerializeField][Range(0,360)] int rotZmax=360;
     [SerializeField] public bool positive=true;
     [SerializeField] float timeBetweenFiring=1f;
     [SerializeField]public float bulletSpeed=7f;
     [SerializeField]public float b_correctionAngle=-90;
     [SerializeField]public int bulletBounceLimit=10;
     [Header("Current")]
-    [DisableInEditorMode][SerializeField] bool canFire=true;
     [DisableInEditorMode][SerializeField] float timer;
 
     Vector3 mousePos;
     SpriteRenderer gunSpr;
     void Awake(){if(Player.instance!=null){Destroy(gameObject);}else{instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
     void Start(){
-        canFire=true;timer=timeBetweenFiring;
         gunSpr=gunTransform.GetComponent<SpriteRenderer>();
         SetPolarity(positive,true,true);
     }
     Vector2 rotZdirectionMin,rotZdirectionMax;
-    void Update(){
-        if(!GameManager.GlobalTimeIsPaused){
-            ///Rotating and limiting
-            /*mousePos=Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 rot=mousePos-rotatePoint.position;
-            float rotZ=Mathf.Repeat(Mathf.Atan2(rot.y,rot.x)*Mathf.Rad2Deg,360f);
-            //Vector3 rotMouse=Quaternion.Euler(0,0,(rotZ/360f)*360f);
-
-            rotZdirectionMin=new Vector2(Mathf.Cos(rotZmin*Mathf.Deg2Rad),Mathf.Sin(rotZmin*Mathf.Deg2Rad));
-            rotZdirectionMax=new Vector2(Mathf.Cos(rotZmax*Mathf.Deg2Rad),Mathf.Sin(rotZmax*Mathf.Deg2Rad));
-
-            rotatePoint.rotation=Quaternion.Euler(0,0,rotZ);
-            Vector3 euler=rotatePoint.eulerAngles;
-            //For moving above limit between halfpoint
-            if((euler.z<(rotZmin-90)&&rotZmin>=90)||(euler.z<(rotZmax+90)&&rotZmin==0)){euler.z=rotZmax;}
-            if(rotZmin>0f&&euler.z<(rotZmin-90f)){euler.z=rotZmin;}
-            else if(rotZmin==0f&&euler.z<(rotZmax+90f)){euler.z=rotZmax;}
-            
-            //Debug.Log(euler.z+" | "+rotZ);
-            euler.z=Mathf.Clamp(euler.z,rotZmin,rotZmax);
-            //Debug.Log(euler.z);
-            rotatePoint.eulerAngles=euler;
-            ///Rotate gun sprite
-            if(euler.z<((rotZmin+rotZmax)/2)){gunSpr.flipY=true;}else{gunSpr.flipY=false;}(
-
-
-            ///Shooting
-            if(Input.GetMouseButton(0)&&canFire){
-                ShootBullet();
-            }
-            if(!canFire){
-                if(timer>0)timer-=Time.deltaTime;
-                if(timer<=0){canFire=true;}
-            }
-
-            ///Change bullet charge
-            if(Input.GetMouseButtonDown(1)){
-                SwitchPolarity();
-            }*/
-        }
-    }
+    void Update(){}
     public void SetGunRotation(float rotZ,bool _flipped=false){
         float _rotZ=360-rotZ;if(_flipped)_rotZ=rotZ;
         rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,_rotZ);
     }
     public void ShootBullet(){
-        canFire=false;timer=timeBetweenFiring;
+        timer=timeBetweenFiring;
 
         GameObject bullet=Instantiate(bulletPrefab,gunTransform.position,Quaternion.identity);
         Transform gunPoint=gunTransform.GetChild(0);
@@ -122,30 +78,5 @@ public class Player : MonoBehaviour{    public static Player instance;
     public Sprite GetGunSpr(bool positive=true){
         if(positive)return gunSpritencolor_positive.spr;
         else return gunSpritencolor_negative.spr;
-    }
-    public void SetDirection(dir dir){
-        if(playerSprites.Length>(int)dir){GetComponent<SpriteRenderer>().sprite=playerSprites[(int)dir];}
-        switch((int)dir){
-            case 0://Up
-                rotZmin=0;
-                rotZmax=180;
-            break;
-            case 1://Down
-                rotZmin=180;
-                rotZmax=360;
-            break;
-            case 2://Left
-                rotZmin=90;
-                rotZmax=270;
-            break;
-            case 3://Right
-                rotZmin=270;
-                rotZmax=90;
-            break;
-            default://1 - down
-                rotZmin=180;
-                rotZmax=360;
-            break;
-        }
     }
 }

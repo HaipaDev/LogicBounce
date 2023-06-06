@@ -34,7 +34,8 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
             storyboardUI.SetActive(false);StepsManager.instance.OpenStepsUI();
         }else{StepsManager.instance.CloseStepsUI(true);}
         sbTextParent.gameObject.SetActive(false);sbTutorialParent.SetActive(false);
-        Talk();
+        textComponent=sbText;
+        if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
     }
     void Update(){
         ///Interpolate movement
@@ -46,19 +47,11 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
     }
     void Talk(){
         IsOpen=true;
-        //blurChild.SetActive(true);
         storyboardUI.SetActive(true);
         targetUIPos=Vector2.zero;
         if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>currentTextId){
             var lsb=LevelMapManager.instance.GetCurrentLevelMap().storyboardText[currentTextId];
             SetTypewriterWithType(lsb.text,lsb.storyboardTextType,lsb.speed,typewriterSoundAsset);
-            /*string typewriterSoundAssetOverwrite=typewriterSoundAsset;
-            textComponent=sbText;sbTextParent.gameObject.SetActive(true);sbTutorialParent.SetActive(false);
-            if(lsb.storyboardTextType==StoryboardTextType.tutorial){
-                textComponent=sbTutorialText;sbTutorialParent.SetActive(true);sbTextParent.gameObject.SetActive(false);
-                typewriterSoundAssetOverwrite="Typing2";
-            }
-            SetTypewriter(lsb.text,textComponent,lsb.speed,typewriterSoundAssetOverwrite);*/
         }else{Debug.LogWarning("No storyboard by id: "+" for level "+LevelMapManager.instance.levelCurrent);}
     }
     public void TalkManual(string text,StoryboardTextType sbTextType,float speed=0.1f,string typewriterSoundAssetOverwrite="Typing"){
@@ -70,18 +63,19 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
     }
     public void Close(){
         IsOpen=false;
-        //blurChild.SetActive(false);
         //storyboardUI.SetActive(false);
         targetUIPos=new Vector2(storyboardUIAnchoredPosHidden,0);
         if(!VictoryCanvas.Won)StepsManager.instance.OpenStepsUI(true,false);
     }
     public void Skip(){
-        if(finishedTyping){
-            if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>currentTextId+1){
-                currentTextId++;
-                Talk();
-            }else{Close();}
-        }else{textComponent.text=writerFinal;if(typeWriterCoroutine!=null){StopCoroutine(typeWriterCoroutine);typeWriterCoroutine=null;}}//Debug.Log("Stopping typewriter.");}}
+        if(GameManager.instance._webglFullscreenRequested){
+            if(finishedTyping){
+                if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>currentTextId+1){
+                    currentTextId++;
+                    Talk();
+                }else{Close();}
+            }else{textComponent.text=writerFinal;if(typeWriterCoroutine!=null){StopCoroutine(typeWriterCoroutine);typeWriterCoroutine=null;}}//Debug.Log("Stopping typewriter.");}}
+        }
     }
     Coroutine typeWriterCoroutine;
     public void SetTypewriterWithType(string text,StoryboardTextType sbTextType,float speed=0.1f,string typewriterSoundAssetOverwrite="Typing"){

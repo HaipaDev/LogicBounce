@@ -10,6 +10,8 @@ public class AssetsManager : MonoBehaviour{	public static AssetsManager instance
 	[AssetsOnly,Searchable]public List<GObject> vfx;
 	[AssetsOnly,Searchable]public List<GSprite> sprites;
 	[AssetsOnly,Searchable]public List<GMaterial> materials;
+	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator decimalInputValidator;
+	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator angleInputValidator;
     
     void Awake(){if(instance!=null){Destroy(gameObject);}else{DontDestroyOnLoad(gameObject);instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
 	void Start(){}

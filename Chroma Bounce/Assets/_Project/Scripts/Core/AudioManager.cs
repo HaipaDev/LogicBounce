@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour{	public static AudioManager instance;
 		if(SaveSerial.instance!=null){
 			var ss=SaveSerial.instance.settingsData;
 			float _currentMasterVolume;audioMixer.GetFloat("MasterVolume",out _currentMasterVolume);
-			if(Application.isFocused){
+			if(Application.isFocused||Application.platform==RuntimePlatform.WebGLPlayer){
 				var _minVolume=-50;
 				if(ss.masterVolume>0){_minVolume=-50;}else{_minVolume=-80;}
 				if(_currentMasterVolume==-80&&_minVolume==-50){_currentMasterVolume=-50;}

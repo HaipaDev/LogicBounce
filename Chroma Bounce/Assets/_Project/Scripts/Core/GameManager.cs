@@ -29,9 +29,7 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     bool setValues;
     public float GameManagerTime=0;
     [Range(0,2)]public static int maskMode=1;
-    bool _webglFullscreenRequested=false;
-    bool _webglCanFullscreen=false;
-    bool _webglDidFullscreen=false;
+    public bool _webglFullscreenRequested=false;
 
     void Awake(){
         SetUpSingleton();
@@ -83,10 +81,17 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
         }
 
         if(Application.platform==RuntimePlatform.WebGLPlayer){
+            if(!_webglFullscreenRequested){if(Input.GetMouseButtonDown(0)){StartCoroutine(TryForceFulscreen());_webglFullscreenRequested=true;return;}}
+        }
+        /*if(Application.platform==RuntimePlatform.WebGLPlayer){
             if(!_webglFullscreenRequested){if(Input.GetMouseButtonDown(0)){_webglFullscreenRequested=true;_webglCanFullscreen=true;return;}}
             if(_webglCanFullscreen&&!_webglDidFullscreen){if(Input.GetMouseButtonDown(0)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));_webglDidFullscreen=true;return;}}
             if(Input.GetKeyDown(KeyCode.F)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));return;}
-        }
+        }*/
+    }
+    IEnumerator TryForceFulscreen(){
+        yield return new WaitForSeconds(0.2f);
+        Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));
     }
     public Volume PostProcessVolume(){return postProcessVolume;}
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
@@ -94,7 +99,7 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     public void Load(){ SaveSerial.instance.Load(); SaveSerial.instance.LoadSettings(); }
     public void DeleteAll(){
         SaveSerial.instance.Delete(); SaveSerial.instance.DeleteSettings();/*ResetSettings();*/ GSceneManager.instance.LoadStartMenu();
-        if(Application.platform==RuntimePlatform.WebGLPlayer){PlayerPrefs.DeleteAll();Application.ExternalEval("window.location.reload();");}
+        if(Application.platform==RuntimePlatform.WebGLPlayer){PlayerPrefs.DeleteAll();SendMessage("ReloadWindow");}
     }
     public void ResetSettings(){
         SaveSerial.instance.DeleteSettings();
