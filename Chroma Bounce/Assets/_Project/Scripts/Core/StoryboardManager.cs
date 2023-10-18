@@ -43,7 +43,13 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
         storyboardUI.GetComponent<RectTransform>().anchoredPosition=Vector2.MoveTowards(storyboardUI.GetComponent<RectTransform>().anchoredPosition,targetUIPos,_stepUIPos);
         if(storyboardUI.GetComponent<RectTransform>().anchoredPosition.x<storyboardUIAnchoredPosHidden+30&&finishedTyping){storyboardUI.SetActive(false);}
 
-        finishedTyping=(textComponent.text==writerFinal);
+        if(textComponent!=null){
+            finishedTyping=(textComponent.text==writerFinal);
+        }else{
+            if(sbText!=null){
+                textComponent=sbText;
+            }
+        }
     }
     void Talk(){
         IsOpen=true;
@@ -80,7 +86,7 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
     Coroutine typeWriterCoroutine;
     public void SetTypewriterWithType(string text,StoryboardTextType sbTextType,float speed=0.1f,string typewriterSoundAssetOverwrite="Typing"){
         textComponent=sbText;sbTextParent.gameObject.SetActive(true);sbTutorialParent.SetActive(false);
-        if(sbTextType==StoryboardTextType.tutorial){
+        if(sbTextType==StoryboardTextType.narrator){
             textComponent=sbTutorialText;sbTutorialParent.SetActive(true);sbTextParent.gameObject.SetActive(false);
             typewriterSoundAssetOverwrite="Typing2";
         }
@@ -128,4 +134,4 @@ public class StoryboardText{
     public float speed=0.07f;
     [MultiLineProperty(10)]public string text;
 }
-public enum StoryboardTextType{character,tutorial}
+public enum StoryboardTextType{character,narrator}

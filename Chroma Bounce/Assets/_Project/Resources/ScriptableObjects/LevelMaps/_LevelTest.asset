@@ -167,5 +167,19 @@ MonoBehaviour:
   accurateGunRotation: 1
   bulletBounceLimit: 10
   bulletSpeed: 6
-  playerDir: 1
-  defaultSteps: []
+  defaultSteps:
+  - stepType: 3
+    delay: 0.1
+    gunPolarity: 1
+    gunRotation: 359.99
+    objectId: 0
+    mirrorPos: {x: 0, y: 0}
+    laserPos: {x: 0, y: 0}
+  - stepType: 1
+    delay: 0.1
+    gunPolarity: 1
+    gunRotation: 0
+    objectId: 0
+    mirrorPos: {x: 0, y: 0}
+    laserPos: {x: 0, y: 0}
+  storyboardText: []

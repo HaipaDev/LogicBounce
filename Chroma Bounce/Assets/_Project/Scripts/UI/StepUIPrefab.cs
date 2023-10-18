@@ -19,7 +19,7 @@ public class StepUIPrefab : MonoBehaviour{
     public void SetProperties(StepProperties sp){
         stepProperties=sp;
         if(stepProperties.stepType==StepPropertiesType.delay){
-            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString("F2").Replace('.',','));
+            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString("F2").Replace(',','.'));
         }
         if(stepProperties.stepType==StepPropertiesType.gunRotation){
             GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.gunRotation.ToString());
@@ -85,7 +85,7 @@ public class StepUIPrefab : MonoBehaviour{
     public void SetGunRotation(string val){StartCoroutine(SetGunRotationI(val));}
     IEnumerator SetGunRotationI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
-        Debug.Log("Setting Gun rotation");
+        //Debug.Log("Setting Gun rotation");
         if(!string.IsNullOrEmpty(val)){
             if(float.TryParse(val.Replace(".",","), out float i)){
                 stepProperties.gunRotation=i;
@@ -121,7 +121,14 @@ public class StepUIPrefab : MonoBehaviour{
 
     public void HandleEndEdit(string val){
         if(string.IsNullOrEmpty(val)){
-            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(val);
+            switch(stepProperties.stepType){
+                case StepPropertiesType.delay:
+                    GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString("F2").Replace(',','.'));
+                break;
+                case StepPropertiesType.gunRotation:
+                    GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.gunRotation.ToString("F2").Replace(',','.'));
+                break;
+            }
         }
     }
 }

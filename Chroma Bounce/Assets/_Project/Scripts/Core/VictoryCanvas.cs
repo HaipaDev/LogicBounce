@@ -88,7 +88,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
 
         if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance.levelMaps.Length-1){
             Debug.Log("Last level passed!");
-            StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.tutorial,0.05f);
+            StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
         }
 
         //yield return new WaitForSecondsRealtime(0.1f);

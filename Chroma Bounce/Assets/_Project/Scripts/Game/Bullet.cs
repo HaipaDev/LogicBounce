@@ -14,6 +14,8 @@ public class Bullet : MonoBehaviour{
     public int bounceCountLaser=0;
     public int bounceCountWall=0;
     public int bounceCountTotal=0;
+    float bounceCountDelay=0.05f;
+    float bounceCountDelayTimer;
 
     Rigidbody2D rb;
     SpriteRenderer spr;
@@ -31,6 +33,7 @@ public class Bullet : MonoBehaviour{
             GetComponentInChildren<Light2D>().color=new Color(GetComponentInChildren<Light2D>().color.r,GetComponentInChildren<Light2D>().color.g,GetComponentInChildren<Light2D>().color.b,_alpha);
             if(bounceCountTotal>=Player.instance.bulletBounceLimit){DestroyBullet();}
         }
+        if(bounceCountDelayTimer>0){bounceCountDelay-=Time.deltaTime;}
     }
     void DestroyBullet(){
         //if(positive)AssetsManager.instance.VFX("BulletDestroyPositive",transform.position,0.15f);
@@ -73,7 +76,11 @@ public class Bullet : MonoBehaviour{
             rb.velocity=reflectDir.normalized*Player.instance.bulletSpeed;
             float rot=Mathf.Atan2(reflectDir.y,reflectDir.x)*Mathf.Rad2Deg;
             transform.eulerAngles=new Vector3(0,0,rot-Player.instance.b_correctionAngle);
-            bounceCountTotal++;
+
+            if(bounceCountDelayTimer<=0){
+                bounceCountTotal++;
+                bounceCountDelayTimer=bounceCountDelay;
+            }
         }
     }
     void OnTriggerEnter2D(Collider2D other) {

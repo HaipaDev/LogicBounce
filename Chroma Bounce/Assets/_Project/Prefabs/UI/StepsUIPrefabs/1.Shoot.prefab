@@ -617,7 +617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepProperties:
     stepType: 1
-    delay: 1
+    delay: 0.1
     gunPolarity: 1
     gunRotation: 0
     objectId: 0

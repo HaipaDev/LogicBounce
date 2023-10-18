@@ -87,12 +87,22 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     bool startedSteps,stepsRunning,allStepsDone;float reopenStepsUIDelay;
     public bool _areStepsBeingRun(){return (stepsRunning&&!allStepsDone);}
     public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0);}
+
+    
     public void StartSteps(){
+        Debug.Log("StartSteps()");
         if(currentSteps.Count>0&&!VictoryCanvas.Won&&!StoryboardManager.IsOpen){
-            RepopulateStepsFromUI();
-            SelectStep(null,true);UIInputSystem.instance.currentSelected=null;UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);SwitchSelectables(false);
-            ResetAfterPreviewingSteps();
-            if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){StartCoroutine(StartStepsI());}
+            // Debug.Log("StartSteps() inside");
+            // RepopulateStepsFromUI();
+            // SelectStep(null,true);UIInputSystem.instance.currentSelected=null;UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);SwitchSelectables(false);
+            // ResetAfterPreviewingSteps();
+            if(!startedSteps&&!GameManager.GlobalTimeIsPausedNotStepped&&!VictoryCanvas.Won){
+                Debug.Log("StartSteps() inside");
+                RepopulateStepsFromUI();
+                SelectStep(null,true);UIInputSystem.instance.currentSelected=null;UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);SwitchSelectables(false);
+                ResetAfterPreviewingSteps();
+                StartCoroutine(StartStepsI());
+            }
         }else if(currentSteps.Count==0){AudioManager.instance.Play("Deny");}
     }
     IEnumerator StartStepsI(){
@@ -177,6 +187,10 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 StepsUIOpen=true;
                 otherButtons.SetActive(true);
                 allStepsDone=false;
+                foreach(CanvasGroup cg in GetComponentsInChildren<CanvasGroup>()){
+                    cg.interactable=true;
+                    cg.blocksRaycasts=true;
+                }
                 if(reset){LevelMapManager.instance.CallRestart();}
             }
         }
@@ -189,6 +203,10 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             targetAddStepsUIHeight=0;
             //addStepsUI.SetActive(false);
             otherButtons.SetActive(false);
+            foreach(CanvasGroup cg in GetComponentsInChildren<CanvasGroup>()){
+                cg.interactable=false;
+                cg.blocksRaycasts=false;
+            }
             AudioManager.instance.Play("StartSteps");
         }
     }
@@ -199,12 +217,28 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         SetCameraSettings(defaultCameraSettings);
         StepsUIOpen=false;
     }
-    public void OpenAddStepsUI(){
+    public void ToggleOpenCloseAddStepsUI(){
         if(StepsUIOpen){
-            if(!addStepsUI.activeSelf||targetAddStepsUIHeight==0){addStepsUI.SetActive(true);targetAddStepsUIHeight=addStepsUIAnchorHeightShown;}
-            else{targetAddStepsUIHeight=0;}
+            if(!addStepsUI.activeSelf||targetAddStepsUIHeight==0){
+                addStepsUI.SetActive(true);targetAddStepsUIHeight=addStepsUIAnchorHeightShown;
+                foreach(CanvasGroup cg in addStepsUI.GetComponentsInChildren<CanvasGroup>()){
+                    cg.interactable=true;
+                    cg.blocksRaycasts=true;
+                }
+                SetAllowedSteps();
+                return;
+            }
+            else{
+                targetAddStepsUIHeight=0;
+                foreach(CanvasGroup cg in addStepsUI.GetComponentsInChildren<CanvasGroup>()){
+                    cg.interactable=false;
+                    cg.blocksRaycasts=false;
+                }
+                SetAllowedSteps();
+                return;
+            }
         }
-        SetAllowedSteps();
+        //SetAllowedSteps();
     }
     public void AddStepButton(int id){AddStep(id,false);}
     public void AddStep(int id,bool quiet=false){
@@ -223,7 +257,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                     //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
                     gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45.00",0.2f);
                     gos.GetComponent<StepUIPrefab>().SetAutoFromComponentDelay(0.21f);
-                    Debug.Log("Set GunRotation to Float");
+                    //Debug.Log("Set GunRotation to Float");
                 }else if(id==(int)StepPropertiesType.gunRotation&&!LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
                     gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
                     //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
@@ -278,29 +312,38 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         }
     }
     public void SelectStep(Button bt,bool forceUpdate=false){
-        if(bt!=null&&!startedSteps){
-            var sui=bt.GetComponent<StepUIPrefab>();
-            if(selectedStep!=bt||selectedStep==null||forceUpdate){
-                selectedStep=bt;
-                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
-                sui.SetSelectedSpr();
-                PreviewStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
-                //ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
-                Debug.Log("Selecting Step");
-            }else if(selectedStep==bt){
-                selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
-                foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
-                sui.SetDefaultSpr();
-                ResetAfterPreviewingSteps();
-                Debug.Log("UnSelecting Step");
+        if(!Input.GetKeyDown(KeyCode.Space)&&!Input.GetKey(KeyCode.Space)){
+            if(bt!=null){
+                Debug.Log("SelectStep("+bt+", "+bt.interactable+", "+forceUpdate+")");
+            }else{
+                Debug.Log("SelectStep("+bt+", "+", "+forceUpdate+")");
             }
-        }else{
-            selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
-            if(!startedSteps){
-                ResetAfterPreviewingSteps();
-                foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){sui.SetDefaultSpr();}
+            if(bt!=null&&bt.interactable&&!startedSteps){
+                var sui=bt.GetComponent<StepUIPrefab>();
+                if(selectedStep!=bt||selectedStep==null||forceUpdate){
+                    selectedStep=bt;
+                    foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
+                    sui.SetSelectedSpr();
+                    PreviewStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
+                    //ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
+                    Debug.Log("Selecting Step");
+                }else if(selectedStep==bt){
+                    selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+                    foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
+                    sui.SetDefaultSpr();
+                    ResetAfterPreviewingSteps();
+                    Debug.Log("UnSelecting Step");
+                }
+            }else{
+                if(bt==null||(bt!=null&&bt.interactable)){
+                    selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+                    if(!startedSteps){
+                        ResetAfterPreviewingSteps();
+                        foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){sui.SetDefaultSpr();}
+                        Debug.Log("UnSelecting Steps");
+                    }
+                }
             }
-            Debug.Log("UnSelecting Steps");
         }
     }
     public void SwitchSelectables(bool on=true){
