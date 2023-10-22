@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
 
         if(Application.platform==RuntimePlatform.WebGLPlayer){
             if(!_webglFullscreenRequested){if(Input.GetMouseButtonDown(0)){StartCoroutine(TryForceFulscreen());_webglFullscreenRequested=true;return;}}
-        }
+        }else{_webglFullscreenRequested=true;}
         /*if(Application.platform==RuntimePlatform.WebGLPlayer){
             if(!_webglFullscreenRequested){if(Input.GetMouseButtonDown(0)){_webglFullscreenRequested=true;_webglCanFullscreen=true;return;}}
             if(_webglCanFullscreen&&!_webglDidFullscreen){if(Input.GetMouseButtonDown(0)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));_webglDidFullscreen=true;return;}}

@@ -242,11 +242,13 @@ MonoBehaviour:
   parent: {fileID: 7896396588496914476, guid: 63a76f617cfbf6b4ba459d88b7f93cb6, type: 3}
   stepEnergy: 4
   startingChargePositive: 1
-  defaultGunRotation: 0
+  defaultGunRotation: 5
   accurateGunRotation: 0
   bulletBounceLimit: 10
   bulletSpeed: 6
-  playerDir: 1
+  bulletAcceleration: 0
+  bulletAccelerationMultiply: 0
+  bulletMaxSpeed: -1
   defaultSteps:
   - stepType: 6
     delay: 0.1

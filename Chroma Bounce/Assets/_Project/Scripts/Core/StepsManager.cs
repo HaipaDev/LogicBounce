@@ -69,6 +69,10 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         var _energy=startingElementsTransform.GetChild(3);
 
         string _gunRotationTxt=Mathf.RoundToInt(l.defaultGunRotation).ToString()+"°";
+        if(l.accurateGunRotation){
+            _gunRotationTxt=l.defaultGunRotation.ToString()+"°";
+            if(l.defaultGunRotation==Mathf.RoundToInt(l.defaultGunRotation)){_gunRotationTxt=Mathf.RoundToInt(l.defaultGunRotation).ToString()+".0°";}
+        }
         foreach(Transform t in _gun){
             if(t!=transform){
                 if(Player.instance!=null)if(t.GetComponent<Image>()!=null)t.GetComponent<Image>().sprite=Player.instance.GetGunSpr(l.startingChargePositive);
@@ -76,7 +80,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             }
         }
 
-        if(_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=l.bulletBounceLimit.ToString();}
+        string bouncesLimit=l.bulletBounceLimit.ToString();if(l.bulletBounceLimit<0){bouncesLimit="∞";}
+        if(_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=bouncesLimit;}
 
         string maxEnergy=l.stepEnergy.ToString();if(l.stepEnergy<0){maxEnergy="∞";}
         string _energyTxt=(currentStepsEnergyUsed.ToString()+" / "+maxEnergy);if(l.stepEnergy<0){_energyTxt="∞";}
@@ -90,7 +95,6 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
 
     
     public void StartSteps(){
-        Debug.Log("StartSteps()");
         if(currentSteps.Count>0&&!VictoryCanvas.Won&&!StoryboardManager.IsOpen){
             // Debug.Log("StartSteps() inside");
             // RepopulateStepsFromUI();
@@ -139,12 +143,14 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     void ExecuteSingleStep(int id){StartCoroutine(ExecuteSingleStepI(id));}
     void PreviewStep(int id){
-        var _s=currentSteps[id];
-        switch(_s.stepType){
-            case StepPropertiesType.gunRotation:
-                Player.instance.SetGunRotation(_s.gunRotation);
-            break;
-        }
+        if(currentSteps.Count>id&&id>=0){
+            var _s=currentSteps[id];
+            switch(_s.stepType){
+                case StepPropertiesType.gunRotation:
+                    Player.instance.SetGunRotation(_s.gunRotation);
+                break;
+            }
+        }else{Debug.LogWarning("Trying to preview step by id: "+id+" which is not in the list?");}
     }
     IEnumerator ExecuteSingleStepI(int id){
         var _s=currentSteps[id];
@@ -313,11 +319,11 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     public void SelectStep(Button bt,bool forceUpdate=false){
         if(!Input.GetKeyDown(KeyCode.Space)&&!Input.GetKey(KeyCode.Space)){
-            if(bt!=null){
-                Debug.Log("SelectStep("+bt+", "+bt.interactable+", "+forceUpdate+")");
-            }else{
-                Debug.Log("SelectStep("+bt+", "+", "+forceUpdate+")");
-            }
+            // if(bt!=null){
+            //     Debug.Log("SelectStep("+bt+", "+bt.interactable+", "+forceUpdate+")");
+            // }else{
+            //     Debug.Log("SelectStep("+bt+", "+", "+forceUpdate+")");
+            // }
             if(bt!=null&&bt.interactable&&!startedSteps){
                 var sui=bt.GetComponent<StepUIPrefab>();
                 if(selectedStep!=bt||selectedStep==null||forceUpdate){
@@ -326,13 +332,13 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                     sui.SetSelectedSpr();
                     PreviewStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
                     //ExecuteSingleStep(currentSteps.FindIndex(x=>x==sui.stepProperties));
-                    Debug.Log("Selecting Step");
+                    // Debug.Log("Selecting Step");
                 }else if(selectedStep==bt){
                     selectedStep=null;UIInputSystem.instance.currentSelected=null;//UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
                     foreach(StepUIPrefab _sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){_sui.SetDefaultSpr();}
                     sui.SetDefaultSpr();
                     ResetAfterPreviewingSteps();
-                    Debug.Log("UnSelecting Step");
+                    // Debug.Log("UnSelecting Step");
                 }
             }else{
                 if(bt==null||(bt!=null&&bt.interactable)){
@@ -340,7 +346,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                     if(!startedSteps){
                         ResetAfterPreviewingSteps();
                         foreach(StepUIPrefab sui in stepsUIListContent.GetComponentsInChildren<StepUIPrefab>()){sui.SetDefaultSpr();}
-                        Debug.Log("UnSelecting Steps");
+                        // Debug.Log("UnSelecting Steps.");
                     }
                 }
             }

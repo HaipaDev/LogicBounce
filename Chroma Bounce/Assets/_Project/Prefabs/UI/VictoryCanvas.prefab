@@ -442,7 +442,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 10
   m_TargetDisplay: 0
@@ -502,6 +504,7 @@ MonoBehaviour:
   blurChild: {fileID: 5698835808094360887}
   levelText: {fileID: 3304963057000014100}
   rankDisplay: {fileID: 6184426367628838319}
+  nextButton: {fileID: 5698835808708696807}
   ranksSprites:
   - {fileID: 1915060670, guid: 9ec3246b394a42848b3341eee584126d, type: 3}
   - {fileID: -1303624488, guid: 9ec3246b394a42848b3341eee584126d, type: 3}

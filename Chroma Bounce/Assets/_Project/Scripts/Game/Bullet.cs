@@ -14,6 +14,8 @@ public class Bullet : MonoBehaviour{
     public int bounceCountLaser=0;
     public int bounceCountWall=0;
     public int bounceCountTotal=0;
+    [SerializeField] float bulletSpeedBase=6f;
+    [SerializeField] float bulletSpeed;
     float bounceCountDelay=0.05f;
     float bounceCountDelayTimer;
 
@@ -23,17 +25,19 @@ public class Bullet : MonoBehaviour{
         rb=GetComponent<Rigidbody2D>();
         spr=GetComponent<SpriteRenderer>();
         SetPolarity(positive,true,true);
+        bulletSpeedBase=LevelMapManager.instance.GetCurrentLevelMap().bulletSpeed;
+        bulletSpeed=bulletSpeedBase;
     }
     void Update(){
         //if(!GameManager.GlobalTimeIsPaused)
         if(Vector2.Distance(transform.position,Vector2.zero)>15f){Destroy(gameObject);}///Cleanup
-        if(Player.instance.bulletBounceLimit>0&&bounceCountTotal!=0){///Limit bounces
-            float _alpha=1f-(float)bounceCountTotal/Player.instance.bulletBounceLimit;
+        if(LevelMapManager.instance.GetCurrentLevelMap().bulletBounceLimit>=0 && bounceCountTotal>0){///Limit bounces
+            float _alpha=1f-(float)bounceCountTotal/LevelMapManager.instance.GetCurrentLevelMap().bulletBounceLimit;
             //spr.color=new Color(1,1,1,_alpha);
             GetComponentInChildren<Light2D>().color=new Color(GetComponentInChildren<Light2D>().color.r,GetComponentInChildren<Light2D>().color.g,GetComponentInChildren<Light2D>().color.b,_alpha);
-            if(bounceCountTotal>=Player.instance.bulletBounceLimit){DestroyBullet();}
+            if(bounceCountTotal>LevelMapManager.instance.GetCurrentLevelMap().bulletBounceLimit){DestroyBullet();}
         }
-        if(bounceCountDelayTimer>0){bounceCountDelay-=Time.deltaTime;}
+        if(bounceCountDelayTimer>0){bounceCountDelayTimer-=Time.deltaTime;}
     }
     void DestroyBullet(){
         //if(positive)AssetsManager.instance.VFX("BulletDestroyPositive",transform.position,0.15f);
@@ -70,10 +74,25 @@ public class Bullet : MonoBehaviour{
             return;
         }
         void Ricochet(Collision2D other){
+            if(LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed==-1||
+                (LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed!=-1 && 
+                    (
+                        (bulletSpeed<LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed && LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed>0)||
+                        (bulletSpeed>LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed && LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed<0)
+                    )
+                )
+            ){
+                if(LevelMapManager.instance.GetCurrentLevelMap().bulletAccelerationMultiply){
+                    bulletSpeed*=LevelMapManager.instance.GetCurrentLevelMap().bulletAcceleration;
+                }else{
+                    bulletSpeed+=LevelMapManager.instance.GetCurrentLevelMap().bulletAcceleration;
+                }
+            }
+
             Vector2 _wallNormal=other.contacts[0].normal;
             Vector2 reflectDir=Vector2.Reflect(rb.velocity,_wallNormal).normalized;
 
-            rb.velocity=reflectDir.normalized*Player.instance.bulletSpeed;
+            rb.velocity=reflectDir.normalized*bulletSpeed;
             float rot=Mathf.Atan2(reflectDir.y,reflectDir.x)*Mathf.Rad2Deg;
             transform.eulerAngles=new Vector3(0,0,rot-Player.instance.b_correctionAngle);
 
@@ -93,6 +112,9 @@ public class Bullet : MonoBehaviour{
                 //AudioManager.instance.Play("BounceLaser");
                 return;
             }
+        }else if(other.gameObject.GetComponent<Boombox>()!=null){
+            if(positive){other.gameObject.GetComponent<Boombox>().EnableAndPlay();}
+            else{other.gameObject.GetComponent<Boombox>().Disable();}
         }
     }
 }

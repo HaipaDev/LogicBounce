@@ -9,10 +9,13 @@ public class LevelMap : SerializedScriptableObject{
     public GameObject parent;
     public int stepEnergy=6;
     public bool startingChargePositive=true;
-    public float defaultGunRotation=45;
+    [Range(0,360)]public float defaultGunRotation=45;
     public bool accurateGunRotation=false;
     public int bulletBounceLimit=10;
     public float bulletSpeed=6f;
+    public float bulletAcceleration=0f;
+    public bool bulletAccelerationMultiply=false;
+    public float bulletMaxSpeed=-1f;
     public List<StepProperties> defaultSteps;
     public List<LevelRankCritiria> levelRankCritiria;
     [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "IsAllowed")]
@@ -22,6 +25,8 @@ public class LevelMap : SerializedScriptableObject{
         ,{StepPropertiesType.gunPolarity,true}
         ,{StepPropertiesType.gunRotation,true}
         ,{StepPropertiesType.mirrorPos,false}
+        ,{StepPropertiesType.laserPos,false}
+        ,{StepPropertiesType.switchAllLasers,false}
     };
     [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "Cost")]
     public Dictionary<StepPropertiesType,int> stepTypesCosts=new Dictionary<StepPropertiesType,int>();

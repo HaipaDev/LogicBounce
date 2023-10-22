@@ -258,8 +258,8 @@ MonoBehaviour:
   storyboardUIAnchoredPosHidden: -1925
   sbTextParent: {fileID: 6090962933754609181}
   sbText: {fileID: 3912695822860543155}
-  sbTutorialParent: {fileID: 7172377303834002579}
-  sbTutorialText: {fileID: 7172377304481884983}
+  sbNarratorParent: {fileID: 7172377303834002579}
+  sbNarratorText: {fileID: 7172377304481884983}
   currentTextId: 0
   delayBeforeStart: 0
   timeBtwCharsDef: 0.1
@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 7172377303834002590}
   - component: {fileID: 7172377303834002577}
   m_Layer: 5
-  m_Name: Tutorial
+  m_Name: Narrator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -732,7 +732,7 @@ GameObject:
   - component: {fileID: 7172377304481884980}
   - component: {fileID: 7172377304481884983}
   m_Layer: 5
-  m_Name: TutorialText
+  m_Name: NarratorText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -15,7 +15,7 @@ namespace TMPro{
             // Debug.Log("Clamped text: "+text);
             float floatValue;
             float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out floatValue);
-            Debug.Log(floatValue);
+            // Debug.Log(floatValue);
             if(floatValue>maxValue){
                 text=maxValue.ToString();
                 return (char)0;

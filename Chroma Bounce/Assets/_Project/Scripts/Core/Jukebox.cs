@@ -135,6 +135,13 @@ public class Jukebox : MonoBehaviour{   public static Jukebox instance;
         }else{Debug.LogWarning("No source for: "+sound);}}
     }
 
+    public void PauseMusic(){
+        GetComponent<AudioSource>().Pause();
+    }
+    public void UnPauseMusic(){
+        GetComponent<AudioSource>().UnPause();
+    }
+
 
     public AudioClip GetMusic(string sound){
 		GMusic s=Array.Find(musics,x=>x.name==sound);

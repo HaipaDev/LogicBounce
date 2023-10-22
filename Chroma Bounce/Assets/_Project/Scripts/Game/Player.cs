@@ -17,9 +17,7 @@ public class Player : MonoBehaviour{    public static Player instance;
     [SerializeField][Range(0,360)] float currentAngle;
     [SerializeField] public bool positive=true;
     [SerializeField] float timeBetweenFiring=1f;
-    [SerializeField]public float bulletSpeed=7f;
     [SerializeField]public float b_correctionAngle=-90;
-    [SerializeField]public int bulletBounceLimit=10;
     [Header("Current")]
     [DisableInEditorMode][SerializeField] float timer;
 
@@ -35,6 +33,7 @@ public class Player : MonoBehaviour{    public static Player instance;
     public void SetGunRotation(float rotZ,bool _flipped=false){
         float _rotZ=360-rotZ;if(_flipped)_rotZ=rotZ;
         rotatePoint.eulerAngles=new Vector3(rotatePoint.eulerAngles.x,rotatePoint.eulerAngles.y,_rotZ);
+        if(rotZ>90&&rotZ<270){GetComponent<SpriteRenderer>().flipX=true;}else{GetComponent<SpriteRenderer>().flipX=false;}
     }
     public void ShootBullet(){
         timer=timeBetweenFiring;
@@ -47,7 +46,7 @@ public class Player : MonoBehaviour{    public static Player instance;
 
         Vector3 _dir=gunPoint.position-b_trans.position;
         Vector3 _rotation=b_trans.position-gunPoint.position;
-        b_rb.velocity=new Vector2(_dir.x, _dir.y).normalized*bulletSpeed;
+        b_rb.velocity=new Vector2(_dir.x, _dir.y).normalized*LevelMapManager.instance.GetCurrentLevelMap().bulletSpeed;
         float b_rotZ = Mathf.Atan2(_rotation.y,_rotation.x)*Mathf.Rad2Deg;
         b_trans.rotation=Quaternion.Euler(0,0,b_rotZ+b_correctionAngle);
         if(positive){AudioManager.instance.Play("ShootPositive");AudioManager.instance.StopPlaying("ShootNegative");}

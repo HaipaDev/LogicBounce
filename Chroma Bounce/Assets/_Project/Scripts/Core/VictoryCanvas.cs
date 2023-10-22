@@ -70,7 +70,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         rankDisplay.sprite=ranksSprites[(int)CalculateRank()];
         levelText.text="Level "+(LevelMapManager.instance.levelCurrent+1)+" completed!";
         StepsManager.instance.CloseStepsUI();
-        if(LevelMapManager.instance._nextLevelAvailable()){nextButton.SetActive(false);}else{nextButton.SetActive(true);}
+        if(LevelMapManager.instance._nextLevelAvailable()){nextButton.SetActive(true);}else{nextButton.SetActive(false);}
 
         Destroy(GameObject.Find("bg"));Destroy(GameObject.Find("bg2"));
         Destroy(FindObjectOfType<Spawnpoint>());

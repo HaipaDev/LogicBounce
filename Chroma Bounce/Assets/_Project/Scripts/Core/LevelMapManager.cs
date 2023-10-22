@@ -4,7 +4,10 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 public class LevelMapManager : MonoBehaviour{   public static LevelMapManager instance;
+    [SerializeField] public bool _testing;
+    [AssetsOnly]LevelMap levelMapTest;
     [AssetsOnly]public LevelMap[] levelMaps;
+    [DisableInEditorMode]public LevelMap levelMapCurrent;
     [SceneObjectsOnly]public GameObject levelParent;
     [Header("Current variables")]
     [SerializeField]float restartDelaySet=0.5f;
@@ -17,10 +20,17 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     [DisableInEditorMode][SerializeField]public List<Mirror> mirrorListSorted;
 
     void Awake(){if(LevelMapManager.instance!=null/*||OutOfContextScene()*/){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
-    void Start(){if(GSceneManager.CheckScene("Game"))Restart();}
+    void Start(){
+        if(_testing){levelCurrent=-1;LoadLevel(-1);ReinstantiateCurrentLevelMap();}
+
+        if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}//If from testing a double exists, DOESNT WORK? LOL
+        if(GSceneManager.CheckScene("Game"))Restart();
+    }
     public static bool OutOfContextScene(){return (!GSceneManager.CheckScene("Game")&&!GSceneManager.CheckScene("LevelSelect"));}
     public static bool InContextScene(){return (GSceneManager.CheckScene("Game")||GSceneManager.CheckScene("LevelSelect"));}
     void Update(){
+        if(_testing){levelCurrent=-1;}
+
         if(GSceneManager.CheckScene("Game")&&StepsManager.StepsUIOpen){
             if(Input.GetKeyDown(KeyCode.R)){if(restartDelay<=0)CallRestart();}
             if(restartDelay>0){restartDelay-=Time.unscaledDeltaTime;}
@@ -43,14 +53,15 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     }
     void Restart(){
         levelTimer=0;
-        if(levelParent!=null&&levelMaps[levelCurrent].parent!=null){
+        ReinstantiateCurrentLevelMap();
+        if(levelParent!=null&&GetCurrentLevelMap().parent!=null){
             ///Cleanup
             foreach(Bullet b in FindObjectsOfType<Bullet>()){Destroy(b.gameObject);}
 
             ///Reset
             for(int i=0;i<levelParent.transform.childCount;i++){
                 var _parentChild=levelParent.transform.GetChild(i);
-                var _prefabChild=levelMaps[levelCurrent].parent.transform.GetChild(i);
+                var _prefabChild=GetCurrentLevelMap().parent.transform.GetChild(i);
                 _parentChild.gameObject.SetActive(_prefabChild.gameObject.activeSelf);
                 _parentChild.transform.position=_prefabChild.transform.position;
                 _parentChild.transform.eulerAngles=_prefabChild.transform.eulerAngles;
@@ -114,7 +125,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                     InstantiateLevelParent();CallRestart(0,true);
                 }
                 if(levelMaps.Length<levelCurrent){Debug.LogWarning("Level list shorter than "+levelCurrent);}
-                else{if(levelMaps[levelCurrent].parent==null){Debug.LogWarning("Level "+levelCurrent+" not assigned null!");}}
+                else{if(GetCurrentLevelMap().parent==null){Debug.LogWarning("Level "+levelCurrent+" not assigned null!");}}
             }else{Debug.LogWarning("Trying to restart outside of 'Game' scene!");return;}
         }
     }
@@ -123,10 +134,8 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         if(Player.instance!=null){Destroy(Player.instance.gameObject);}
         yield return new WaitForSecondsRealtime(0.05f);
         Instantiate(CoreSetup.instance._getPlayerPrefab().gameObject,(Vector2)spawnpoint.transform.position+spawnpoint.playerOffset,Quaternion.identity);
-        Player.instance.SetGunRotation(levelMaps[levelCurrent].defaultGunRotation);
-        Player.instance.SetPolarity(levelMaps[levelCurrent].startingChargePositive,true);
-        Player.instance.bulletBounceLimit=levelMaps[levelCurrent].bulletBounceLimit;
-        Player.instance.bulletSpeed=levelMaps[levelCurrent].bulletSpeed;
+        Player.instance.SetGunRotation(GetCurrentLevelMap().defaultGunRotation);
+        Player.instance.SetPolarity(GetCurrentLevelMap().startingChargePositive,true);
     }
     void ReinstantiateLevel(){
         ResetLists();
@@ -135,7 +144,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         InstantiateLevelParent();
     }
     void InstantiateLevelParent(){
-        levelParent=Instantiate(levelMaps[levelCurrent].parent,transform);levelParent.transform.position=Vector2.zero;
+        levelParent=Instantiate(GetCurrentLevelMap().parent,transform);levelParent.transform.position=Vector2.zero;
         levelParent.gameObject.name="Level";
     }
     void ResetLists(){
@@ -147,7 +156,13 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
 
     public void SetLevel(int i){
         levelCurrent=i;
-        if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
+        ReinstantiateCurrentLevelMap();
+
+        if(GameObject.Find("Level")!=null){
+            Destroy(GameObject.Find("Level"));
+            if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}//If from testing a double exists, DOESNT WORK? LOL
+            InstantiateLevelParent();
+        }
         Restart();
         ResetLists();
     }
@@ -157,10 +172,14 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         levelCurrent=i;
         GSceneManager.instance.LoadGameScene();
         yield return new WaitForSecondsRealtime(0.1f);
-        if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));InstantiateLevelParent();}
+        if(GameObject.Find("Level")!=null){
+            Destroy(GameObject.Find("Level"));
+            if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}//If from testing a double exists, DOESNT WORK? LOL
+            InstantiateLevelParent();
+        }
         StepsManager.instance.ClearAllSteps();
-        if(levelMaps[levelCurrent].defaultSteps!=null){if(levelMaps[levelCurrent].defaultSteps.Count>0){
-            foreach(StepProperties s in levelMaps[levelCurrent].defaultSteps){
+        if(GetCurrentLevelMap().defaultSteps!=null){if(GetCurrentLevelMap().defaultSteps.Count>0){
+            foreach(StepProperties s in GetCurrentLevelMap().defaultSteps){
                 StepsManager.instance.currentSteps.Add(s);
                 //StepsManager.instance.AddStep(s,true);
             }
@@ -174,5 +193,36 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         else{Debug.LogWarning("No more levels :(");}
     }
     public bool _nextLevelAvailable(){return levelMaps.Length>(levelCurrent+1);}
-    public LevelMap GetCurrentLevelMap(){return levelMaps[levelCurrent];}
+    void ReinstantiateCurrentLevelMap(){
+        if(levelMapCurrent!=null){Destroy(levelMapCurrent);}
+        levelMapCurrent=Instantiate(GetCurrentLevelMapFromList());
+        
+        if(SaveSerial.instance!=null){
+            if(SaveSerial.instance.playerData!=null){
+                if(levelCurrent==0&&SaveSerial.instance.playerData.firstLevelPassedInitial&&levelMapCurrent!=null){
+                    levelMapCurrent.allowedStepTypes[StepPropertiesType.switchAllLasers]=true;
+                    levelMapCurrent.allowedStepTypes[StepPropertiesType.delay]=true;
+                }
+            }else{Debug.LogError("SaveSerial.instance.playerData = null");SaveSerial.instance.RecreatePlayerData();}
+        }else{Debug.LogError("SaveSerial.instance = null");}
+    }
+    public LevelMap GetCurrentLevelMapFromList(){
+        if(levelCurrent>=0&&levelCurrent<levelMaps.Length){return levelMaps[levelCurrent];}
+        else if(levelCurrent>=levelMaps.Length){Debug.LogWarning("levelCurrent id outside of range of array");return levelMapTest;}
+        else{return levelMapTest;}
+    }
+    public LevelMap GetCurrentLevelMap(){
+        if(levelMapCurrent!=null){
+            return levelMapCurrent;}
+        else{
+            Debug.LogWarning("levelMapCurrent is null");
+            levelMapCurrent=Instantiate(GetCurrentLevelMapFromList());
+            if(levelMapCurrent!=null){
+                return levelMapCurrent;
+            }else{
+                Debug.LogWarning("levelMapCurrent is still null");
+                return GetCurrentLevelMapFromList();
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 
 // Part of this script responsible for having a typewriter effect for UI was Prepared by Nick Hwang (https://www.youtube.com/nickhwang), modified by me
 
@@ -14,8 +15,8 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
     [SerializeField] float storyboardUIAnchoredPosHidden=-1925f;
     [ChildGameObjectsOnly][SerializeField]GameObject sbTextParent;
     [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI sbText;
-    [ChildGameObjectsOnly][SerializeField]GameObject sbTutorialParent;
-    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI sbTutorialText;
+    [ChildGameObjectsOnly][SerializeField]GameObject sbNarratorParent;
+    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI sbNarratorText;
     [DisableInEditorMode]public int currentTextId;
     [SerializeField] float delayBeforeStart = 0f;
 	[SerializeField] float timeBtwCharsDef = 0.1f;
@@ -33,9 +34,9 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
         if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText==null||(LevelMapManager.instance.GetCurrentLevelMap().storyboardText!=null&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count==0)){
             storyboardUI.SetActive(false);StepsManager.instance.OpenStepsUI();
         }else{StepsManager.instance.CloseStepsUI(true);}
-        sbTextParent.gameObject.SetActive(false);sbTutorialParent.SetActive(false);
+        sbTextParent.gameObject.SetActive(false);sbNarratorParent.SetActive(false);
         textComponent=sbText;
-        if(LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
+        if(!LevelMapManager.instance._testing&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
     }
     void Update(){
         ///Interpolate movement
@@ -85,9 +86,9 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
     }
     Coroutine typeWriterCoroutine;
     public void SetTypewriterWithType(string text,StoryboardTextType sbTextType,float speed=0.1f,string typewriterSoundAssetOverwrite="Typing"){
-        textComponent=sbText;sbTextParent.gameObject.SetActive(true);sbTutorialParent.SetActive(false);
+        textComponent=sbText;sbTextParent.gameObject.SetActive(true);sbNarratorParent.SetActive(false);
         if(sbTextType==StoryboardTextType.narrator){
-            textComponent=sbTutorialText;sbTutorialParent.SetActive(true);sbTextParent.gameObject.SetActive(false);
+            textComponent=sbNarratorText;sbNarratorParent.SetActive(true);sbTextParent.gameObject.SetActive(false);
             typewriterSoundAssetOverwrite="Typing2";
         }
         SetTypewriter(text,textComponent,speed,typewriterSoundAssetOverwrite);

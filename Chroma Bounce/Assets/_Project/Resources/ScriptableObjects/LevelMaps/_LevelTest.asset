@@ -164,14 +164,17 @@ MonoBehaviour:
   stepEnergy: -1
   startingChargePositive: 1
   defaultGunRotation: 45
-  accurateGunRotation: 1
-  bulletBounceLimit: 10
+  accurateGunRotation: 0
+  bulletBounceLimit: -1
   bulletSpeed: 6
+  bulletAcceleration: 0
+  bulletAccelerationMultiply: 0
+  bulletMaxSpeed: -1
   defaultSteps:
   - stepType: 3
     delay: 0.1
     gunPolarity: 1
-    gunRotation: 359.99
+    gunRotation: 0
     objectId: 0
     mirrorPos: {x: 0, y: 0}
     laserPos: {x: 0, y: 0}
