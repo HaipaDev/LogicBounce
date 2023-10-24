@@ -64,9 +64,13 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     public void RefreshStartingElements(){
         var l=LevelMapManager.instance.GetCurrentLevelMap();
-        var _gun=startingElementsTransform.GetChild(1);
+        var _gun=startingElementsTransform.GetChild(0);
+        var _energy=startingElementsTransform.GetChild(1);
         var _bounces=startingElementsTransform.GetChild(2);
-        var _energy=startingElementsTransform.GetChild(3);
+        var _speed=startingElementsTransform.GetChild(3);
+        var _accel=startingElementsTransform.GetChild(4);
+        var _maxSpeed=startingElementsTransform.GetChild(5);
+
 
         string _gunRotationTxt=Mathf.RoundToInt(l.defaultGunRotation).ToString()+"°";
         if(l.accurateGunRotation){
@@ -80,14 +84,40 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             }
         }
 
-        string bouncesLimit=l.bulletBounceLimit.ToString();if(l.bulletBounceLimit<0){bouncesLimit="∞";}
-        if(_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=bouncesLimit;}
 
-        string maxEnergy=l.stepEnergy.ToString();if(l.stepEnergy<0){maxEnergy="∞";}
-        string _energyTxt=(currentStepsEnergyUsed.ToString()+" / "+maxEnergy);if(l.stepEnergy<0){_energyTxt="∞";}
+        string maxEnergyStr=l.stepEnergy.ToString();if(l.stepEnergy<0){maxEnergyStr="∞";}
+        string _energyTxt=(currentStepsEnergyUsed.ToString()+" / "+maxEnergyStr);if(l.stepEnergy<0){_energyTxt="∞";}
         if(_energy.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_energy.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=_energyTxt;}
         if(currentEnergyLeft()<=0&&l.stepEnergy>0){_energy.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
         else{_energy.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquare");}
+
+
+        string bouncesLimitStr=l.bulletBounceLimit.ToString();if(l.bulletBounceLimit<0){bouncesLimitStr="∞";}
+        if(_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_bounces.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=bouncesLimitStr;}
+
+
+        string speedStr=l.bulletSpeed.ToString();
+        if(_speed.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_speed.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=speedStr;}
+
+
+        if(l.bulletAcceleration!=0){
+            _accel.gameObject.SetActive(true);
+        }else{
+            _accel.gameObject.SetActive(false);
+        }
+        string accelStr="+"+l.bulletAcceleration.ToString();
+        if(l.bulletAcceleration<0){accelStr="-"+l.bulletAcceleration.ToString();}
+        if(l.bulletAccelerationMultiply){accelStr="*"+l.bulletAcceleration.ToString();}
+        if(_accel.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_accel.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=accelStr;}
+
+
+        if(!l.bulletMaxSpeedInfinite){
+            _maxSpeed.gameObject.SetActive(true);
+        }else{
+            _maxSpeed.gameObject.SetActive(false);
+        }
+        string maxSpeedStr=l.bulletMaxSpeed.ToString();if(l.bulletMaxSpeedInfinite){maxSpeedStr="∞";}
+        if(_maxSpeed.GetComponentInChildren<TMPro.TextMeshProUGUI>()!=null){_maxSpeed.GetComponentInChildren<TMPro.TextMeshProUGUI>().text=maxSpeedStr;}
     }
     bool startedSteps,stepsRunning,allStepsDone;float reopenStepsUIDelay;
     public bool _areStepsBeingRun(){return (stepsRunning&&!allStepsDone);}

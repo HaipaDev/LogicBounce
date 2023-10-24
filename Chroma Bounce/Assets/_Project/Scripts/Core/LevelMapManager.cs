@@ -5,8 +5,8 @@ using Sirenix.OdinInspector;
 
 public class LevelMapManager : MonoBehaviour{   public static LevelMapManager instance;
     [SerializeField] public bool _testing;
-    [AssetsOnly]LevelMap levelMapTest;
-    [AssetsOnly]public LevelMap[] levelMaps;
+    [SerializeField][AssetsOnly]LevelMap levelMapTest;
+    [SerializeField][AssetsOnly]LevelMap[] levelMaps;
     [DisableInEditorMode]public LevelMap levelMapCurrent;
     [SceneObjectsOnly]public GameObject levelParent;
     [Header("Current variables")]
@@ -35,7 +35,11 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             if(Input.GetKeyDown(KeyCode.R)){if(restartDelay<=0)CallRestart();}
             if(restartDelay>0){restartDelay-=Time.unscaledDeltaTime;}
         }
-        if(!GSceneManager.CheckScene("Game")){ResetLists();if(levelParent!=null){Destroy(levelParent);}}
+        if(!GSceneManager.CheckScene("Game")){
+            ResetLists();
+            if(levelParent!=null){Destroy(levelParent);}
+            if(levelMapCurrent!=null){Destroy(levelMapCurrent);}
+        }
         if(GSceneManager.CheckScene("Game")){if(!StepsManager.StepsUIOpen&&!VictoryCanvas.Won){if(StepsManager.instance._areStepsBeingRunOrBulletsBouncing()){levelTimer+=Time.unscaledDeltaTime;}}}else{levelTimer=0;}
     }
     public void CallRestart(float delay=0f,bool quiet=false){StartCoroutine(RestartI(delay,quiet));}
@@ -170,6 +174,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     IEnumerator LoadLevelI(int i){
         Debug.Log("Loaded Level "+i);
         levelCurrent=i;
+        ReinstantiateCurrentLevelMap();
         GSceneManager.instance.LoadGameScene();
         yield return new WaitForSecondsRealtime(0.1f);
         if(GameObject.Find("Level")!=null){
@@ -225,4 +230,6 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             }
         }
     }
+    public LevelMap GetLevelMapFromList(int id){return levelMaps[id];}
+    public int _levelMapsLength(){return levelMaps.Length;}
 }

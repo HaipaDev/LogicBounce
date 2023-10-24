@@ -248,7 +248,8 @@ MonoBehaviour:
   bulletSpeed: 6
   bulletAcceleration: 0
   bulletAccelerationMultiply: 0
-  bulletMaxSpeed: -1
+  bulletMaxSpeedInfinite: 1
+  bulletMaxSpeed: 0
   defaultSteps:
   - stepType: 6
     delay: 0.1

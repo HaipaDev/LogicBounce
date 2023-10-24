@@ -60,6 +60,27 @@ public class Bullet : MonoBehaviour{
             }
         }
     }
+    void AccelerateBullet(){
+        var l=LevelMapManager.instance.GetCurrentLevelMap();
+        if(l.bulletAcceleration!=0){
+            if(l.bulletMaxSpeedInfinite||
+                (l.bulletMaxSpeed!=0 && 
+                    (
+                        (bulletSpeed<l.bulletMaxSpeed && l.bulletMaxSpeed>0)||
+                        (bulletSpeed>l.bulletMaxSpeed && l.bulletMaxSpeed<0)
+                    )
+                )
+            ){
+                if(l.bulletAccelerationMultiply){
+                    bulletSpeed*=l.bulletAcceleration;
+                }else{
+                    bulletSpeed+=l.bulletAcceleration;
+                    if(bulletSpeed==0&&l.bulletMaxSpeed!=0){bulletSpeed+=l.bulletAcceleration;}//Inverse the velocity instead of leaving it at 0
+                }
+            }
+        }
+        if(l.bulletMaxSpeed!=0){bulletSpeed=Mathf.Clamp(bulletSpeed,-Mathf.Abs(l.bulletMaxSpeed),Mathf.Abs(l.bulletMaxSpeed));}
+    }
     void OnCollisionEnter2D(Collision2D other){
         if(other.gameObject.CompareTag("Laser")){
             if(other.gameObject.GetComponent<Laser>().positive!=this.positive&&other.gameObject.GetComponent<Laser>().bouncy){
@@ -74,20 +95,7 @@ public class Bullet : MonoBehaviour{
             return;
         }
         void Ricochet(Collision2D other){
-            if(LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed==-1||
-                (LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed!=-1 && 
-                    (
-                        (bulletSpeed<LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed && LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed>0)||
-                        (bulletSpeed>LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed && LevelMapManager.instance.GetCurrentLevelMap().bulletMaxSpeed<0)
-                    )
-                )
-            ){
-                if(LevelMapManager.instance.GetCurrentLevelMap().bulletAccelerationMultiply){
-                    bulletSpeed*=LevelMapManager.instance.GetCurrentLevelMap().bulletAcceleration;
-                }else{
-                    bulletSpeed+=LevelMapManager.instance.GetCurrentLevelMap().bulletAcceleration;
-                }
-            }
+            AccelerateBullet();
 
             Vector2 _wallNormal=other.contacts[0].normal;
             Vector2 reflectDir=Vector2.Reflect(rb.velocity,_wallNormal).normalized;

@@ -14,7 +14,7 @@ public class LevelSelectCanvas : MonoBehaviour{
     void Setup(){
         GameObject go=listContent.GetChild(0).gameObject;
         if(listContent.childCount>1)for(var c=listContent.childCount-1;c>0;c--){Destroy(listContent.GetChild(c).gameObject);}
-        for(var i=0;i<LevelMapManager.instance.levelMaps.Length;i++){
+        for(var i=0;i<LevelMapManager.instance._levelMapsLength();i++){
             if(i>0)go=Instantiate(go,listContent);go.name="Level "+(i+1).ToString();//Clone starting object
             go.GetComponentInChildren<TextMeshProUGUI>().text=(i+1).ToString();
             bool unlocked=false;

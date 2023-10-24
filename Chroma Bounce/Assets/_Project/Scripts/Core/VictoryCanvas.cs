@@ -31,7 +31,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
             }else{Debug.LogError("SaveSerial.instance.playerData = null");SaveSerial.instance.RecreatePlayerData();}
         }else{Debug.LogError("SaveSerial.instance = null");}*/
         //#endif
-        if(Won&&LevelMapManager.instance.levelCurrent==LevelMapManager.instance.levelMaps.Length-1&&StoryboardManager.IsOpen&&StoryboardManager.instance.finishedTyping){//Redirect on the last level
+        if(Won&&LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1&&StoryboardManager.IsOpen&&StoryboardManager.instance.finishedTyping){//Redirect on the last level
             if(Input.GetMouseButtonDown(0)){GSceneManager.instance.LoadWebsite("https://hypergamesdev.itch.io/chroma-bounce");StoryboardManager.instance.Close();}
         }
     }
@@ -86,7 +86,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         //GSceneManager.instance.RelaunchTheGame();
         
 
-        if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance.levelMaps.Length-1){
+        if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
             Debug.Log("Last level passed!");
             StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
         }

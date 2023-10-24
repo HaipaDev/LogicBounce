@@ -15,7 +15,8 @@ public class LevelMap : SerializedScriptableObject{
     public float bulletSpeed=6f;
     public float bulletAcceleration=0f;
     public bool bulletAccelerationMultiply=false;
-    public float bulletMaxSpeed=-1f;
+    public bool bulletMaxSpeedInfinite=true;
+    [EnableIf("@this.bulletMaxSpeedInfinite==false")]public float bulletMaxSpeed=0;
     public List<StepProperties> defaultSteps;
     public List<LevelRankCritiria> levelRankCritiria;
     [DictionaryDrawerSettings(KeyLabel = "Type", ValueLabel = "IsAllowed")]

@@ -166,18 +166,12 @@ MonoBehaviour:
   defaultGunRotation: 45
   accurateGunRotation: 0
   bulletBounceLimit: -1
-  bulletSpeed: 6
+  bulletSpeed: 8
   bulletAcceleration: 0
   bulletAccelerationMultiply: 0
-  bulletMaxSpeed: -1
+  bulletMaxSpeedInfinite: 0
+  bulletMaxSpeed: 20
   defaultSteps:
-  - stepType: 3
-    delay: 0.1
-    gunPolarity: 1
-    gunRotation: 0
-    objectId: 0
-    mirrorPos: {x: 0, y: 0}
-    laserPos: {x: 0, y: 0}
   - stepType: 1
     delay: 0.1
     gunPolarity: 1

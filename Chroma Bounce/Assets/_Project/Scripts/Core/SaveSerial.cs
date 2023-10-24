@@ -75,14 +75,14 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		Debug.Log("Recreating player data");
 			int _length=1;
 			if((playerData.levelPassedValues!=null&&playerData.levelPassedValues.Length==0)||playerData.levelPassedValues==null){
-			if(LevelMapManager.instance!=null){
-				_length=LevelMapManager.instance.levelMaps.Length;
+				if(LevelMapManager.instance!=null){
+					_length=LevelMapManager.instance._levelMapsLength();
+				}else{
+					_length=CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>()._levelMapsLength();
+				}
+				playerData.levelPassedValues=new LevelPassValues[_length];Debug.Log(_length);
+				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
 			}
-			}else{
-				_length=CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>().levelMaps.Length;
-			}
-			playerData.levelPassedValues=new LevelPassValues[_length];Debug.Log(_length);
-			for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
 		}
 		//playerData.achievsCompleted=new AchievData[StatsAchievsManager._AchievsListCount()];
 	}

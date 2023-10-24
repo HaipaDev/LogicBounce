@@ -69,6 +69,7 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
         SetTypewriterWithType(text,sbTextType,speed,typewriterSoundAssetOverwrite);
     }
     public void Close(){
+        if(typeWriterCoroutine!=null){StopCoroutine(typeWriterCoroutine);typeWriterCoroutine=null;}
         IsOpen=false;
         //storyboardUI.SetActive(false);
         targetUIPos=new Vector2(storyboardUIAnchoredPosHidden,0);
