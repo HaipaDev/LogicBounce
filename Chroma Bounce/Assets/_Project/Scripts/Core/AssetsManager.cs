@@ -12,6 +12,8 @@ public class AssetsManager : MonoBehaviour{	public static AssetsManager instance
 	[AssetsOnly,Searchable]public List<GMaterial> materials;
 	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator decimalInputValidator;
 	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator angleInputValidator;
+	// [DisableInEditorMode][SerializeField]public Sprite[] generatedLevelPreviews;
+	[DisableInEditorMode][SerializeField]public Texture2D[] generatedLevelPreviews;
     
     void Awake(){if(instance!=null){Destroy(gameObject);}else{DontDestroyOnLoad(gameObject);instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
 	void Start(){}
@@ -107,6 +109,224 @@ public class AssetsManager : MonoBehaviour{	public static AssetsManager instance
 		if(_spr==null)Debug.LogWarning("Sprite not found in the library of sprites nor for the object by name: "+str);
         return _spr;
 	}
+	// public static Sprite ConvertTextureToSprite(RenderTexture renderTexture){
+    //     if (renderTexture == null){
+    //         return null;
+    //     }
+
+    //     // Convert the render texture to a texture2D
+    //     Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height);
+    //     RenderTexture.active = renderTexture;
+    //     texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+    //     texture.Apply();
+
+    //     // Create a sprite from the texture
+    //     return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+    // }
+	// public delegate void OnSnapshotCoroutineComplete(Sprite result);
+	public delegate void OnSnapshotCoroutineComplete(Texture2D result);
+	// public IEnumerator CaptureScreenshotCoroutine(GameObject prefabToSnapshot,OnCoroutineComplete onComplete){
+	// 	UnityEngine.SceneManagement.Scene snapshotScene = UnityEngine.SceneManagement.SceneManager.CreateScene("SnapshotScene");
+
+	// 	GameObject snapshotCameraObject = new GameObject("Snapshot Camera");
+	// 	Camera snapshotCamera = snapshotCameraObject.AddComponent<Camera>();
+	// 	snapshotCameraObject.transform.position=Camera.main.transform.position;
+	// 	snapshotCamera.CopyFrom(Camera.main);
+	// 	snapshotCameraObject.transform.SetParent(null); // Make it a top-level object in the hierarchy
+	// 	snapshotCameraObject.SetActive(false); // Deactivate it
+	// 	UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(snapshotCameraObject, snapshotScene);
+
+	// 	// Create an empty game object to hold the prefab
+	// 	GameObject prefabHolder = new GameObject("PrefabHolder");
+
+	// 	// Instantiate the prefab in the new scene
+	// 	GameObject prefabInstance = Instantiate(prefabToSnapshot, prefabHolder.transform);
+	// 	UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(prefabHolder, snapshotScene);
+
+	// 	// Render the prefab to a texture
+	// 	RenderTexture renderTexture = new RenderTexture(512, 512, 24);
+	// 	snapshotCamera.targetTexture = renderTexture;
+	// 	snapshotCamera.Render();
+	// 	RenderTexture.active = null;
+	// 	Texture2D texture=ConvertRenderTextureToTexture2D(renderTexture);
+	// 	Debug.Log(texture);
+
+	// 	yield return new WaitForSeconds(1.0f); // Wait for 1 second
+
+	// 	// Create a sprite
+	// 	Sprite previewSprite = Sprite.Create(
+	// 		texture,
+	// 		new Rect(0, 0, renderTexture.width, renderTexture.height),
+	// 		new Vector2(0.5f, 0.5f)
+	// 	);
+	// 	snapshotCamera.targetTexture=null;
+	// 	Destroy(texture);
+	// 	Destroy(renderTexture);
+	// 	Destroy(prefabHolder);
+	// 	Debug.Log(previewSprite);
+	// 	Debug.Log(previewSprite.texture);
+
+	// 	// Call the callback with the result
+	// 	onComplete(previewSprite);
+	// }
+	float volumeBeforeSnapshot;
+	public IEnumerator CaptureScreenshotCoroutine(GameObject prefabToSnapshot,OnSnapshotCoroutineComplete onComplete,int offset=0,float cameraOffset=0f,float waitingTime=0.5f){
+		// string sceneName="SnapshotScene";
+		string sceneName="SnapshotScene_"+prefabToSnapshot.name;
+		UnityEngine.SceneManagement.Scene existingScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName);
+    
+		if(existingScene.IsValid()){
+			if(existingScene.isLoaded){
+				UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(existingScene);
+				yield return new WaitForSeconds(0.05f);
+			}
+		}
+		UnityEngine.SceneManagement.Scene snapshotScene = UnityEngine.SceneManagement.SceneManager.CreateScene(sceneName);
+
+		string cameraName="Snapshot Camera_"+prefabToSnapshot.name;
+		if(GameObject.Find(cameraName)!=null){Destroy(GameObject.Find(cameraName));}
+		GameObject snapshotCameraObject = new GameObject(cameraName);
+		Camera snapshotCamera = snapshotCameraObject.AddComponent<Camera>();
+		snapshotCameraObject.transform.SetParent(null); // Make it a top-level object in the hierarchy
+		snapshotCamera.CopyFrom(Camera.main);
+		snapshotCamera.orthographicSize = Camera.main.orthographicSize+cameraOffset;
+		snapshotCamera.aspect = 16f / 9f;
+		// snapshotCameraObject.transform.position=Camera.main.transform.position;
+		// snapshotCameraObject.transform.position=new Vector3(Camera.main.transform.position.x+offset,Camera.main.transform.position.y,Camera.main.transform.position.z);
+		snapshotCameraObject.transform.position=new Vector3(offset,0,Camera.main.transform.position.z);
+		snapshotCameraObject.SetActive(false); // Deactivate it
+		UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(snapshotCameraObject, snapshotScene);
+
+		// Create an empty game object to hold the prefab
+		string prefabholderName=prefabToSnapshot.name+"_Holder";
+		if(GameObject.Find(prefabholderName)!=null){Destroy(GameObject.Find(prefabholderName));}
+		GameObject prefabHolder = new GameObject(prefabholderName);
+
+		// Instantiate the prefab in the new scene
+		UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(prefabHolder, snapshotScene);
+		prefabHolder.transform.position=new Vector3(offset,0,0);
+		// if(GameObject.Find(prefabToSnapshot.name)!=null){Destroy(GameObject.Find(prefabToSnapshot.name));}
+		GameObject prefabInstance = Instantiate(prefabToSnapshot, prefabHolder.transform);
+		prefabInstance.name=prefabToSnapshot.name;
+		// prefabInstance.transform.position=new Vector3(offset,0,0);
+		// UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(prefabInstance, snapshotScene);
+		// GameObject worldCanvasInstance;
+		if(prefabToSnapshot.name.Contains("Level")){
+			GameObject wallsInstance = Instantiate(Get("Walls"),prefabHolder.transform);
+			wallsInstance.transform.localPosition=Vector2.zero;
+			GameObject bgsInstance = Instantiate(Get("bgs"),prefabHolder.transform);
+			bgsInstance.transform.localPosition=new Vector3(0,0,10f);
+			Instantiate(CoreSetup.instance.worldCanvasPrefab);
+		}
+
+		if(waitingTime>0){
+			if(SaveSerial.instance.settingsData.soundVolume!=0){volumeBeforeSnapshot=SaveSerial.instance.settingsData.soundVolume;}
+			SaveSerial.instance.settingsData.soundVolume=0f;
+			// AudioManager.instance.gameObject.SetActive(false);
+			GameManager.instance.gameSpeed=10f;
+			// float tempFixedDelta=Time.fixedDeltaTime;
+			// Time.fixedDeltaTime=0.2f;
+			// Debug.Log(tempFixedDelta+" | "+(float)Time.fixedDeltaTime);
+			yield return new WaitForSecondsRealtime(waitingTime);
+			GameManager.instance.gameSpeed=1f;
+			// Time.fixedDeltaTime=tempFixedDelta;
+			SaveSerial.instance.settingsData.soundVolume=volumeBeforeSnapshot;
+			// AudioManager.instance.gameObject.SetActive(true);
+		}
+
+		// Render the prefab to a texture
+		RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
+		snapshotCamera.targetTexture = renderTexture;
+		snapshotCamera.Render();
+		RenderTexture.active = null;
+		Texture2D texture=ConvertRenderTextureToTexture2D(renderTexture);
+
+		// // Create a sprite
+		// Sprite previewSprite = Sprite.Create(
+		// 	texture,
+		// 	new Rect(0, 0, renderTexture.width, renderTexture.height),
+		// 	new Vector2(0.5f, 0.5f)
+		// );
+		
+		snapshotCamera.targetTexture=null;
+		Destroy(renderTexture);
+		// Destroy(texture);
+		// if(prefabToSnapshot.name.Contains("Level")){Destroy(WorldCanvas.instance.gameObject);}
+		Destroy(prefabHolder);
+		// Destroy(prefabInstance);
+		UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(sceneName);
+
+		onComplete(texture);
+	}
+	public static Sprite PrefabSnapshotSpr(GameObject prefabToSnapshot){
+		UnityEngine.SceneManagement.Scene existingScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("SnapshotScene");
+    
+		if(existingScene.IsValid()){
+			if(existingScene.isLoaded){
+				UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(existingScene);
+			}
+		}
+		UnityEngine.SceneManagement.Scene snapshotScene = UnityEngine.SceneManagement.SceneManager.CreateScene("SnapshotScene");
+
+		GameObject snapshotCameraObject = new GameObject("Snapshot Camera");
+		Camera snapshotCamera = snapshotCameraObject.AddComponent<Camera>();
+		snapshotCameraObject.transform.position=Camera.main.transform.position;
+		snapshotCamera.CopyFrom(Camera.main);
+		snapshotCamera.orthographicSize = Camera.main.orthographicSize+1.25f;
+		snapshotCamera.aspect = 16f / 9f;
+		snapshotCameraObject.transform.SetParent(null); // Make it a top-level object in the hierarchy
+		snapshotCameraObject.SetActive(false); // Deactivate it
+		UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(snapshotCameraObject, snapshotScene);
+
+		// Create an empty game object to hold the prefab
+		// GameObject prefabHolder = new GameObject("PrefabHolder");
+
+		// Instantiate the prefab in the new scene
+		// GameObject prefabInstance = Instantiate(prefabToSnapshot, prefabHolder.transform);
+		GameObject prefabInstance = Instantiate(prefabToSnapshot);
+		UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(prefabInstance, snapshotScene);
+
+		// Render the prefab to a texture
+		RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
+		snapshotCamera.targetTexture = renderTexture;
+		snapshotCamera.Render();
+		RenderTexture.active = null;
+		Texture2D texture=ConvertRenderTextureToTexture2D(renderTexture);
+
+		// Create a sprite
+		Sprite previewSprite = Sprite.Create(
+			texture,
+			new Rect(0, 0, renderTexture.width, renderTexture.height),
+			new Vector2(0.5f, 0.5f)
+		);
+		// snapshotCamera.targetTexture=null;
+		// Destroy(texture);
+		// Destroy(renderTexture);
+		// Destroy(prefabHolder);
+		// Destroy(prefabInstance);
+
+		return previewSprite;
+	}
+	public static Sprite TextureToSprite(Texture2D texture){
+		return Sprite.Create(
+			texture,
+			new Rect(0, 0, texture.width, texture.height),
+			new Vector2(0.5f, 0.5f)
+		);
+	}
+	public static Texture2D ConvertRenderTextureToTexture2D(RenderTexture renderTexture){
+        if(renderTexture == null){
+            return null;
+        }
+
+        // Create a new Texture2D and read the render texture data
+        Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height);
+        RenderTexture.active = renderTexture;
+        texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        texture.Apply();
+
+        return texture;
+    }
 
 	public Material GetMat(string mat,bool instantiate=false){
 		GMaterial gm=materials.Find(x=>x.name==mat);

@@ -55,5 +55,6 @@ MonoBehaviour:
   jukeboxPrefab: {fileID: 5024049173945341391, guid: f8787cdfa04832c469f8ded438fd0a60, type: 3}
   levelMapManagerPrefab: {fileID: 1275438954444844136, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
   stepsManagerPrefab: {fileID: 1105022259761234044, guid: f0648dce6cbc516438c0784843e5a93a, type: 3}
+  worldCanvasPrefab: {fileID: 4019747214315510426, guid: 1cbe026c3d73f99489b13a9b23134667, type: 3}
   playerPrefab: {fileID: 244919577038031875, guid: 94d7795345bbf1649939c0ce57f876c1, type: 3}
   discordRPCPrefab: {fileID: 1207543391218706, guid: 6765f9da738e023499d7110035d6a3f9, type: 3}

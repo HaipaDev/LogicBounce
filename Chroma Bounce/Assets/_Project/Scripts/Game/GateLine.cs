@@ -38,5 +38,5 @@ public class GateLine : MonoBehaviour{
         if(!_setNewMaterial)SetNewMaterial();
         uiLine.material.SetFloat("Boolean_BC76AE63",AssetsManager.BoolToInt(downwards));
     }
-    void OnDestroy() {Destroy(uiLine.material);}
+    void OnDestroy(){if(uiLine!=null)Destroy(uiLine.material);}
 }

@@ -23,7 +23,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 	public float buildFirstLoaded;
 	public float buildLastLoaded;
 	[System.Serializable]public class PlayerData{
-		public LevelPassValues[] levelPassedValues;
+		public List<LevelPassValues> levelPassedValues;
 		public bool firstLevelPassedInitial;
 		public bool secondLevelEntered;
 	}
@@ -74,14 +74,14 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		if(playerData!=null){
 		Debug.Log("Recreating player data");
 			int _length=1;
-			if((playerData.levelPassedValues!=null&&playerData.levelPassedValues.Length==0)||playerData.levelPassedValues==null){
+			if((playerData.levelPassedValues!=null&&playerData.levelPassedValues.Count==0)||playerData.levelPassedValues==null){
 				if(LevelMapManager.instance!=null){
 					_length=LevelMapManager.instance._levelMapsLength();
 				}else{
 					_length=CoreSetup.instance._levelMapManagerPrefab().GetComponent<LevelMapManager>()._levelMapsLength();
 				}
-				playerData.levelPassedValues=new LevelPassValues[_length];Debug.Log(_length);
-				for(var l=0;l<playerData.levelPassedValues.Length;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
+				playerData.levelPassedValues=new List<LevelPassValues>(_length);Debug.Log(_length);
+				for(var l=0;l<playerData.levelPassedValues.Count;l++){playerData.levelPassedValues[l]=new LevelPassValues();}
 			}
 		}
 		//playerData.achievsCompleted=new AchievData[StatsAchievsManager._AchievsListCount()];
@@ -104,6 +104,7 @@ public class SaveSerial : MonoBehaviour{	public static SaveSerial instance;
 		public bool pprocessing=true;
 		public bool screenshake=true;
 		public bool discordRPC=true;
+		public bool expandedLevelSelectLayout=true;
 	}
 	
 	public string _settingsDataPath(){return Application.persistentDataPath+"/"+filenameSettings+".json";}
@@ -139,5 +140,6 @@ public class LevelPassValues{
 	public bool passed;
 	public LevelRankAchieved rankAchieved=LevelRankAchieved.C;
 	public LevelRankCritiria rankCriteriaMet;
+	public bool skipallDialogues;
 }
 public enum LevelRankAchieved{S,A,B,C}

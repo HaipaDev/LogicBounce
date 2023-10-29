@@ -44,7 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d10f24a559237468192656457c4a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objects: []
+  objects:
+  - name: Walls
+    gobj: {fileID: 6714983211601476581, guid: 67c2b1512b7d7454eaed76145ac3606c, type: 3}
+  - name: bgs
+    gobj: {fileID: 6592359826610985395, guid: d667b30ebc909e8449c8a7efced56fac, type: 3}
   vfx:
   - name: RestartLevel
     gobj: {fileID: 8308638122062445159, guid: 78c5c10cc731f4b4abb9e0bbc878befb, type: 3}

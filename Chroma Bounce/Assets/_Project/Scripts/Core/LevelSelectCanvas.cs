@@ -4,24 +4,44 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 
 public class LevelSelectCanvas : MonoBehaviour{
-    [ChildGameObjectsOnly][SerializeField] RectTransform listContent;
-    [SerializeField] Sprite lockedSprite;
-    [SerializeField] Sprite[] ranksSprites;
+    public static LevelSelectCanvas instance;
+    [SerializeField] public bool expandedView=false;
+    [ChildGameObjectsOnly][SerializeField] RectTransform compactListContent;
+    [AssetsOnly][SerializeField] GameObject compactElementPrefab;
+    [ChildGameObjectsOnly][SerializeField] RectTransform expandedListContent;
+    [AssetsOnly][SerializeField] GameObject expandedElementPrefab;
+    [SerializeField] public Sprite lockedSprite;
+    [SerializeField] public Sprite[] ranksSprites;
     bool unlockedAll=false;
-    void Start(){Setup();}
-    void Setup(){
-        GameObject go=listContent.GetChild(0).gameObject;
-        if(listContent.childCount>1)for(var c=listContent.childCount-1;c>0;c--){Destroy(listContent.GetChild(c).gameObject);}
+    void Awake() {
+        instance=this;
+    }
+    void Start(){
+        expandedView=SaveSerial.instance.settingsData.expandedLevelSelectLayout;
+        SetupAll();
+    }
+    public void SetupAll(){
+        SetupCompact();
+        SetupExpanded();
+        expandedListContent.parent.gameObject.SetActive(false);
+        compactListContent.parent.gameObject.SetActive(false);
+        expandedListContent.parent.gameObject.SetActive(expandedView);
+        compactListContent.parent.gameObject.SetActive(!expandedView);
+    }
+    void SetupCompact(){
+        for(var c=compactListContent.childCount-1;c>=0;c--){Destroy(compactListContent.GetChild(c).gameObject);}//Clean up
+        GameObject go=compactElementPrefab;
         for(var i=0;i<LevelMapManager.instance._levelMapsLength();i++){
-            if(i>0)go=Instantiate(go,listContent);go.name="Level "+(i+1).ToString();//Clone starting object
+            go=Instantiate(go,compactListContent);go.name="Level "+(i+1).ToString();
             go.GetComponentInChildren<TextMeshProUGUI>().text=(i+1).ToString();
             bool unlocked=false;
             if(SaveSerial.instance!=null){
                 if(SaveSerial.instance.playerData!=null){
                     var sp=SaveSerial.instance.playerData;
-                    if(sp.levelPassedValues!=null&&sp.levelPassedValues.Length>i){
+                    if(sp.levelPassedValues!=null&&sp.levelPassedValues.Count>i){
                         if(sp.levelPassedValues[i]!=null){
                             unlocked=(i==0||(i>0&&(sp.levelPassedValues[i-1].passed||unlockedAll)));
                             //if(i>0)Debug.Log(unlocked+" "+i+" | "+sp.levelPassedValues[i-1].passed+" | "+unlockedAll);
@@ -29,6 +49,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                                 go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareBlue");
                                 go.transform.GetChild(1).gameObject.SetActive(true);
                                 go.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite=ranksSprites[(int)sp.levelPassedValues[i].rankAchieved];
+                                if((int)sp.levelPassedValues[i].rankAchieved==0){go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareYellow");}
                             }else if(!unlocked){
                                 Locked();
                             }else if(!sp.levelPassedValues[i].passed&&unlocked){
@@ -40,6 +61,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                         go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");
                         go.transform.GetChild(1).gameObject.SetActive(true);
                         go.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite=lockedSprite;
+                        go.transform.GetChild(1).GetChild(0).localScale=Vector2.one;
                     }
                     void Default(){
                         go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquare");
@@ -52,5 +74,38 @@ public class LevelSelectCanvas : MonoBehaviour{
             if(i==0||unlocked)go.GetComponent<Button>().onClick.AddListener(delegate { LevelMapManager.instance.LoadLevel(_index);});
         }
     }
-    public void UnlockAll(){unlockedAll=true;Setup();}
+    void SetupExpanded(bool _recursive=false){
+        bool _reset=false;
+        for(var c=expandedListContent.childCount-1;c>=0;c--){Destroy(expandedListContent.GetChild(c).gameObject);}//Clean up
+        GameObject go=expandedElementPrefab;
+        for(var i=0;i<LevelMapManager.instance._levelMapsLength();i++){
+            go=Instantiate(go,expandedListContent);go.name="Level "+(i+1).ToString();
+            go.GetComponent<LevelSelectElement>().id=i;
+            if(SaveSerial.instance!=null){
+                if(SaveSerial.instance.playerData!=null){
+                    var sp=SaveSerial.instance.playerData;
+                    if(sp.levelPassedValues!=null&&sp.levelPassedValues.Count>i){
+                        if(sp.levelPassedValues[i]!=null){
+                            go.GetComponent<LevelSelectElement>().unlocked=(i==0||(i>0&&(sp.levelPassedValues[i-1].passed||unlockedAll)));
+                        }else{sp.levelPassedValues.Add(new LevelPassValues());_reset=true;}//sp.levelPassedValues[i]=new LevelPassValues();_reset=true;}
+                    }else{sp.levelPassedValues.Add(new LevelPassValues());_reset=true;}//sp.levelPassedValues[i]=new LevelPassValues();_reset=true;}
+                }else{Debug.LogWarning("SaveSerial.playerData = null!");}
+            }else{Debug.LogWarning("SaveSerial = null!");}
+            go.GetComponent<LevelSelectElement>().Setup();
+        }
+        if(_reset&&!_recursive){SetupExpanded(true);}
+    }
+    public void SwitchLayout(){
+        expandedView=!expandedView;
+        SaveSerial.instance.settingsData.expandedLevelSelectLayout=expandedView;
+        expandedListContent.parent.gameObject.SetActive(expandedView);
+        compactListContent.parent.gameObject.SetActive(!expandedView);
+    }
+    public void SetLayout(bool isExpanded){
+        expandedView=isExpanded;
+        SaveSerial.instance.settingsData.expandedLevelSelectLayout=expandedView;
+        expandedListContent.parent.gameObject.SetActive(expandedView);
+        compactListContent.parent.gameObject.SetActive(!expandedView);
+    }
+    public void UnlockAll(){unlockedAll=true;SetupAll();}
 }

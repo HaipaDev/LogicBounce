@@ -36,7 +36,27 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
         }else{StepsManager.instance.CloseStepsUI(true);}
         sbTextParent.gameObject.SetActive(false);sbNarratorParent.SetActive(false);
         textComponent=sbText;
-        if(!LevelMapManager.instance._testing&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
+        
+
+        if(SaveSerial.instance!=null){
+            if(SaveSerial.instance.playerData!=null){
+                var sp=SaveSerial.instance.playerData;
+                if(sp.levelPassedValues!=null&&sp.levelPassedValues.Count>LevelMapManager.instance.levelCurrent){
+                    if(sp.levelPassedValues[LevelMapManager.instance.levelCurrent]!=null){
+                        if(!LevelMapManager.instance._testing&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0
+                            &&!sp.levelPassedValues[LevelMapManager.instance.levelCurrent].skipallDialogues){//if not skipping all dialogues toggle
+                                Talk();
+                        }else{Close();}
+                    }else{
+                        Debug.LogWarning("levelPassedValues["+LevelMapManager.instance.levelCurrent+"] is null!");
+                        if(!LevelMapManager.instance._testing&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
+                    }
+                }else{
+                    Debug.LogWarning("levelPassedValues is null or shorter than the levelMaps list!");
+                    if(!LevelMapManager.instance._testing&&LevelMapManager.instance.GetCurrentLevelMap().storyboardText.Count>0){Talk();}else{Close();}
+                }
+            }else{Debug.LogWarning("SaveSerial.playerData = null!");}
+        }else{Debug.LogWarning("SaveSerial = null!");}
     }
     void Update(){
         ///Interpolate movement

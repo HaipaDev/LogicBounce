@@ -45,11 +45,12 @@ public class LogicGate : MonoBehaviour{
     void Start(){
         spr=GetComponent<SpriteRenderer>();
         _startPos=transform.position;
-        ConnectWithGatePowering();
+        // ConnectWithGatePowering();
         //if(!charged){chargedSymbol.SetActive(false);}else{chargedSymbol.SetActive(true);}
         if(motherGate){gateMotherSymbol.SetActive(true);}else{gateMotherSymbol.SetActive(false);}
         if(gatePowering1!=null){gatePowering1.gatePowered=this;}//Crossreference
         if(gatePowering2!=null){gatePowering2.gatePowered=this;}//Crossreference
+        ConnectWithGatePowering();
     }
     void Update(){
         ActivateBasedOnLogic();
@@ -326,6 +327,10 @@ public class LogicGate : MonoBehaviour{
             if(gatePowering2.active){if(!gatePowering2Line.CompareColors(spritencolor_activated.color)){gatePowering2Line.SetColor(spritencolor_activated.color);}}
             else{if(!gatePowering2Line.CompareColors(spritencolor_deactivated.color)){gatePowering2Line.SetColor(spritencolor_deactivated.color);}}
         }else{ConnectWithGatePowering2();}
+    }
+    void OnDestroy(){
+        if(gatePowering1Line!=null)Destroy(gatePowering1Line.gameObject);
+        if(gatePowering2Line!=null)Destroy(gatePowering2Line.gameObject);
     }
 }
 public enum LogicGateSignalsType{justbullet,justgate,bulletgate,twogates,twobullets}

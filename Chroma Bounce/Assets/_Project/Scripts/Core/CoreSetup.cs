@@ -22,6 +22,7 @@ public class CoreSetup : MonoBehaviour{   public static CoreSetup instance;
     [Header("GameSpecific")]
     [AssetsOnly][SerializeField] GameObject levelMapManagerPrefab;
     [AssetsOnly][SerializeField] GameObject stepsManagerPrefab;
+    [AssetsOnly][SerializeField] public GameObject worldCanvasPrefab;
     [AssetsOnly][SerializeField] Player playerPrefab;
     
     [Header("Networking, Advancements etc")]

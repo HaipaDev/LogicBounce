@@ -13,6 +13,10 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
     [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI levelText;
     [ChildGameObjectsOnly][SerializeField]Image rankDisplay;
     [ChildGameObjectsOnly][SerializeField]GameObject nextButton;
+    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI yourTimeText;
+    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI sTimeText;
+    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI yourEnergyText;
+    [ChildGameObjectsOnly][SerializeField]TextMeshProUGUI sEnergyText;
     [SerializeField]Sprite[] ranksSprites;
     void Start(){
         instance=this;Won=false;
@@ -38,15 +42,28 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
     public void Win(){
         Won=true;
         var sp=SaveSerial.instance.playerData;
-        sp.levelPassedValues[LevelMapManager.instance.levelCurrent].passed=true;
-        sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankAchieved=CalculateRank();
-        sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankCriteriaMet=
-            new LevelRankCritiria{rank=sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankAchieved,energyUsedMax=StepsManager.instance.currentStepsEnergyUsed,timeToCompletion=LevelMapManager.instance.levelTimer};
-        //if(LevelMapManager.instance.levelCurrent==0){SaveSerial.instance.playerData.firstLevelPassedInitial=true;SaveSerial.instance.Save();}
+        var lm=LevelMapManager.instance;
+        if(!sp.levelPassedValues[lm.levelCurrent].passed)sp.levelPassedValues[lm.levelCurrent].skipallDialogues=true;//Only overwrite before it is actually manually changed
+        sp.levelPassedValues[lm.levelCurrent].passed=true;
+        sp.levelPassedValues[lm.levelCurrent].rankAchieved=CalculateRankCurrent();
+        sp.levelPassedValues[lm.levelCurrent].rankCriteriaMet=
+            new LevelRankCritiria{rank=sp.levelPassedValues[lm.levelCurrent].rankAchieved,energyUsedMax=StepsManager.instance.currentStepsEnergyUsed,timeToCompletion=lm.levelTimer};
+        //if(lm.levelCurrent==0){SaveSerial.instance.playerData.firstLevelPassedInitial=true;SaveSerial.instance.Save();}
 
-        Debug.Log(sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankAchieved.ToString()+" | "+
-            sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankCriteriaMet.energyUsedMax.ToString()+" | "+
-            sp.levelPassedValues[LevelMapManager.instance.levelCurrent].rankCriteriaMet.timeToCompletion.ToString());
+        // Set text components
+        var lr=lm.GetCurrentLevelMap().levelRankCritiria;
+        yourTimeText.text=GameManager.FormatTimeSecMs(lm.levelTimer);
+        sTimeText.text=GameManager.FormatTimeSecMs(lr[0].timeToCompletion);
+        yourEnergyText.text=StepsManager.instance.currentStepsEnergyUsed.ToString();
+        sEnergyText.text=lr[0].energyUsedMax.ToString();
+
+        Debug.Log(sp.levelPassedValues[lm.levelCurrent].rankAchieved.ToString()+" | "+
+            yourTimeText.text+" / "+
+            sTimeText.text+
+            " | "+
+            yourEnergyText.text+" / "+
+            sEnergyText.text
+        );
         SaveSerial.instance.Save();
         StartCoroutine(WinI());
     }
@@ -67,7 +84,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         blurChild.SetActive(true);
         victoryUI.SetActive(true);
         rankDisplay.gameObject.SetActive(true);
-        rankDisplay.sprite=ranksSprites[(int)CalculateRank()];
+        rankDisplay.sprite=ranksSprites[(int)CalculateRankCurrent()];
         levelText.text="Level "+(LevelMapManager.instance.levelCurrent+1)+" completed!";
         StepsManager.instance.CloseStepsUI();
         if(LevelMapManager.instance._nextLevelAvailable()){nextButton.SetActive(true);}else{nextButton.SetActive(false);}
@@ -94,14 +111,47 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         //yield return new WaitForSecondsRealtime(0.1f);
         //StepsManager.instance.OpenStepsUI();
     }
-    LevelRankAchieved CalculateRank(){LevelRankAchieved r=LevelRankAchieved.S;
+    public static LevelRankAchieved CalculateRankCurrent(){
         var s=StepsManager.instance;
         var lm=LevelMapManager.instance;var l=lm.GetCurrentLevelMap();var lr=l.levelRankCritiria;
-        for(var i=0;i<lr.Count;i++){
+        return CalculateRank(s.currentStepsEnergyUsed,lm.levelTimer,lr);
+    }
+    public static LevelRankAchieved CalculateRank(int energyUsed,float levelTimer,List<LevelRankCritiria> levelRankCritiria){LevelRankAchieved r=LevelRankAchieved.S;
+        for(var i=0;i<levelRankCritiria.Count;i++){
             //Debug.Log(i+" | "+r);
-            if(s.currentStepsEnergyUsed>lr[i].energyUsedMax||lm.levelTimer>lr[i].timeToCompletion){
+            if(energyUsed>levelRankCritiria[i].energyUsedMax||levelTimer>levelRankCritiria[i].timeToCompletion){
                 r=(LevelRankAchieved)(i+1);
                 //Debug.Log("Lowering rank "+r.ToString());
+            }else{break;}
+        }
+        return r;
+    }
+    
+    public static LevelRankAchieved CalculateTimeRankCurrent(){
+        var lm=LevelMapManager.instance;var l=lm.GetCurrentLevelMap();var lr=l.levelRankCritiria;
+        return CalculateTimeRank(lm.levelTimer,lr);
+    }
+    public static LevelRankAchieved CalculateTimeRank(float levelTimer,List<LevelRankCritiria> levelRankCritiria){LevelRankAchieved r=LevelRankAchieved.S;
+        for(var i=0;i<levelRankCritiria.Count;i++){
+            //Debug.Log(i+" | "+r);
+            if(levelTimer>levelRankCritiria[i].timeToCompletion){
+                r=(LevelRankAchieved)(i+1);
+                //Debug.Log("Lowering time rank "+r.ToString());
+            }else{break;}
+        }
+        return r;
+    }
+    public static LevelRankAchieved CalculateEnergyRankCurrent(){
+        var s=StepsManager.instance;
+        var lm=LevelMapManager.instance;var l=lm.GetCurrentLevelMap();var lr=l.levelRankCritiria;
+        return CalculateEnergyRank(s.currentStepsEnergyUsed,lr);
+    }
+    public static LevelRankAchieved CalculateEnergyRank(int energyUsed,List<LevelRankCritiria> levelRankCritiria){LevelRankAchieved r=LevelRankAchieved.S;
+        for(var i=0;i<levelRankCritiria.Count;i++){
+            //Debug.Log(i+" | "+r);
+            if(energyUsed>levelRankCritiria[i].energyUsedMax){
+                r=(LevelRankAchieved)(i+1);
+                //Debug.Log("Lowering energy rank "+r.ToString());
             }else{break;}
         }
         return r;

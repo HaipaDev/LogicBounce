@@ -23,10 +23,15 @@ public class Player : MonoBehaviour{    public static Player instance;
 
     Vector3 mousePos;
     SpriteRenderer gunSpr;
-    void Awake(){if(Player.instance!=null){Destroy(gameObject);}else{instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
+    void Awake(){
+        if(!GSceneManager.CheckScene("LevelSelect")){
+            if(Player.instance!=null){Destroy(gameObject);}else{instance=this;gameObject.name=gameObject.name.Split('(')[0];}
+        }
+    }
     void Start(){
         gunSpr=gunTransform.GetComponent<SpriteRenderer>();
         SetPolarity(positive,true,true);
+        SetGunRotation(currentAngle);
     }
     Vector2 rotZdirectionMin,rotZdirectionMax;
     void Update(){}

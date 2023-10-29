@@ -167,10 +167,10 @@ MonoBehaviour:
   accurateGunRotation: 0
   bulletBounceLimit: -1
   bulletSpeed: 8
-  bulletAcceleration: 0
-  bulletAccelerationMultiply: 0
+  bulletAcceleration: 1.1
+  bulletAccelerationMultiply: 1
   bulletMaxSpeedInfinite: 0
-  bulletMaxSpeed: 20
+  bulletMaxSpeed: 999
   defaultSteps:
   - stepType: 1
     delay: 0.1
