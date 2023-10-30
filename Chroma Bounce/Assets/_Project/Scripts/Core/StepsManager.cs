@@ -17,6 +17,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     [ChildGameObjectsOnly][SerializeField] GameObject addStepsUI;
     [ChildGameObjectsOnly][SerializeField] RectTransform addStepsUIListContent;
     [ChildGameObjectsOnly][SerializeField] RectTransform startingElementsTransform;
+    [ChildGameObjectsOnly][SerializeField] GameObject executionBorder;
     [AssetsOnly][SerializeField] GameObject[] stepsUIPrefabs;
     [DisableInEditorMode][SerializeField]public static bool StepsUIOpen;
     [SerializeField] float stepsUIAnchoredPosHidden=-410f;
@@ -34,6 +35,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         //if(currentSteps.Count==0){Debug.LogWarning("No starting steps!");AddStep((int)StepPropertiesType.gunShoot,true);RefreshStartingElements();}
         CloseStepsUI(true);addStepsUI.SetActive(false);
         RepopulateUIFromSteps();
+        executionBorder.SetActive(false);
     }
     void Update(){
         if(!GameManager.GlobalTimeIsPausedNotStepped||StoryboardManager.IsOpen){
@@ -59,6 +61,10 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI();}
             }
 
+            Debug.Log("started steps: "+startedSteps+" | stepsRunning: "+stepsRunning+" | _areStepsBeingRunOrBulletsBouncing(): "+_areStepsBeingRunOrBulletsBouncing()+" | allStepsDone: "+allStepsDone);
+            if(StepsUIOpen||VictoryCanvas.Won||StoryboardManager.IsOpen){stepsRunning=false;executionBorder.SetActive(false);}//forcing it off mainly because after VictoryCanvas.Won
+            else{executionBorder.SetActive(_areStepsBeingRunOrBulletsBouncing());}
+
             //if(selectedStep==null)ResetAfterPreviewingSteps();
         }
     }
@@ -78,7 +84,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             if(l.defaultGunRotation==Mathf.RoundToInt(l.defaultGunRotation)){_gunRotationTxt=Mathf.RoundToInt(l.defaultGunRotation).ToString()+".0°";}
         }
         foreach(Transform t in _gun){
-            if(t!=transform){
+            if(t!=this.transform){
                 if(Player.instance!=null)if(t.GetComponent<Image>()!=null)t.GetComponent<Image>().sprite=Player.instance.GetGunSpr(l.startingChargePositive);
                 if(t.GetComponent<TMPro.TextMeshProUGUI>()!=null)t.GetComponent<TMPro.TextMeshProUGUI>().text=_gunRotationTxt;
             }
@@ -121,7 +127,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     bool startedSteps,stepsRunning,allStepsDone;float reopenStepsUIDelay;
     public bool _areStepsBeingRun(){return (stepsRunning&&!allStepsDone);}
-    public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0);}
+    // public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0);}
+    public bool _areStepsBeingRunOrBulletsBouncing(){return (stepsRunning||FindObjectsOfType<Bullet>().Length>0&&!VictoryCanvas.Won);}
 
     
     public void StartSteps(){

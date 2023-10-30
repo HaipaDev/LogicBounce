@@ -44,7 +44,8 @@ public class LevelSelectElement : MonoBehaviour{
                 var sp=SaveSerial.instance.playerData;
                 if(sp.levelPassedValues!=null&&sp.levelPassedValues.Count>id){
                     if(sp.levelPassedValues[id]!=null){
-                        if(!unlocked)unlocked=(id==0||(id>0&&(sp.levelPassedValues[id-1].passed)));//Only double check after LevelSelectCanvas checks with inclusion of unlockedAll
+                        if(!unlocked)unlocked=(id==0||(id>0&&(sp.levelPassedValues[id].passed||sp.levelPassedValues[id-1].passed)));//Only double check after LevelSelectCanvas checks with inclusion of unlockedAll
+                        GetComponent<Button>().enabled=unlocked;
                         //if(id>0)Debug.Log(unlocked+" "+i+" | "+sp.levelPassedValues[i-1].passed+" | "+unlockedAll);
                         skipallDialoguesToggle.isOn=sp.levelPassedValues[id].skipallDialogues;
                         if(sp.levelPassedValues[id].passed){
@@ -92,61 +93,9 @@ public class LevelSelectElement : MonoBehaviour{
         dropdownButton.gameObject.SetActive(true);
         dropdownHideButton.gameObject.SetActive(false);
     }
-    // IEnumerator SetPreviewImage(bool forceRegenPreview=false){
-    //     _tempVolume=SaveSerial.instance.settingsData.soundVolume;
-    //     // yield return new WaitForSecondsRealtime(1.05f+(0.05f*id));
-    //     yield return new WaitForSecondsRealtime(0.1f*(id+1));
-    //     // var _waitingTime=0.1f;
-    //     var _waitingTime=0.5f;
-    //     var l=LevelMapManager.instance.GetLevelMapFromList(id);
-    //     if(previewSpr==null){
-    //         if(AssetsManager.instance.generatedLevelPreviews!=null){
-    //             if(AssetsManager.instance.generatedLevelPreviews.Length>id){
-    //                 if(AssetsManager.instance.generatedLevelPreviews[id]!=null){
-    //                     previewSpr=AssetsManager.instance.generatedLevelPreviews[id];
-    //                     previewImg.sprite=previewSpr;
-    //                 }
-    //             }else{AssetsManager.instance.generatedLevelPreviews=new Sprite[LevelMapManager.instance._levelMapsLength()];Debug.Log("Initializing generatedLevelPreviews array");}
-    //         }else{AssetsManager.instance.generatedLevelPreviews=new Sprite[LevelMapManager.instance._levelMapsLength()];Debug.Log("Initializing generatedLevelPreviews array");}
-    //         if(previewSpr==null||forceRegenPreview){//After initial try of fetching from array
-    //             StartCoroutine(AssetsManager.instance.CaptureScreenshotCoroutine(l.parent,result => {
-    //                 if(result != null) {
-    //                     // Debug.Log("result: " + result);
-    //                     previewSpr=result;
-    //                     if(previewSpr!=null){
-    //                         previewImg.sprite=previewSpr;
-    //                     }else{
-    //                         Debug.LogWarning("previewSpr = null in coroutine");
-    //                     }
-    //                 }else{
-    //                     Debug.LogWarning("result = null in coroutine");
-    //                 }
-    //             },100*id,0f,_waitingTime));
-    //             yield return new WaitForSecondsRealtime(_waitingTime*2.5f);
-    //             // previewSpr=AssetsManager.PrefabSnapshotSpr(l.parent);
-    //             if(previewSpr!=null){
-    //                 previewImg.sprite=previewSpr;
-    //                 AssetsManager.instance.generatedLevelPreviews[id]=previewSpr;
-    //             }else{
-    //                 Debug.LogWarning("previewSpr = null");
-    //             }
-    //             if(id==LevelMapManager.instance._levelMapsLength()-1){if(WorldCanvas.instance!=null){Destroy(WorldCanvas.instance.gameObject);}}
-
-    //             // var previewTex=UnityEditor.AssetPreview.GetAssetPreview(l.parent);
-    //             // if(previewTex!=null){
-    //             //     previewSpr=Sprite.Create(previewTex,new Rect(0.0f, 0.0f, previewTex.width, previewTex.height),new Vector2(0.5f, 0.5f), 100f);
-    //             //     previewImg.sprite=previewSpr;
-    //             // }else{
-    //             //     Debug.LogWarning("previewTex = null");
-    //             // }
-    //         }
-    //     }
-    // }
     IEnumerator SetPreviewImage(bool forceRegenPreview=false){
         _tempVolume=SaveSerial.instance.settingsData.soundVolume;
         yield return new WaitForSecondsRealtime(0.01f*(id+1));
-        // yield return new WaitForSecondsRealtime(0.1f*(id+1));
-        // var _waitingTime=0.1f;
         var _waitingTime=0.5f;
         var l=LevelMapManager.instance.GetLevelMapFromList(id);
         if(previewSpr==null){
@@ -185,15 +134,12 @@ public class LevelSelectElement : MonoBehaviour{
                     }
                 },100*id,0f,_waitingTime));
                 yield return new WaitForSecondsRealtime(_waitingTime*2.5f);
-                // previewSpr=AssetsManager.PrefabSnapshotSpr(l.parent);
                 if(previewTex!=null&&previewSpr==null){
                     previewSpr=AssetsManager.TextureToSprite(previewTex);
                     AssetsManager.instance.generatedLevelPreviews[id]=previewTex;
-                    // AssetsManager.instance.generatedLevelPreviews[id]=previewSpr;
                 }
                 if(previewSpr!=null){
                     previewImg.sprite=previewSpr;
-                    // AssetsManager.instance.generatedLevelPreviews[id]=previewSpr;
                 }else{
                     Debug.LogWarning("previewSpr = null");
                 }

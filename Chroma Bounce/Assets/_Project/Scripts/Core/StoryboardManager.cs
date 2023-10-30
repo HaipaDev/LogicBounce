@@ -88,6 +88,11 @@ public class StoryboardManager : MonoBehaviour{     public static StoryboardMana
         currentTextId=100;
         SetTypewriterWithType(text,sbTextType,speed,typewriterSoundAssetOverwrite);
     }
+    public void SkipAll(){
+        Skip();
+        Close();
+        finishedTyping=true;
+    }
     public void Close(){
         if(typeWriterCoroutine!=null){StopCoroutine(typeWriterCoroutine);typeWriterCoroutine=null;}
         IsOpen=false;

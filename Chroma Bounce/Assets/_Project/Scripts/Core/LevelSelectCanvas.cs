@@ -43,7 +43,7 @@ public class LevelSelectCanvas : MonoBehaviour{
                     var sp=SaveSerial.instance.playerData;
                     if(sp.levelPassedValues!=null&&sp.levelPassedValues.Count>i){
                         if(sp.levelPassedValues[i]!=null){
-                            unlocked=(i==0||(i>0&&(sp.levelPassedValues[i-1].passed||unlockedAll)));
+                            unlocked=(i==0||(i>0&&(sp.levelPassedValues[i].passed||sp.levelPassedValues[i-1].passed||unlockedAll)));
                             //if(i>0)Debug.Log(unlocked+" "+i+" | "+sp.levelPassedValues[i-1].passed+" | "+unlockedAll);
                             if(sp.levelPassedValues[i].passed){
                                 go.GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareBlue");

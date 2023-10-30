@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     Volume postProcessVolume;
     bool setValues;
     public float GameManagerTime=0;
+    public float presenceTimer=0;
+    public bool presenceTimeSet=false;
     [Range(0,2)]public static int maskMode=1;
     public bool _webglFullscreenRequested=false;
 
@@ -40,7 +42,9 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
         #endif
     }
     void SetUpSingleton(){if(GameManager.instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
-    void Start(){}
+    void Start(){
+        presenceTimeSet=false;
+    }
     void Update(){
         if(gameSpeed>=0){Time.timeScale=gameSpeed;}if(gameSpeed<=0){gameSpeed=0;}
         if(GSceneManager.CheckScene("Game")){
@@ -88,6 +92,62 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
             if(_webglCanFullscreen&&!_webglDidFullscreen){if(Input.GetMouseButtonDown(0)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));_webglDidFullscreen=true;return;}}
             if(Input.GetKeyDown(KeyCode.F)){Screen.SetResolution(Screen.width,Screen.height,SettingsMenu.GetFullScreenMode(0));return;}
         }*/
+
+        UpdateDiscordPresence();
+    }
+    void UpdateDiscordPresence(){
+        if(presenceTimer>0){presenceTimer-=Time.unscaledDeltaTime;}
+        if(presenceTimer<=0){
+            string presenceDetails="";
+            string presenceStatus="";
+            string _prefixDetails="",_suffixDetails="";
+            string _prefixStatus="",_suffixStatus="";
+            string smallImageKey="";
+            string smallImageText="";
+            // #if UNITY_EDITOR
+            // _prefixStatus="DEV | ";
+            // #endif
+            string sceneName=SceneManager.GetActiveScene().name;
+            if(sceneName!="Game"){
+                if(sceneName=="LevelSelect"){
+                    presenceStatus=_prefixStatus+"In Level Select"+_suffixStatus;
+                }else{
+                    presenceStatus=_prefixStatus+"In Menus"+_suffixStatus;
+                }
+                presenceDetails=_prefixDetails+""+_suffixDetails;
+            }else{
+                if(StepsManager.instance!=null){
+                    if(StepsManager.StepsUIOpen){
+                        presenceStatus=_prefixStatus+"Pondering"+_suffixStatus;
+                    }else{
+                        if(StepsManager.instance._areStepsBeingRunOrBulletsBouncing()){
+                            presenceStatus=_prefixStatus+"Solving"+_suffixStatus;
+                        }else{
+                            if(StoryboardManager.IsOpen){
+                                presenceStatus=_prefixStatus+"Taking in the lore.."+_suffixStatus;
+                            }else if(VictoryCanvas.Won){
+                                presenceStatus=_prefixStatus+"Celebrating victory"+_suffixStatus;
+                            }else{
+                                presenceStatus=_prefixStatus+"Taking a closer look"+_suffixStatus;
+                            }
+                        }
+                    }
+                }
+                presenceDetails=_prefixDetails+"Level "+(LevelMapManager.instance.levelCurrent+1)+_suffixDetails;
+            }
+            
+            if(DiscordPresence.PresenceManager.instance!=null){
+                if(presenceTimeSet==false){
+                    DateTime epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    int presenceTimeTotal = (int)(DateTime.UtcNow - epochStart).TotalSeconds;
+                    DiscordPresence.PresenceManager.UpdatePresence(detail: presenceDetails, state: presenceStatus, start: presenceTimeTotal, smallKey: smallImageKey, smallText: smallImageText);
+                    presenceTimeSet=true;
+                }
+                DiscordPresence.PresenceManager.UpdatePresence(detail: presenceDetails, state: presenceStatus, smallKey: smallImageKey, smallText: smallImageText);
+
+                presenceTimer=1f;
+            }
+        }
     }
     IEnumerator TryForceFulscreen(){
         yield return new WaitForSeconds(0.2f);

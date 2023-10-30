@@ -43,6 +43,31 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         Won=true;
         var sp=SaveSerial.instance.playerData;
         var lm=LevelMapManager.instance;
+
+        // if((sp.levelPassedValues.Count-1<lm.levelCurrent||sp.levelPassedValues[lm.levelCurrent]==null)||
+        // (sp.levelPassedValues.Count>lm.levelCurrent&&sp.levelPassedValues[lm.levelCurrent]!=null&&!sp.levelPassedValues[lm.levelCurrent].passed)){
+        //     if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
+        //         Debug.Log("Last level passed!");
+        //         StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
+        //     }
+        // }
+        
+
+        if(sp.levelPassedValues.Count-1<lm.levelCurrent||sp.levelPassedValues[lm.levelCurrent]==null){
+            Debug.LogWarning("levelPassedValues incorrect!");
+            for(int i=sp.levelPassedValues.Count;i<LevelMapManager.instance._levelMapsLength();i++){
+                // sp.levelPassedValues[lm.levelCurrent]=new LevelPassValues();
+                sp.levelPassedValues.Add(new LevelPassValues());
+            }
+        }
+
+        if(!sp.levelPassedValues[lm.levelCurrent].passed){
+            if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
+                Debug.Log("Last level passed!");
+                StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
+            }
+        }
+
         if(!sp.levelPassedValues[lm.levelCurrent].passed)sp.levelPassedValues[lm.levelCurrent].skipallDialogues=true;//Only overwrite before it is actually manually changed
         sp.levelPassedValues[lm.levelCurrent].passed=true;
         sp.levelPassedValues[lm.levelCurrent].rankAchieved=CalculateRankCurrent();
@@ -65,7 +90,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
             sEnergyText.text
         );
         SaveSerial.instance.Save();
-        StartCoroutine(WinI());
+        VictoryCanvas.instance.StartCoroutine(VictoryCanvas.instance.WinI());
     }
     IEnumerator WinI(){
         if(SaveSerial.instance!=null){
@@ -90,10 +115,10 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         if(LevelMapManager.instance._nextLevelAvailable()){nextButton.SetActive(true);}else{nextButton.SetActive(false);}
 
         Destroy(GameObject.Find("bg"));Destroy(GameObject.Find("bg2"));
+        Destroy(LevelMapManager.instance.levelParent);
         Destroy(FindObjectOfType<Spawnpoint>());
-        Destroy(GameObject.Find("Level"));
-        WorldCanvas.instance.Cleanup();
         Destroy(Player.instance.gameObject);
+        WorldCanvas.instance.Cleanup();
         /*#if !UNITY_EDITOR
             if(LevelMapManager.instance.levelCurrent==0&&!SaveSerial.instance.playerData.firstLevelPassedInitial){
                 SaveSerial.instance.playerData.firstLevelPassedInitial=true;SaveSerial.instance.Save();
@@ -103,10 +128,10 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         //GSceneManager.instance.RelaunchTheGame();
         
 
-        if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
-            Debug.Log("Last level passed!");
-            StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
-        }
+        // if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
+        //     Debug.Log("Last level passed!");
+        //     StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
+        // }
 
         //yield return new WaitForSecondsRealtime(0.1f);
         //StepsManager.instance.OpenStepsUI();

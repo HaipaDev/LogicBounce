@@ -182,7 +182,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6090962933003083178}
         m_TargetAssemblyTypeName: StoryboardManager, Assembly-CSharp
-        m_MethodName: Close
+        m_MethodName: SkipAll
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

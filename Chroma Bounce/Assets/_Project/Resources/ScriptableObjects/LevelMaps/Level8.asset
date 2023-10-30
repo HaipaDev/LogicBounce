@@ -246,7 +246,10 @@ MonoBehaviour:
   accurateGunRotation: 1
   bulletBounceLimit: 10
   bulletSpeed: 6
-  playerDir: 1
+  bulletAcceleration: 0
+  bulletAccelerationMultiply: 0
+  bulletMaxSpeedInfinite: 1
+  bulletMaxSpeed: 0
   defaultSteps:
   - stepType: 1
     delay: 1
@@ -263,3 +266,7 @@ MonoBehaviour:
     speed: 0.07
     text: Just to make it easier for you, Ill say that I think this red one actually
       needs no signals at all, so the blue stripes on it have to disappear
+  - storyboardTextType: 0
+    speed: 0.07
+    text: But I can see that there are different solutions here, do it however you
+      see best
