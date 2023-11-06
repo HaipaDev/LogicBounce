@@ -160,7 +160,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  parent: {fileID: 2120997258007688786, guid: 295de45a64aabe444b545e2374cdff63, type: 3}
+  parent: {fileID: 2120997258007688786, guid: 2589c03cf7cb1cd43a08c5986f0be85b, type: 3}
   stepEnergy: -1
   startingChargePositive: 1
   defaultGunRotation: 45

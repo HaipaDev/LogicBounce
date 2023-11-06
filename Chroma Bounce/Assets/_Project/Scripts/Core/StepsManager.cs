@@ -61,7 +61,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 if(allStepsDone&&reopenStepsUIDelay<=0){OpenStepsUI();}
             }
 
-            Debug.Log("started steps: "+startedSteps+" | stepsRunning: "+stepsRunning+" | _areStepsBeingRunOrBulletsBouncing(): "+_areStepsBeingRunOrBulletsBouncing()+" | allStepsDone: "+allStepsDone);
+            // Debug.Log("started steps: "+startedSteps+" | stepsRunning: "+stepsRunning+" | _areStepsBeingRunOrBulletsBouncing(): "+_areStepsBeingRunOrBulletsBouncing()+" | allStepsDone: "+allStepsDone);
             if(StepsUIOpen||VictoryCanvas.Won||StoryboardManager.IsOpen){stepsRunning=false;executionBorder.SetActive(false);}//forcing it off mainly because after VictoryCanvas.Won
             else{executionBorder.SetActive(_areStepsBeingRunOrBulletsBouncing());}
 
@@ -220,9 +220,11 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         Player.instance.SetGunRotation(l.defaultGunRotation);
     }
 
-    public void OpenStepsUI(bool reset=true,bool force=false){
+    public void OpenStepsUI(bool reset=false,bool force=false){
         if(!StepsUIOpen||force){
             StopSteps();
+            if(reset||_areStepsBeingRunOrBulletsBouncing()||allStepsDone){LevelMapManager.instance.CallRestart();}
+
             if(currentStepId==0||force){
                 targetUIPos=Vector2.zero;
                 stepsUI.SetActive(true);
@@ -234,7 +236,6 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                     cg.interactable=true;
                     cg.blocksRaycasts=true;
                 }
-                if(reset){LevelMapManager.instance.CallRestart();}
             }
         }
     }

@@ -31,7 +31,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
     void Update(){
         if(_testing){levelCurrent=-1;}
 
-        if(GSceneManager.CheckScene("Game")&&StepsManager.StepsUIOpen){
+        if(GSceneManager.CheckScene("Game")){//StepsManager.StepsUIOpen){
             if(Input.GetKeyDown(KeyCode.R)){if(restartDelay<=0)CallRestart();}
             if(restartDelay>0){restartDelay-=Time.unscaledDeltaTime;}
         }
@@ -39,6 +39,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             ResetLists();
             if(levelParent!=null){Destroy(levelParent);}
             if(levelMapCurrent!=null){Destroy(levelMapCurrent);}
+            _testing=false;
         }
         if(GSceneManager.CheckScene("Game")){if(!StepsManager.StepsUIOpen&&!VictoryCanvas.Won){if(StepsManager.instance._areStepsBeingRunOrBulletsBouncing()){levelTimer+=Time.unscaledDeltaTime;}}}else{levelTimer=0;}
     }

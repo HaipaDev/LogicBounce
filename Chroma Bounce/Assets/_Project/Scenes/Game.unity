@@ -1161,11 +1161,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
       propertyPath: _testing
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
+      propertyPath: levelParent
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
       propertyPath: levelCurrent
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6118108948481103732, guid: 371d2a239992d41498c2ac7e20e952a7, type: 3}
       propertyPath: levelMaps.Array.data[8]

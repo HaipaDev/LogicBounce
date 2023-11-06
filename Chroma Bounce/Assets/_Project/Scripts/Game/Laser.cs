@@ -194,55 +194,254 @@ public class Laser : MonoBehaviour{
         //}
     //}
     ///Only works for 0 degree colision so for going left
-    Vector2 mirrorFaceDirection;Vector2 mirrorPosition;
-    void ReflectLaserFromMirror(RaycastHit2D hit){
-        Debug.Log("ReflectLaserFromMirror");
-        if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
+    // Vector2 mirrorFaceDirection;Vector2 mirrorPosition;
+    // void ReflectLaserFromMirror(RaycastHit2D hit){
+    //     Debug.Log("ReflectLaserFromMirror");
+    //     if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
+    //         Debug.Log("Reflecting laser");
+    //         mirrorReference=hit.collider.gameObject;
+    //         Vector2 mirrorNormal=hit.normal;mirrorPosition=hit.transform.position;Vector2 hitPos=hit.point;
+    //         float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90f;
+    //         mirrorFaceDirection = Quaternion.Euler(0f,0f,mirrorRotation+_correction) * Vector2.up;
+
+    //         Vector2 reflectDir = mirrorFaceDirection * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
+    //         float reflectionAngle = Vector2.SignedAngle(mirrorFaceDirection, reflectDir);Debug.Log(reflectionAngle);//(Mathf.Atan2(reflectDir.y,reflectDir.x) * Mathf.Rad2Deg)+_correction;
+    //         float dotProduct = Vector2.Dot(mirrorNormal, mirrorFaceDirection);Debug.Log(dotProduct);
+
+    //         if(reflectDir!=laserUpDirection&&dotProduct>=0f){
+    //             Debug.Log("Creating Reflected Laser");
+    //             laserMirrored=Instantiate(this.gameObject,hitPos,Quaternion.identity).GetComponent<Laser>();//Clone
+    //             laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, reflectionAngle);
+    //             laserMirrored.mirrorReference=hit.collider.gameObject;
+    //             laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
+    //             laserMirrored.clonedLaser=true;
+    //             if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
+    //             else{AudioManager.instance.Play("ReflectLaserMirror");}
+    //         }
+    //     }
+    // }
+    ///Almost working attempt at Mirrors I think
+    // void ReflectLaserFromMirror(RaycastHit2D hit){
+    //     if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
+    //         Debug.Log("Reflecting laser");
+    //         mirrorReference=hit.collider.gameObject;
+    //         Vector2 mirrorNormal=hit.normal;
+    //         float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90;
+
+    //         Vector2 reflectDir = Quaternion.Euler(0f,0f,mirrorRotation) * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
+
+    //         if(reflectDir!=laserUpDirection){
+    //             Debug.Log("Creating Reflected Laser");
+    //             laserMirrored=Instantiate(this.gameObject,hit.transform.position,Quaternion.identity).GetComponent<Laser>();//Clone
+    //             float rotation = (Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg);// + _correction;
+    //             laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
+    //             laserMirrored.mirrorReference=hit.collider.gameObject;
+    //             laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
+    //             laserMirrored.clonedLaser=true;
+    //             if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
+    //             else{AudioManager.instance.Play("ReflectLaserMirror");}
+    //         }
+    //     }
+    // }
+    ///New october solution test
+    // void ReflectLaserFromMirror(RaycastHit2D hit){
+    //     if (laserMirrored == null && (laserParentReference == null || (laserParentReference != null && laserParentReference != this.gameObject && this.mirrorReference != laserParentReference.mirrorReference))) {
+    //         Debug.Log("Reflecting laser");
+    //         mirrorReference = hit.collider.gameObject;
+
+    //         // Calculate the mirror's rotation and apply an angle correction if necessary
+    //         float mirrorRotation = hit.transform.eulerAngles.z;
+    //         float angleCorrection = 0.0f; // Adjust this as needed
+    //         float correctedRotation = (mirrorRotation + angleCorrection) % 360;
+
+    //         // Get the surface normal of the mirror
+    //         Vector2 mirrorNormal = Quaternion.Euler(0f, 0f, correctedRotation) * Vector2.up;
+
+    //         // Calculate the reflection direction
+    //         Vector2 reflectDir = Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
+
+    //         // Check if the reflection direction is not the same as the laser's up direction
+    //         if (reflectDir != laserUpDirection) {
+    //             Debug.Log("Creating Reflected Laser");
+    //             laserMirrored = Instantiate(this.gameObject, hit.transform.position, Quaternion.identity).GetComponent<Laser>(); // Clone
+
+    //             // Calculate the rotation of the reflected laser
+    //             float rotation = (Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg) + angleCorrection;
+    //             laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
+    //             laserMirrored.mirrorReference = hit.collider.gameObject;
+    //             laserMirrored.laserParentReference = this.gameObject.GetComponent<Laser>();
+    //             laserMirrored.clonedLaser = true;
+
+    //             // Handle mirror polarity if necessary
+    //             if (mirrorReference.GetComponent<Mirror>().opposite) {
+    //                 laserMirrored.SetPolarity(!positive);
+    //                 AudioManager.instance.Play("ReflectLaserMirrorContrary");
+    //             } else {
+    //                 AudioManager.instance.Play("ReflectLaserMirror");
+    //             }
+    //         }
+    //     }
+    // }
+    void ReflectLaserFromMirror(RaycastHit2D hit) {
+        if (laserMirrored == null && (laserParentReference == null || (laserParentReference != null && laserParentReference != this.gameObject && this.mirrorReference != laserParentReference.mirrorReference))) {
             Debug.Log("Reflecting laser");
-            mirrorReference=hit.collider.gameObject;
-            Vector2 mirrorNormal=hit.normal;mirrorPosition=hit.transform.position;Vector2 hitPos=hit.point;
-            float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90f;
-            mirrorFaceDirection = Quaternion.Euler(0f,0f,mirrorRotation+_correction) * Vector2.up;
+            mirrorReference = hit.collider.gameObject;
 
-            Vector2 reflectDir = mirrorFaceDirection * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
-            float reflectionAngle = Vector2.SignedAngle(mirrorFaceDirection, reflectDir);Debug.Log(reflectionAngle);//(Mathf.Atan2(reflectDir.y,reflectDir.x) * Mathf.Rad2Deg)+_correction;
-            float dotProduct = Vector2.Dot(mirrorNormal, mirrorFaceDirection);Debug.Log(dotProduct);
+            bool isNinetyDegree = mirrorReference.GetComponent<Mirror>().ninetydegree;
 
-            if(reflectDir!=laserUpDirection&&dotProduct>=0f){
-                Debug.Log("Creating Reflected Laser");
-                laserMirrored=Instantiate(this.gameObject,hitPos,Quaternion.identity).GetComponent<Laser>();//Clone
-                laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, reflectionAngle);
-                laserMirrored.mirrorReference=hit.collider.gameObject;
-                laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
-                laserMirrored.clonedLaser=true;
-                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
-                else{AudioManager.instance.Play("ReflectLaserMirror");}
+            // Calculate the mirror's rotation
+            float mirrorRotation = hit.transform.eulerAngles.z;
+            float angleCorrection = 0.0f; // Adjust this as needed for angle corrections
+            float correctedRotation = (mirrorRotation + angleCorrection) % 360;
+
+            // Calculate the reflection direction based on the mirror type
+            Vector2 reflectDir;
+            if(isNinetyDegree){
+                reflectDir = Quaternion.Euler(0f, 0f, correctedRotation + GameManager.instance.ninetydegreemirror_correctionangle) * laserDownDirection;
+            }else{
+                reflectDir = Quaternion.Euler(0f, 0f, correctedRotation) * Vector2.Reflect(laserDownDirection, hit.normal).normalized;
             }
+
+            // Calculate the rotation of the reflected laser
+            float rotation = Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
+            // Debug.Log(rotation);
+
+            // Check if the reflection direction is not the same as the laser's up direction
+            if(reflectDir != laserUpDirection){
+                Debug.Log("Creating Reflected Laser");
+                laserMirrored = Instantiate(this.gameObject, hit.transform.position, Quaternion.identity).GetComponent<Laser>(); // Clone
+
+                // Adjust the rotation of the reflected laser based on the mirror type
+                if(isNinetyDegree){
+                    
+                    rotation=Compute90DegreeReflectedAngle(this.transform.localEulerAngles.z,mirrorRotation);
+                    Debug.Log(gameObject.name+" || "+this.transform.localEulerAngles.z+" | "+mirrorRotation+" = "+rotation);
+                }
+
+                laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
+                laserMirrored.mirrorReference = hit.collider.gameObject;
+                laserMirrored.laserParentReference = this.gameObject.GetComponent<Laser>();
+                laserMirrored.clonedLaser = true;
+
+                // Handle mirror polarity if necessary
+                if(mirrorReference.GetComponent<Mirror>().opposite) {
+                    laserMirrored.SetPolarity(!positive);
+                    AudioManager.instance.Play("ReflectLaserMirrorContrary");
+                }else{
+                    AudioManager.instance.Play("ReflectLaserMirror");
+                }
+            }else if(isNinetyDegree){
+                laserMirrored = Instantiate(this.gameObject, hit.transform.position, Quaternion.identity).GetComponent<Laser>();
+
+                // Add 90 degrees for 90-degree mirrors
+                // rotation += GameManager.instance.ninetydegreemirror_correctionangle;
+                // rotation = GameManager.instance.ninetydegreemirror_correctionangle;
+                // rotation = this.transform.localEulerAngles.z+GameManager.instance.ninetydegreemirror_correctionangle;
+                // Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" + "+GameManager.instance.ninetydegreemirror_correctionangle+" = "+rotation);
+                // if(this.transform.localEulerAngles.z<180&&this.transform.localEulerAngles.z>=0){
+                //     rotation = this.transform.localEulerAngles.z-GameManager.instance.ninetydegreemirror_correctionangle;
+                //     Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" - "+GameManager.instance.ninetydegreemirror_correctionangle+" = "+rotation);
+                // }else if(this.transform.localEulerAngles.z==270){
+                //     rotation = this.transform.localEulerAngles.z+GameManager.instance.ninetydegreemirror_correctionangle*2;
+                //     Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" + "+GameManager.instance.ninetydegreemirror_correctionangle*2+" = "+rotation);
+                // }else{
+                //     rotation = this.transform.localEulerAngles.z+GameManager.instance.ninetydegreemirror_correctionangle;
+                //     Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" + "+GameManager.instance.ninetydegreemirror_correctionangle+" = "+rotation);
+                // }
+                // if(true){
+                //     rotation = this.transform.localEulerAngles.z-GameManager.instance.ninetydegreemirror_correctionangle;
+                //     Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" - "+GameManager.instance.ninetydegreemirror_correctionangle+" = "+rotation);
+                // }else{
+                //     rotation = this.transform.localEulerAngles.z+GameManager.instance.ninetydegreemirror_correctionangle;
+                //     Debug.Log(gameObject.name+" | "+this.transform.localEulerAngles.z+" + "+GameManager.instance.ninetydegreemirror_correctionangle+" = "+rotation);
+                // }
+
+                rotation=Compute90DegreeReflectedAngle(this.transform.localEulerAngles.z,mirrorRotation);
+                Debug.Log(gameObject.name+" || "+this.transform.localEulerAngles.z+" | "+mirrorRotation+" = "+rotation);
+
+                laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
+                laserMirrored.mirrorReference = hit.collider.gameObject;
+                laserMirrored.laserParentReference = this.gameObject.GetComponent<Laser>();
+                laserMirrored.clonedLaser = true;
+
+                // Handle mirror polarity if necessary
+                if(mirrorReference.GetComponent<Mirror>().opposite) {
+                    laserMirrored.SetPolarity(!positive);
+                    AudioManager.instance.Play("ReflectLaserMirrorContrary");
+                }else{
+                    AudioManager.instance.Play("ReflectLaserMirror");
+                }
+            }
+            else{Debug.Log(gameObject.name+" || reflectDir is the same as the laser's: "+reflectDir);}
         }
     }
-    ///Almost working attempt at Mirrors I think
-    /*void ReflectLaserFromMirror(RaycastHit2D hit){
-        if(laserMirrored==null&&(laserParentReference==null||(laserParentReference!=null&&laserParentReference!=this.gameObject&&this.mirrorReference!=laserParentReference.mirrorReference))){
-            Debug.Log("Reflecting laser");
-            mirrorReference=hit.collider.gameObject;
-            Vector2 mirrorNormal=hit.normal;
-            float mirrorRotation=hit.transform.eulerAngles.z;float _correction=90;
+    Dictionary<(int, int), int> ninetyMirrorReflectionMap = new Dictionary<(int, int), int>
+    {
+        {(90, 90), 0},
+        {(180, 180), 90},
+        {(180, 90), 270},
+        {(270, 180), 0},
+        {(0, 270), 90},
+        {(0, 0), 270},
+        {(90, 0), 180},
+        {(270, 270), 180}
+    };
+    float Compute90DegreeReflectedAngle(float entryAngle, float mirrorAngle) {
+        // float difference = (mirrorAngle - entryAngle + 360) % 360;
+        // if (difference == 90) {
+        //     return 0;
+        // } else if (difference == 180) {
+        //     return 90;
+        // } else if (difference == 270) {
+        //     return 180;
+        // } else if (difference == 0) {
+        //     return 270;
+        // }
 
-            Vector2 reflectDir = Quaternion.Euler(0f,0f,mirrorRotation) * Vector2.Reflect(laserDownDirection, mirrorNormal).normalized;
+        // if (difference == 90) {
+        //     return (mirrorAngle + 90) % 360;
+        // } else if (difference == 180) {
+        //     return (mirrorAngle + 180) % 360;
+        // } else if (difference == 270) {
+        //     return (mirrorAngle + 270) % 360;
+        // } else if (difference == 0) {
+        //     return (mirrorAngle + 180) % 360;
+        // }
 
-            if(reflectDir!=laserUpDirection){
-                Debug.Log("Creating Reflected Laser");
-                laserMirrored=Instantiate(this.gameObject,hit.transform.position,Quaternion.identity).GetComponent<Laser>();//Clone
-                float rotation = (Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg);// + _correction;
-                laserMirrored.transform.eulerAngles = new Vector3(0f, 0f, rotation);
-                laserMirrored.mirrorReference=hit.collider.gameObject;
-                laserMirrored.laserParentReference=this.gameObject.GetComponent<Laser>();
-                laserMirrored.clonedLaser=true;
-                if(mirrorReference.GetComponent<Mirror>().opposite){laserMirrored.SetPolarity(!positive);AudioManager.instance.Play("ReflectLaserMirrorContrary");}
-                else{AudioManager.instance.Play("ReflectLaserMirror");}
-            }
-        }
-    }*/
+        // if (difference == 0) {
+        //     return (mirrorAngle + 180) % 360;
+        // } else if (difference == 90) {
+        //     return (mirrorAngle + 270) % 360;
+        // } else if (difference == 180) {
+        //     return (mirrorAngle + 90) % 360;
+        // } else if (difference == 270) {
+        //     return (mirrorAngle + 0) % 360;
+        // }
+        
+        // if(entryAngle==90 && mirrorAngle==90){
+        //     return 0;
+        // }else if(entryAngle==180 && mirrorAngle==180){
+        //     return 90;
+        // }else if(entryAngle==180 && mirrorAngle==90){
+        //     return 270;
+        // }else if(entryAngle==270 && mirrorAngle==180){
+        //     return 0;
+        // }else if(entryAngle==0 && mirrorAngle==270){
+        //     return 90;
+        // }else if(entryAngle==0 && mirrorAngle==0){
+        //     return 270;
+        // }else if(entryAngle==90 && mirrorAngle==0){
+        //     return 180;
+        // }else if(entryAngle==270 && mirrorAngle==270){
+        //     return 180;
+        // }
+        if(ninetyMirrorReflectionMap.TryGetValue(((int)entryAngle,(int)mirrorAngle),out int result)){return result;}
+
+        Debug.Log("Incorrect angle on a 90degreemirror");
+        return 0;
+    }
+
+
     void OnDrawGizmos(){
         //#if UNITY_EDITOR
         /*Gizmos.color=Color.red;

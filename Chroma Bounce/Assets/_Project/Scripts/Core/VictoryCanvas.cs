@@ -44,15 +44,6 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         var sp=SaveSerial.instance.playerData;
         var lm=LevelMapManager.instance;
 
-        // if((sp.levelPassedValues.Count-1<lm.levelCurrent||sp.levelPassedValues[lm.levelCurrent]==null)||
-        // (sp.levelPassedValues.Count>lm.levelCurrent&&sp.levelPassedValues[lm.levelCurrent]!=null&&!sp.levelPassedValues[lm.levelCurrent].passed)){
-        //     if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
-        //         Debug.Log("Last level passed!");
-        //         StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
-        //     }
-        // }
-        
-
         if(sp.levelPassedValues.Count-1<lm.levelCurrent||sp.levelPassedValues[lm.levelCurrent]==null){
             Debug.LogWarning("levelPassedValues incorrect!");
             for(int i=sp.levelPassedValues.Count;i<LevelMapManager.instance._levelMapsLength();i++){
@@ -126,12 +117,6 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
             }
         #endif*/
         //GSceneManager.instance.RelaunchTheGame();
-        
-
-        // if(LevelMapManager.instance.levelCurrent==LevelMapManager.instance._levelMapsLength()-1){
-        //     Debug.Log("Last level passed!");
-        //     StoryboardManager.instance.TalkManual("Thank you for playing the 'demo' of my game I hope you enjoyed it!\n Please do Rate it and share your achieved ranks and solutions etc on itch <3",StoryboardTextType.narrator,0.05f);
-        // }
 
         //yield return new WaitForSecondsRealtime(0.1f);
         //StepsManager.instance.OpenStepsUI();
