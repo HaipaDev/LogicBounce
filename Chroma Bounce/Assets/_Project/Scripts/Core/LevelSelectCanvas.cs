@@ -13,6 +13,7 @@ public class LevelSelectCanvas : MonoBehaviour{
     [AssetsOnly][SerializeField] GameObject compactElementPrefab;
     [ChildGameObjectsOnly][SerializeField] RectTransform expandedListContent;
     [AssetsOnly][SerializeField] GameObject expandedElementPrefab;
+    [ChildGameObjectsOnly][SerializeField] TextMeshProUGUI passedOutOfAllText;
     [SerializeField] public Sprite lockedSprite;
     [SerializeField] public Sprite[] ranksSprites;
     bool unlockedAll=false;
@@ -26,6 +27,7 @@ public class LevelSelectCanvas : MonoBehaviour{
     public void SetupAll(){
         SetupCompact();
         SetupExpanded();
+        SetupPassedOutOfAll();
         expandedListContent.parent.gameObject.SetActive(false);
         compactListContent.parent.gameObject.SetActive(false);
         expandedListContent.parent.gameObject.SetActive(expandedView);
@@ -94,6 +96,33 @@ public class LevelSelectCanvas : MonoBehaviour{
             go.GetComponent<LevelSelectElement>().Setup();
         }
         if(_reset&&!_recursive){SetupExpanded(true);}
+    }
+    void SetupPassedOutOfAll(){
+        int sRankLevels=0;
+        int passedLevels=0;
+        int allLevels=LevelMapManager.instance._levelMapsLength();
+
+        if(SaveSerial.instance!=null){
+            if(SaveSerial.instance.playerData!=null){
+                if(SaveSerial.instance.playerData.levelPassedValues!=null){
+                    var levelPassedValues=SaveSerial.instance.playerData.levelPassedValues;
+                    if(levelPassedValues.Count>0){
+                        for(int i=0;i<levelPassedValues.Count;i++){
+                            if(levelPassedValues[i].passed){
+                                passedLevels++;
+                                if(levelPassedValues[i].rankAchieved==0){
+                                    sRankLevels++;
+                                }
+                            }
+                        }
+                    }else{Debug.LogError("SaveSerial.instance.playerData.levelPassedValues Count <= 0 !");}
+                }else{Debug.LogError("SaveSerial.instance.playerData.levelPassedValues = null");}
+            }else{Debug.LogError("SaveSerial.instance.playerData = null");SaveSerial.instance.RecreatePlayerData();}
+        }else{Debug.LogError("SaveSerial.instance = null");}
+
+        if(passedOutOfAllText!=null){
+            passedOutOfAllText.text=sRankLevels+" / "+passedLevels+" / "+allLevels;
+        }else{Debug.LogWarning("passedOutOfAllText is null");}
     }
     public void SwitchLayout(){
         expandedView=!expandedView;

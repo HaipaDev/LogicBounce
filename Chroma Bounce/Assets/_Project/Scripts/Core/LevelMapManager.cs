@@ -24,7 +24,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         if(_testing){levelCurrent=-1;LoadLevel(-1);ReinstantiateCurrentLevelMap();}
 
         if(GameObject.Find("Level")!=null){Destroy(GameObject.Find("Level"));}//If from testing a double exists, DOESNT WORK? LOL
-        if(GSceneManager.CheckScene("Game"))Restart();
+        if(GSceneManager.CheckScene("Game")){Restart();CallRestart(0.1f,true);}
     }
     public static bool OutOfContextScene(){return (!GSceneManager.CheckScene("Game")&&!GSceneManager.CheckScene("LevelSelect"));}
     public static bool InContextScene(){return (GSceneManager.CheckScene("Game")||GSceneManager.CheckScene("LevelSelect"));}
@@ -39,7 +39,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
             ResetLists();
             if(levelParent!=null){Destroy(levelParent);}
             if(levelMapCurrent!=null){Destroy(levelMapCurrent);}
-            _testing=false;
+            // _testing=false;
         }
         if(GSceneManager.CheckScene("Game")){if(!StepsManager.StepsUIOpen&&!VictoryCanvas.Won){if(StepsManager.instance._areStepsBeingRunOrBulletsBouncing()){levelTimer+=Time.unscaledDeltaTime;}}}else{levelTimer=0;}
     }
@@ -139,6 +139,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
         if(Player.instance!=null){Destroy(Player.instance.gameObject);}
         yield return new WaitForSecondsRealtime(0.05f);
         Instantiate(CoreSetup.instance._getPlayerPrefab().gameObject,(Vector2)spawnpoint.transform.position+spawnpoint.playerOffset,Quaternion.identity);
+        yield return new WaitForSecondsRealtime(0.01f);
         Player.instance.SetGunRotation(GetCurrentLevelMap().defaultGunRotation);
         Player.instance.SetPolarity(GetCurrentLevelMap().startingChargePositive,true);
     }

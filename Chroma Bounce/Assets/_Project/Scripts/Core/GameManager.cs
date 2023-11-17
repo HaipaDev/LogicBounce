@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour{   public static GameManager instance;
     public bool presenceTimeSet=false;
     [Range(0,2)]public static int maskMode=1;
     public bool _webglFullscreenRequested=false;
-    public float ninetydegreemirror_correctionangle=90;
 
     void Awake(){
         SetUpSingleton();

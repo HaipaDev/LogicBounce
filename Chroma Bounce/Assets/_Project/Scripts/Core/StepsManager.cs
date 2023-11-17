@@ -223,6 +223,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     public void OpenStepsUI(bool reset=false,bool force=false){
         if(!StepsUIOpen||force){
             StopSteps();
+            ResetAfterPreviewingSteps();
             if(reset||_areStepsBeingRunOrBulletsBouncing()||allStepsDone){LevelMapManager.instance.CallRestart();}
 
             if(currentStepId==0||force){
@@ -406,7 +407,11 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 else{_energy.SetActive(false);}
                 if(!canAfford(i)){addStepsUIListContent.GetChild(i).GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareRed");}
                 else{addStepsUIListContent.GetChild(i).GetComponent<Image>().sprite=AssetsManager.instance.Spr("uiSquareBlue");}
-            }else{Debug.LogWarning("Children of addStepsUIListContent not setup properly!");if(addStepsUIListContent.childCount>i)addStepsUIListContent.GetChild(i).gameObject.SetActive(false);}
+            // }else{Debug.LogWarning("Children of addStepsUIListContent not setup properly!");if(addStepsUIListContent.childCount>i)addStepsUIListContent.GetChild(i).gameObject.SetActive(false);}
+            }else{
+                if(addStepsUIListContent.childCount<i){Debug.LogWarning("Children of addStepsUIListContent not setup properly!");}
+                if(addStepsUIListContent.childCount>i){addStepsUIListContent.GetChild(i).gameObject.SetActive(false);}
+            }
         }
     }
     public int currentEnergyLeft(){return LevelMapManager.instance.GetCurrentLevelMap().stepEnergy-currentStepsEnergyUsed;}

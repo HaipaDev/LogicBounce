@@ -25,6 +25,7 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     [SceneObjectsOnly][SerializeField]Toggle vSyncToggle;
     [SceneObjectsOnly][SerializeField]Toggle lockCursorToggle;
     [SceneObjectsOnly][SerializeField]Toggle pauseWhenOOFToggle;
+    [SceneObjectsOnly][SerializeField]Toggle expandedLevelSelectToggle;
     [SceneObjectsOnly][SerializeField]TMP_Dropdown qualityDropdopwn;
     [SceneObjectsOnly][SerializeField]Toggle pprocessingToggle;
     [SceneObjectsOnly][SerializeField]Toggle screenshakeToggle;
@@ -43,6 +44,7 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
         windowModeDropdown.value=settingsData.windowMode;
         //fullscreenToggle.isOn=settingsData.fullscreen;
         vSyncToggle.isOn=settingsData.vSync;
+        expandedLevelSelectToggle.isOn=settingsData.expandedLevelSelectLayout;
         pauseWhenOOFToggle.isOn=settingsData.pauseWhenOOF;
         lockCursorToggle.isOn=settingsData.lockCursor;
         pprocessingToggle.isOn=settingsData.pprocessing;
@@ -122,6 +124,9 @@ public class SettingsMenu : MonoBehaviour{      public static SettingsMenu insta
     }
     public void SetPauseWhenOOF(bool isOn){
         settingsData.pauseWhenOOF=isOn;
+    }
+    public void SetExpandedLevelSelect(bool isOn){
+        settingsData.expandedLevelSelectLayout=isOn;
     }
     public void SetPostProcessing(bool isOn){
         settingsData.pprocessing=isOn;
