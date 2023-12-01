@@ -13,7 +13,10 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     [Header("References & Defaults")]
     [ChildGameObjectsOnly][SerializeField] GameObject stepsUI;
     [ChildGameObjectsOnly][SerializeField] RectTransform stepsUIListContent;
-    [ChildGameObjectsOnly][SerializeField] GameObject otherButtons;
+    [ChildGameObjectsOnly][SerializeField] GameObject pauseButton;
+    [ChildGameObjectsOnly][SerializeField] GameObject topButtons;
+    [ChildGameObjectsOnly][SerializeField] GameObject hideButton;
+    [ChildGameObjectsOnly][SerializeField] GameObject showButton;
     [ChildGameObjectsOnly][SerializeField] GameObject addStepsUI;
     [ChildGameObjectsOnly][SerializeField] RectTransform addStepsUIListContent;
     [ChildGameObjectsOnly][SerializeField] RectTransform startingElementsTransform;
@@ -25,12 +28,29 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     [SerializeField] CameraSettings openCameraSettings;
     [SerializeField] CameraSettings defaultCameraSettings;
 
+    Vector2 _hiddenUIPos;
     Vector2 targetUIPos;
+    Vector2 _topButtonsTargetPos;
+    Vector2 _topButtonsOriginPos;
+    Vector2 _topButtonsHiddenPos;
+    Vector2 _pauseButtonTargetPos;
+    Vector2 _pauseButtonOriginPos;
+    Vector2 _pauseButtonHiddenPos;
     float targetAddStepsUIHeight;
     CameraSettings targetCamSettings;
     void Awake(){if(StepsManager.instance!=null){Destroy(gameObject);}else{instance=this;gameObject.name=gameObject.name.Split('(')[0];}}
     void Start(){
+        _hiddenUIPos=new Vector2(0,stepsUIAnchoredPosHidden);
         targetUIPos=Vector2.zero;
+
+        _topButtonsOriginPos=topButtons.GetComponent<RectTransform>().anchoredPosition;
+        _topButtonsHiddenPos=topButtons.GetComponent<RectTransform>().anchoredPosition+new Vector2(0,-170);
+        _topButtonsTargetPos=_topButtonsOriginPos;
+
+        _pauseButtonOriginPos=pauseButton.GetComponent<RectTransform>().anchoredPosition;
+        _pauseButtonHiddenPos=pauseButton.GetComponent<RectTransform>().anchoredPosition+new Vector2(-270,0);//new Vector2(0,200);
+        _pauseButtonTargetPos=_pauseButtonOriginPos;
+
         targetCamSettings=defaultCameraSettings;
         //if(currentSteps.Count==0){Debug.LogWarning("No starting steps!");AddStep((int)StepPropertiesType.gunShoot,true);RefreshStartingElements();}
         CloseStepsUI(true);addStepsUI.SetActive(false);
@@ -47,8 +67,23 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
             ///Interpolate movement
             float _stepUIPos=325f*Time.unscaledDeltaTime;
             stepsUI.GetComponent<RectTransform>().anchoredPosition=Vector2.MoveTowards(stepsUI.GetComponent<RectTransform>().anchoredPosition,targetUIPos,_stepUIPos);
+            topButtons.GetComponent<RectTransform>().anchoredPosition=Vector2.MoveTowards(topButtons.GetComponent<RectTransform>().anchoredPosition,_topButtonsTargetPos,_stepUIPos);
+            pauseButton.GetComponent<RectTransform>().anchoredPosition=Vector2.MoveTowards(pauseButton.GetComponent<RectTransform>().anchoredPosition,_pauseButtonTargetPos,_stepUIPos);
             float _addStepsUIHeight=1500f*Time.unscaledDeltaTime;
             addStepsUI.GetComponent<RectTransform>().sizeDelta=Vector2.MoveTowards(addStepsUI.GetComponent<RectTransform>().sizeDelta,new Vector2(addStepsUI.GetComponent<RectTransform>().sizeDelta.x,targetAddStepsUIHeight),_addStepsUIHeight);
+
+            // if(stepsUI.GetComponent<RectTransform>().anchoredPosition==Vector2.zero){
+            //     // topButtons.SetActive(true);
+            //     showButton.SetActive(false);
+            // }else if(stepsUI.GetComponent<RectTransform>().anchoredPosition==_hiddenUIPos){
+            //     // topButtons.SetActive(false);
+            //     // showButton.SetActive(true);
+            // }
+            if(pauseButton.GetComponent<RectTransform>().anchoredPosition==_pauseButtonHiddenPos){
+                pauseButton.SetActive(false);
+            }else{
+                pauseButton.SetActive(true);
+            }
             
             var cs=targetCamSettings;
             float _stepCamPos=60f*Time.unscaledDeltaTime;
@@ -220,6 +255,7 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         Player.instance.SetGunRotation(l.defaultGunRotation);
     }
 
+    public void OpenStepsUI_(bool reset=false){OpenStepsUI(reset);}
     public void OpenStepsUI(bool reset=false,bool force=false){
         if(!StepsUIOpen||force){
             StopSteps();
@@ -228,10 +264,14 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
 
             if(currentStepId==0||force){
                 targetUIPos=Vector2.zero;
+                _topButtonsTargetPos=_topButtonsOriginPos;
+                _pauseButtonTargetPos=_pauseButtonOriginPos;
                 stepsUI.SetActive(true);
                 SetCameraSettings(openCameraSettings);
                 StepsUIOpen=true;
-                otherButtons.SetActive(true);
+                // topButtons.SetActive(true);
+                hideButton.SetActive(true);
+                showButton.SetActive(false);
                 allStepsDone=false;
                 foreach(CanvasGroup cg in GetComponentsInChildren<CanvasGroup>()){
                     cg.interactable=true;
@@ -242,12 +282,16 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
     }
     public void CloseStepsUI(bool force=false){
         if(StepsUIOpen||force){
-            targetUIPos=new Vector2(0,stepsUIAnchoredPosHidden);
+            targetUIPos=_hiddenUIPos;
+            _topButtonsTargetPos=_topButtonsHiddenPos;
+            _pauseButtonTargetPos=_pauseButtonHiddenPos;
             SetCameraSettings(defaultCameraSettings);
             StepsUIOpen=false;
             targetAddStepsUIHeight=0;
             //addStepsUI.SetActive(false);
-            otherButtons.SetActive(false);
+            // topButtons.SetActive(false);
+            hideButton.SetActive(false);
+            showButton.SetActive(true);
             foreach(CanvasGroup cg in GetComponentsInChildren<CanvasGroup>()){
                 cg.interactable=false;
                 cg.blocksRaycasts=false;
@@ -256,7 +300,9 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         }
     }
     void ForceCloseStepsUI(){
-        stepsUI.GetComponent<RectTransform>().anchoredPosition=new Vector2(0,stepsUIAnchoredPosHidden);targetUIPos=new Vector2(0,stepsUIAnchoredPosHidden);
+        stepsUI.GetComponent<RectTransform>().anchoredPosition=_hiddenUIPos;targetUIPos=_hiddenUIPos;
+        topButtons.GetComponent<RectTransform>().anchoredPosition=_topButtonsHiddenPos;_topButtonsTargetPos=_topButtonsHiddenPos;
+        pauseButton.GetComponent<RectTransform>().anchoredPosition=_pauseButtonHiddenPos;_pauseButtonTargetPos=_pauseButtonHiddenPos;
         targetAddStepsUIHeight=0;addStepsUI.SetActive(false);
         stepsUI.SetActive(false);
         SetCameraSettings(defaultCameraSettings);
@@ -285,6 +331,8 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
         }
         //SetAllowedSteps();
     }
+    public void Pause(){PauseMenu.instance.Pause();}
+
     public void AddStepButton(int id){AddStep(id,false);}
     public void AddStep(int id,bool quiet=false){
         if(canAfford(id)){

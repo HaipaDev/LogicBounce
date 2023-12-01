@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -4337599146626260449}
   - component: {fileID: 4822119097347566912}
   m_Layer: 5
-  m_Name: _gatesConnectLine
+  m_Name: _connectPowerLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

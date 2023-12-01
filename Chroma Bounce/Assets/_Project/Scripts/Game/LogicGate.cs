@@ -4,23 +4,23 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Rendering.Universal;
 
-public class LogicGate : MonoBehaviour{
+public class LogicGate : Powerable{
     [Header("Variables")]
     [SerializeField] public LogicGateType logicGateType;
     [SerializeField] public LogicGateSignalsType logicGateSignalsType;
-    [SerializeField] public bool charged1;
-    [SerializeField] public bool charged2;
+    // [SerializeField] public bool charged1;
+    // [SerializeField] public bool charged2;
     [SerializeField] public bool active;
     [SerializeField] float _delaySet=0.15f;
-    [SerializeField] public bool motherGate=false;
+    [SerializeField] public bool isMotherGate=false;
     [HideIf("@this.gatePowered!=null")][SceneObjectsOnly][SerializeField]public LogicGate gatePowering1;
     [HideIf("@this.gatePowered!=null")][SceneObjectsOnly][SerializeField]public  LogicGate gatePowering2;
     [HideIf("@this.gatePowering1!=null")][DisableInEditorMode][SceneObjectsOnly][SerializeField] LogicGate gatePowered;
-    [HideIf("@this.gatePowering1==null")][DisableInEditorMode][SerializeField] GateLine gatePowering1Line;
-    [HideIf("@this.gatePowering1==null")][DisableInEditorMode][SerializeField] GateLine gatePowering2Line;
+    [HideIf("@this.gatePowering1==null")][DisableInEditorMode][SerializeField] PowerLine gatePowering1Line;
+    [HideIf("@this.gatePowering1==null")][DisableInEditorMode][SerializeField] PowerLine gatePowering2Line;
 
     [Header("References")]
-    [AssetsOnly][SerializeField] GameObject gatePoweringLinePrefab;
+    [AssetsOnly][SerializeField] GameObject poweringLinePrefab;
     [ChildGameObjectsOnly][SerializeField] SpriteRenderer logicGateSymbol;
     [ChildGameObjectsOnly][SerializeField] GameObject lightChild;
     [ChildGameObjectsOnly][SerializeField] GameObject signalSingleSymbol;
@@ -47,7 +47,7 @@ public class LogicGate : MonoBehaviour{
         _startPos=transform.position;
         // ConnectWithGatePowering();
         //if(!charged){chargedSymbol.SetActive(false);}else{chargedSymbol.SetActive(true);}
-        if(motherGate){gateMotherSymbol.SetActive(true);}else{gateMotherSymbol.SetActive(false);}
+        if(isMotherGate){gateMotherSymbol.SetActive(true);}else{gateMotherSymbol.SetActive(false);}
         if(gatePowering1!=null){gatePowering1.gatePowered=this;}//Crossreference
         if(gatePowering2!=null){gatePowering2.gatePowered=this;}//Crossreference
         ConnectWithGatePowering();
@@ -118,10 +118,23 @@ public class LogicGate : MonoBehaviour{
                 else{_signal1Str="2";}
                 if(signal2())_signal2Str="1";
                 else{_signal2Str="2";}
-
+            break;
+            case LogicGateSignalsType.any_one:
+                _type1Str="bulletGateAny";
+                if(signal1())_signal1Str="Activated";
+                else{_signal1Str="Deactivated";}
+            break;
+            case LogicGateSignalsType.any_two:
+                _type1Str="bulletGateAny";
+                _type2Str="bulletGateAny";
+                if(signal1())_signal1Str="Activated";
+                else{_signal1Str="Deactivated";}
+                if(signal2())_signal2Str="Activated";
+                else{_signal2Str="Deactivated";}
             break;
         }
 
+        //1 & 2 is for bullet activated deactivated, the regular is for gates
         bool reverseDisplay=true;string _signal1StrFinal=_signal1Str,_signal2StrFinal=_signal2Str;
         if(reverseDisplay){
             if(_signal1Str=="1")_signal1StrFinal="2";
@@ -134,6 +147,7 @@ public class LogicGate : MonoBehaviour{
             if(_signal2Str=="Deactivated")_signal2StrFinal="Activated";
         }
         Sprite _sprType1=AssetsManager.instance.Spr(_type1Str+_signal1StrFinal),_sprType2=AssetsManager.instance.Spr(_type2Str+_signal2StrFinal);
+        /// NEED TO IMPLEMENT EITHER A FLASHING BETWEEN A BULLET AND A GATE OR LIKE A SYMBOL LIKE QUESTION MARK
         signalSingleTypeIcon.gameObject.SetActive(singleSignalType());
         signal1TypeIcon.gameObject.SetActive(!singleSignalType());
         signal2TypeIcon.gameObject.SetActive(!singleSignalType());
@@ -141,7 +155,7 @@ public class LogicGate : MonoBehaviour{
         signal1TypeIcon.sprite=_sprType1;
         signal2TypeIcon.sprite=_sprType2;
     }
-    bool singleSignalType(){return logicGateSignalsType==LogicGateSignalsType.justbullet||logicGateSignalsType==LogicGateSignalsType.justgate;}
+    bool singleSignalType(){return logicGateSignalsType==LogicGateSignalsType.justbullet||logicGateSignalsType==LogicGateSignalsType.justgate||logicGateSignalsType==LogicGateSignalsType.any_one;}
     bool signal1(){
         bool _s=false;
         switch(logicGateSignalsType){
@@ -157,10 +171,25 @@ public class LogicGate : MonoBehaviour{
             break;
             case LogicGateSignalsType.twogates:
                 //_s=(gatePowering1.active||gatePowering2.active);
-                _s=(gatePowering1.active);
+                _s=(gatePowering1.active&&gatePowering2.active);
             break;
             case LogicGateSignalsType.twobullets:
                 _s=(charged1);
+            break;
+            case LogicGateSignalsType.any_one:
+            //if(gatePowering1!=null)
+                _s=(charged1||(gatePowering1!=null&&gatePowering1.active));
+            break;
+            case LogicGateSignalsType.any_two:
+                _s=(
+                    // (charged1||(gatePowering1!=null&&gatePowering1.active))
+                    // &&(charged1||(gatePowering2!=null&&gatePowering2.active))
+                    // &&(charged2||(gatePowering1!=null&&gatePowering1.active))
+                    // &&(charged2||(gatePowering2!=null&&gatePowering2.active))
+                    // (charged1||(gatePowering1!=null&&gatePowering1.active)||(gatePowering2!=null&&gatePowering2.active))
+                    (charged1||(gatePowering1!=null&&gatePowering1.active))
+                    // ||(charged1||(gatePowering1!=null&&gatePowering1.active))
+                );
             break;
         }return _s;
     }
@@ -187,6 +216,20 @@ public class LogicGate : MonoBehaviour{
                 /*if(charged1){_s=charged2;}
                 if(charged2){_s=charged1;}*/
                 _s=charged2;
+            break;
+            case LogicGateSignalsType.any_one:
+                _s=(charged1);
+            break;
+            case LogicGateSignalsType.any_two:
+                _s=(
+                    // (charged1&&(gatePowering1!=null&&gatePowering1.active))
+                    // &&(charged1||(gatePowering2!=null&&gatePowering2.active))
+                    // &&(charged2||(gatePowering1!=null&&gatePowering1.active))
+                    // &&(charged2||(gatePowering2!=null&&gatePowering2.active))
+                    // (charged2||(gatePowering1!=null&&gatePowering1.active)||(gatePowering2!=null&&gatePowering2.active))
+                    (charged1&&(gatePowering1!=null&&gatePowering1.active))
+                    ||(charged2||(gatePowering2!=null&&gatePowering2.active))
+                );
             break;
         }return _s;
     }
@@ -230,7 +273,7 @@ public class LogicGate : MonoBehaviour{
             if(_initialized){
                 AudioManager.instance.Play("GateActivate");
                 AudioManager.instance.StopPlaying("GateDeactivate");
-                if(motherGate){VictoryCanvas.instance.Win();}
+                if(isMotherGate){VictoryCanvas.instance.Win();}
             }else{_initialized=true;}
         }
         
@@ -249,20 +292,20 @@ public class LogicGate : MonoBehaviour{
         }
     }
     public void Charge(){
-        if(!charged1||(logicGateSignalsType==LogicGateSignalsType.twobullets&&charged1&&!charged2)){
+        if(!charged1||((logicGateSignalsType==LogicGateSignalsType.twobullets||logicGateSignalsType==LogicGateSignalsType.any_two)&&(charged1&&!charged2))){
             if(_delay<=0){
                 if(!charged1){charged1=true;}//signal1Symbol.SetActive(true);}
-                else if(logicGateSignalsType==LogicGateSignalsType.twobullets&&charged1&&!charged2){charged2=true;}//signal2Symbol.SetActive(true);}
+                else if((logicGateSignalsType==LogicGateSignalsType.twobullets||logicGateSignalsType==LogicGateSignalsType.any_two)&&(charged1&&!charged2)){charged2=true;}
                 _delay=_delaySet;
                 AudioManager.instance.Play("GateCharge");AudioManager.instance.StopPlaying("GateDischarge");
             }
         }
     }
     public void Discharge(){
-        if(charged1||(logicGateSignalsType==LogicGateSignalsType.twobullets&&!charged1&&charged2)){
+        if(charged1||((logicGateSignalsType==LogicGateSignalsType.twobullets||logicGateSignalsType==LogicGateSignalsType.any_two)&&(!charged1&&charged2))){
             if(_delay<=0){
                 if(charged1){charged1=false;}//signal1Symbol.SetActive(false);}
-                else if(logicGateSignalsType==LogicGateSignalsType.twobullets&&!charged1&&charged2){charged2=false;}//signal2Symbol.SetActive(false);}
+                else if((logicGateSignalsType==LogicGateSignalsType.twobullets||logicGateSignalsType==LogicGateSignalsType.any_two)&&(!charged1&&charged2)){charged2=false;}
                 _delay=_delaySet;
                 AudioManager.instance.Play("GateDischarge");AudioManager.instance.StopPlaying("GateCharge");
             }
@@ -287,7 +330,7 @@ public class LogicGate : MonoBehaviour{
     void ConnectWithGatePowering1(){
         if(gatePowering1!=null){
             if(gatePowering1Line==null){
-                gatePowering1Line=Instantiate(gatePoweringLinePrefab,WorldCanvas.instance.transform).GetComponent<GateLine>();ConnectWithGatePowering();
+                gatePowering1Line=Instantiate(poweringLinePrefab,WorldCanvas.instance.transform).GetComponent<PowerLine>();ConnectWithGatePowering();
             }else{
                 _startPos=transform.position;
                 Vector2 _pos1=gatePowering1.transform.position;_pos1=new Vector2(_pos1.x+0.5f,_pos1.y+0.5f);
@@ -303,7 +346,7 @@ public class LogicGate : MonoBehaviour{
     void ConnectWithGatePowering2(){
         if(gatePowering2!=null){
             if(gatePowering2Line==null){
-                gatePowering2Line=Instantiate(gatePoweringLinePrefab,WorldCanvas.instance.transform).GetComponent<GateLine>();ConnectWithGatePowering();
+                gatePowering2Line=Instantiate(poweringLinePrefab,WorldCanvas.instance.transform).GetComponent<PowerLine>();ConnectWithGatePowering();
             }else{
                 _startPos=transform.position;
                 Vector2 _pos1=gatePowering2.transform.position;_pos1=new Vector2(_pos1.x+0.5f,_pos1.y+0.5f);
@@ -333,4 +376,4 @@ public class LogicGate : MonoBehaviour{
         if(gatePowering2Line!=null)Destroy(gatePowering2Line.gameObject);
     }
 }
-public enum LogicGateSignalsType{justbullet,justgate,bulletgate,twogates,twobullets}
+public enum LogicGateSignalsType{justbullet,justgate,bulletgate,twogates,twobullets,any_one,any_two}

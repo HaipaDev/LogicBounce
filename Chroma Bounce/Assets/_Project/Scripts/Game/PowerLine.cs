@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI.Extensions;
 
-public class GateLine : MonoBehaviour{
+public class PowerLine : MonoBehaviour{
     UILineRenderer uiLine;
     void Start(){
         uiLine=GetComponent<UILineRenderer>();

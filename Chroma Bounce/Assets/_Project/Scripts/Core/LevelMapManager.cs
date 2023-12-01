@@ -82,7 +82,7 @@ public class LevelMapManager : MonoBehaviour{   public static LevelMapManager in
                     _parentC.charged1=_prefabC.charged1;
                     _parentC.charged2=_prefabC.charged2;
                     _parentC.ForceUpdateActive(_prefabC.active);
-                    _parentC.motherGate=_prefabC.motherGate;
+                    _parentC.isMotherGate=_prefabC.isMotherGate;
                     /*_parentC.gatePowering1=_prefabC.gatePowering1;
                     _parentC.gatePowering2=_prefabC.gatePowering2;*/
                     _parentC.ConnectWithGatePoweringDelay();

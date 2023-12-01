@@ -93,7 +93,7 @@ public class VictoryCanvas : MonoBehaviour{     public static VictoryCanvas inst
         }else{Debug.LogError("SaveSerial.instance = null");}
 
         Vector2 _vfxPos=Vector2.zero;
-        if(FindObjectsOfType<LogicGate>().Length>0){_vfxPos=LevelMapManager.instance.logicGateListSorted.Find(x=>x.motherGate&&x.active).transform.position;}
+        if(FindObjectsOfType<LogicGate>().Length>0){_vfxPos=LevelMapManager.instance.logicGateListSorted.Find(x=>x.isMotherGate&&x.active).transform.position;}
         AssetsManager.instance.VFX("Victory",_vfxPos,1f);
         AudioManager.instance.Play("Victory");
         yield return new WaitForSecondsRealtime(0.5f);

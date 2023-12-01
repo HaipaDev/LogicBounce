@@ -75,6 +75,10 @@ MonoBehaviour:
     spr: {fileID: 21300000, guid: cd08a90affea11b418009749cf23b0cb, type: 3}
   - name: gateDeactivated
     spr: {fileID: 21300000, guid: b508cb9c493875c49861ff70f040a3f3, type: 3}
+  - name: bulletGateAnyActivated
+    spr: {fileID: 21300000, guid: f460e40334b2a0a44879515c47263aa8, type: 3}
+  - name: bulletGateAnyDeactivated
+    spr: {fileID: 21300000, guid: b3d7a507a79580943977bf2e08a73a86, type: 3}
   materials:
   - name: AIOShaderMat
     mat: {fileID: 2100000, guid: 54dd26c80f9c40f4e828cb74cc08e7b3, type: 2}
@@ -84,3 +88,4 @@ MonoBehaviour:
     mat: {fileID: 2100000, guid: 16ef4dd4a17bfb4429e2aa5cbc545f28, type: 2}
   decimalInputValidator: {fileID: 11400000, guid: ab747b2f1e21adf4c80da1a2000dbd30, type: 2}
   angleInputValidator: {fileID: 11400000, guid: 3b5a2b10421529f46991f984b4ac82a3, type: 2}
+  generatedLevelPreviews: []
