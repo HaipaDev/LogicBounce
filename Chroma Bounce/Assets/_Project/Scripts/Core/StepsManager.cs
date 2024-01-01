@@ -343,18 +343,28 @@ public class StepsManager : MonoBehaviour{      public static StepsManager insta
                 SetSelectableStep(gos);
                 RepopulateStepsFromUI();
                 SetAllowedSteps(0.15f);
-                if(id==(int)StepPropertiesType.gunRotation&&LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
-                    //gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
+                if(id==(int)StepPropertiesType.gunRotation){
+                    if(LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
+                        //gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.DecimalNumber;
+                        gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.Custom;
+                        gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().inputValidator=AssetsManager.instance.angleInputValidator;
+                        //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
+                        gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45,00",0.2f);
+                        gos.GetComponent<StepUIPrefab>().SetAutoFromComponentDelay(0.21f);
+                        //Debug.Log("Set GunRotation to Float");
+                    }else{
+                        gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
+                        gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45",0.2f);
+                        //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
+                    }
+                }else if(id==(int)StepPropertiesType.delay){
                     gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.Custom;
-                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().inputValidator=AssetsManager.instance.angleInputValidator;
+                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().inputValidator=AssetsManager.instance.delayInputValidator;
                     //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToFloat();
-                    gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("45.00",0.2f);
+                    gos.GetComponent<StepUIPrefab>().SetTextInComponentDelay("1,00",0.2f);
                     gos.GetComponent<StepUIPrefab>().SetAutoFromComponentDelay(0.21f);
-                    //Debug.Log("Set GunRotation to Float");
-                }else if(id==(int)StepPropertiesType.gunRotation&&!LevelMapManager.instance.GetCurrentLevelMap().accurateGunRotation){
-                    gos.transform.GetComponentInChildren<TMPro.TMP_InputField>().contentType=TMPro.TMP_InputField.ContentType.IntegerNumber;
-                    //gos.transform.GetComponentInChildren<LimitInputFieldNum>().SwitchToInt();
                 }
+
                 if(!quiet)AudioManager.instance.Play("StepAdd");
             }
         }else{if(!quiet)AudioManager.instance.Play("Deny");}

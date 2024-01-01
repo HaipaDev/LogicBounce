@@ -326,7 +326,7 @@ public class Laser : MonoBehaviour{
 
             // Check if the reflection direction is not the same as the laser's up direction
             if(!isNinetyDegree && reflectDir!=laserUpDirection){
-                Debug.Log("Creating Reflected Laser");
+                Debug.Log("Creating Reflected Laser from "+gameObject.name+" ["+transform.eulerAngles.z+"]"+" | to: ["+rotation+"]");
                 laserMirrored = Instantiate(this.gameObject, hit.transform.position, Quaternion.identity).GetComponent<Laser>();
 
                 laserMirrored.transform.localScale=new Vector2(laserMirrored.transform.localScale.x,0.1f);

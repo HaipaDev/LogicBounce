@@ -9,13 +9,15 @@ namespace TMPro{
     public class TMP_DecimalInputValidator : TMP_InputValidator{
         [SerializeField] float minValue = 0f;
         [SerializeField] float maxValue = 100f;
+        bool _debug=true;
         public override char Validate(ref string text, ref int pos, char ch){
-            // Debug.Log("PRE ;; text: "+text+" | pos: "+pos+" | ch: "+ch);
+            if(_debug)Debug.Log("PRE ;; text: "+text+" | pos: "+pos+" | ch: "+ch);
             Clamp(ref text);
-            // Debug.Log("Clamped text: "+text);
+            if(_debug)Debug.Log("Clamped text: "+text);
             float floatValue;
             float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out floatValue);
-            // Debug.Log(floatValue);
+            if(_debug)Debug.Log("Float value: "+floatValue);
+
             if(floatValue>maxValue){
                 text=maxValue.ToString();
                 return (char)0;
@@ -61,8 +63,8 @@ namespace TMPro{
                     text=minValue.ToString();
                     return (char)0;
                 }
-                // Debug.Log("POST ;; text: "+text+" | pos: "+pos+" | ch: "+ch);
-                // Debug.Log(floatValue);
+                if(_debug)Debug.Log("POST ;; text: "+text+" | pos: "+pos+" | ch: "+ch);
+                if(_debug)Debug.Log("Float value: "+floatValue);
                 return ch;
             }
         }
@@ -70,6 +72,7 @@ namespace TMPro{
 
         void Clamp(ref string text){
             if(float.TryParse(text, out float value)){
+                if(_debug)Debug.Log("PreClamped parse: "+value);
                 value = Mathf.Clamp(value, minValue, maxValue);
 
                 // Round down to the nearest integer if the value exceeds the maxValue
@@ -92,7 +95,7 @@ namespace TMPro{
                     value = Mathf.Clamp(value, minValue, maxValue);
                     text = value.ToString();
                 }*/
-            }
+            }else{if(_debug){Debug.LogWarning("Cant parse "+text+" to float");}}
         }
     }
 }

@@ -19,7 +19,8 @@ public class StepUIPrefab : MonoBehaviour{
     public void SetProperties(StepProperties sp){
         stepProperties=sp;
         if(stepProperties.stepType==StepPropertiesType.delay){
-            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString("F2").Replace(',','.'));
+            // GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString("F2").Replace(',','.'));
+            GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.delay.ToString());
         }
         if(stepProperties.stepType==StepPropertiesType.gunRotation){
             GetComponentInChildren<TMP_InputField>().SetTextWithoutNotify(stepProperties.gunRotation.ToString());
@@ -51,10 +52,10 @@ public class StepUIPrefab : MonoBehaviour{
         var val=GetComponentInChildren<TMP_InputField>().text;
         switch(stepProperties.stepType){
             case StepPropertiesType.delay:
-                SetDelay(val);
+                this.SetDelay(val);
             break;
             case StepPropertiesType.gunRotation:
-                SetGunRotation(val);
+                this.SetGunRotation(val);
             break;
             /*case StepPropertiesType.mirrorPos:
                 SetObjectId(val);
@@ -71,24 +72,24 @@ public class StepUIPrefab : MonoBehaviour{
         yield return new WaitForSecondsRealtime(delay);
         GetComponentInChildren<TMP_InputField>().text=val;
     }
-    public void SetDelay(string val){StartCoroutine(SetDelayI(val));}
+    public void SetDelay(string val){this.StartCoroutine(this.SetDelayI(val));}
     IEnumerator SetDelayI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
-        Debug.Log("Setting Delay");
+        // Debug.Log("Setting Delay");
         if(!string.IsNullOrEmpty(val)){
-            if(float.TryParse(val.Replace(".",","), out float i)){
-                stepProperties.delay=i;
+            if(float.TryParse(val.Replace(".",","), out float outFloat)){
+                stepProperties.delay=outFloat;
             }
         }
         SelectButton();
     }
-    public void SetGunRotation(string val){StartCoroutine(SetGunRotationI(val));}
+    public void SetGunRotation(string val){this.StartCoroutine(this.SetGunRotationI(val));}
     IEnumerator SetGunRotationI(string val){
         yield return new WaitForSecondsRealtime(0.05f);
         //Debug.Log("Setting Gun rotation");
         if(!string.IsNullOrEmpty(val)){
-            if(float.TryParse(val.Replace(".",","), out float i)){
-                stepProperties.gunRotation=i;
+            if(float.TryParse(val.Replace(".",","), out float outFloat)){
+                stepProperties.gunRotation=outFloat;
             }
         }
         SelectButton();

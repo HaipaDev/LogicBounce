@@ -1209,7 +1209,7 @@ MonoBehaviour:
       m_Calls: []
   m_CaretColor: {r: 0.6901961, g: 0.16470589, b: 0.75294125, a: 1}
   m_CustomCaretColor: 1
-  m_SelectionColor: {r: 0.5372549, g: 1, b: 1, a: 0.7529412}
+  m_SelectionColor: {r: 0.5372549, g: 0.9960785, b: 0.9960785, a: 0.7529412}
   m_Text: 45.00
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1

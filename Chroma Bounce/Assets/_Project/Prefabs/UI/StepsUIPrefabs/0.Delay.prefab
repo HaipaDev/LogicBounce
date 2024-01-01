@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1.00\u200B"
+  m_text: "1,00\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
   m_sharedMaterial: {fileID: -3640924823094735546, guid: de3dd571480dbae48a3862e538a5ed02, type: 2}
@@ -1292,7 +1292,7 @@ MonoBehaviour:
   m_ContentType: 9
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 11
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
@@ -1362,8 +1362,8 @@ MonoBehaviour:
       m_Calls: []
   m_CaretColor: {r: 0.6901961, g: 0.16470589, b: 0.75294125, a: 1}
   m_CustomCaretColor: 1
-  m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 1.00
+  m_SelectionColor: {r: 0.5372549, g: 0.9960785, b: 0.9960785, a: 0.7529412}
+  m_Text: 1,00
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0

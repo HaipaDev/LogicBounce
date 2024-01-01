@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2dd4b8707ca0b34d93612c289fa1f83, type: 3}
   m_Name: TMP_DelayValidator
   m_EditorClassIdentifier: 
-  minValue: 0.01
+  minValue: 0
   maxValue: 10

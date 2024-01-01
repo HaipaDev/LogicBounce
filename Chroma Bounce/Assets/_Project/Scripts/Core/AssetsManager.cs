@@ -12,6 +12,7 @@ public class AssetsManager : MonoBehaviour{	public static AssetsManager instance
 	[AssetsOnly,Searchable]public List<GMaterial> materials;
 	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator decimalInputValidator;
 	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator angleInputValidator;
+	[AssetsOnly,Searchable]public TMPro.TMP_InputValidator delayInputValidator;
 	// [DisableInEditorMode][SerializeField]public Sprite[] generatedLevelPreviews;
 	[DisableInEditorMode][SerializeField]public Texture2D[] generatedLevelPreviews;
     
