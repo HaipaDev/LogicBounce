@@ -64,8 +64,6 @@ sysinfo.txt
 crashlytics-build.properties
 
 
-SSS222/Assets/Adaptive Performance/
-
 #Ignore all Demos
 **/[Dd]emo/
 ## Odin Inspector

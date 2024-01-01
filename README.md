@@ -3,4 +3,4 @@
 Started on the 21.05.2023 1PM GMT+2 with time till 29.05.2023 11PM GMT+2
 
 [Submited an hour before the deadline💀 Please do check it out!](https://haipadev.itch.io/logic-bounce)
-![logo](https://raw.githubusercontent.com/HyperGamesDev/ChromaBounce/master/Chroma%20Bounce/Assets/_Project/Sprites/logo.png)
+![logo](https://raw.githubusercontent.com/HaipaDev/LogicBounce/master/Logic%20Bounce/Assets/_Project/Sprites/logo.png)
